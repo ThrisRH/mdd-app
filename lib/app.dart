@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mddblog/src/views/faq/faq.dart';
 import 'package:mddblog/src/views/home/home.dart';
 
 class App extends StatelessWidget {
@@ -14,7 +15,13 @@ class App extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      initialRoute: '/home',
+      routes: {
+        '/home': (context) => const HomePage(),
+        // '/about': (context) => const AboutView(),
+        // '/topics': (context) => const TopicsView(),
+        '/faq': (context) => const FAQ(),
+      },
     );
   }
 }
