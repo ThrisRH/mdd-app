@@ -22,7 +22,7 @@ pipelines:
           caches:
             - flutter
           script:
-            - flutter build apk --debug --flavor staging -t lib/main_staging.dart
+            - flutter build apk --debug --flavor staging -t lib/main_development.dart
 
     master:
       - step:
