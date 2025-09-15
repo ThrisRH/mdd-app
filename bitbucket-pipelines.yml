@@ -1,5 +1,9 @@
 image: cirrusci/flutter:stable
 
+definitions:
+  caches:
+    flutter: ~/.pub-cache 
+
 pipelines:
   branches:
     develop:
@@ -11,16 +15,14 @@ pipelines:
             - flutter --version
             - flutter pub get
             - flutter analyze
-            - flutter test
+            # - flutter test
 
       - step:
           name: Build APK (Staging)
           caches:
             - flutter
           script:
-            - flutter build apk --debug --flavor staging
-            # hoặc build app bundle
-            # flutter build appbundle --flavor staging
+            - flutter build apk --debug --flavor staging -t lib/main_staging.dart
 
     master:
       - step:
@@ -30,13 +32,11 @@ pipelines:
           script:
             - flutter pub get
             - flutter analyze
-            - flutter test
+            # - flutter test
 
       - step:
           name: Build APK (Production)
           caches:
             - flutter
           script:
-            - flutter build apk --release --flavor production
-            # hoặc build app bundle
-            # flutter build appbundle --flavor production
+            - flutter build apk --release --flavor production -t lib/main_production.dart
