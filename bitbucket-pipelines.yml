@@ -1,4 +1,4 @@
-image: cirrusci/flutter:3.13.0
+image: ghcr.io/cirruslabs/flutter:stable
 
 definitions:
   caches:
