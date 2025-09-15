@@ -1,0 +1,42 @@
+image: cirrusci/flutter:stable
+
+pipelines:
+  branches:
+    develop:
+      - step:
+          name: Install Dependencies & Analyze
+          caches:
+            - flutter
+          script:
+            - flutter --version
+            - flutter pub get
+            - flutter analyze
+            - flutter test
+
+      - step:
+          name: Build APK (Staging)
+          caches:
+            - flutter
+          script:
+            - flutter build apk --debug --flavor staging
+            # hoặc build app bundle
+            # flutter build appbundle --flavor staging
+
+    master:
+      - step:
+          name: Install Dependencies & Analyze
+          caches:
+            - flutter
+          script:
+            - flutter pub get
+            - flutter analyze
+            - flutter test
+
+      - step:
+          name: Build APK (Production)
+          caches:
+            - flutter
+          script:
+            - flutter build apk --release --flavor production
+            # hoặc build app bundle
+            # flutter build appbundle --flavor production
