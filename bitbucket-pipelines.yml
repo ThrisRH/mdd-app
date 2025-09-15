@@ -23,7 +23,8 @@ pipelines:
             - flutter
           script:
             - export GRADLE_OPTS="-Dorg.gradle.daemon=false"
-            - flutter build apk --debug --flavor staging -t lib/main_development.dart
+            - flutter build apk --debug --flavor staging -t lib/main_development.dart --android-skip-build-dependency-validation
+
 
     master:
       - step:
