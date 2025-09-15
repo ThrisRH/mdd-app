@@ -22,6 +22,7 @@ pipelines:
           caches:
             - flutter
           script:
+            - export GRADLE_OPTS="-Dorg.gradle.daemon=false"
             - flutter build apk --debug --flavor staging -t lib/main_development.dart
 
     master:
@@ -39,4 +40,5 @@ pipelines:
           caches:
             - flutter
           script:
+            - export GRADLE_OPTS="-Dorg.gradle.daemon=false"
             - flutter build apk --release --flavor production -t lib/main_production.dart
