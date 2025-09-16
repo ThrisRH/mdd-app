@@ -1,9 +1,6 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
-import 'package:mddblog/src/models/faq_model.dart';
-import 'package:mddblog/src/services/faq_service.dart';
-import 'package:mddblog/src/widgets/faq/faqCard.dart';
+import 'package:mddblog/src/models/about_model.dart';
+import 'package:mddblog/src/services/about_service.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
@@ -11,29 +8,29 @@ import 'package:mddblog/src/widgets/post/headerLine.dart';
 import 'package:mddblog/theme/app_colors.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
-class FAQ extends StatefulWidget {
-  const FAQ({super.key});
+class About extends StatefulWidget {
+  const About({super.key});
 
   @override
-  State<FAQ> createState() => _FAQState();
+  State<About> createState() => _AboutState();
 }
 
-class _FAQState extends State<FAQ> {
-  final FaqService _faqService = FaqService();
-  late Future<FaqResponse> _faqs;
-  int? selectedIndex = 0;
+class _AboutState extends State<About> {
+  final AboutService _aboutService = AboutService();
+  late Future<AboutResponse> _about;
+
+  @override
+  void initState() {
+    super.initState();
+    _about = _aboutService.getAbout();
+  }
+
   bool showOverlay = false;
 
   void toggleOverlay() {
     setState(() {
       showOverlay = !showOverlay;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _faqs = _faqService.getFaqs();
   }
 
   @override
@@ -87,8 +84,8 @@ class _FAQState extends State<FAQ> {
                           color: AppColors.primary.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(40),
                         ),
-                        child: FutureBuilder<FaqResponse>(
-                          future: _faqs,
+                        child: FutureBuilder(
+                          future: _about,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -100,27 +97,16 @@ class _FAQState extends State<FAQ> {
                             } else if (!snapshot.hasData) {
                               return const Center(child: Text("No FAQs found"));
                             } else {
-                              final faqList =
-                                  snapshot.data!.data.questionAnswers;
+                              final aboutList =
+                                  snapshot.data!.data.aboutContent;
+                              print("Length: ${aboutList.length}");
                               return ListView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
-                                itemCount: faqList.length,
+                                itemCount: aboutList.length,
                                 itemBuilder: (context, index) {
-                                  final faq = faqList[index];
-                                  return FAQCard(
-                                    question: faq.question,
-                                    answer: faq.answer,
-                                    toggleAnswer: () {
-                                      setState(() {
-                                        selectedIndex =
-                                            selectedIndex == index
-                                                ? null
-                                                : index;
-                                      });
-                                    },
-                                    isSelected: selectedIndex == index,
-                                  );
+                                  final about = aboutList[index];
+                                  return Text(about.type);
                                 },
                               );
                             }

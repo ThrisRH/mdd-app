@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mddblog/src/views/about/about.dart';
 import 'package:mddblog/src/views/faq/faq.dart';
 import 'package:mddblog/src/views/home/home.dart';
 
@@ -9,16 +10,14 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/home',
       routes: {
-        '/home': (context) => const HomePage(),
-        // '/about': (context) => const AboutView(),
+        '/home': (context) => const Home(),
+        '/about': (context) => const About(),
         // '/topics': (context) => const TopicsView(),
         '/faq': (context) => const FAQ(),
       },

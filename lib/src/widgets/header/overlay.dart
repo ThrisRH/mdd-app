@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mddblog/src/widgets/header/userInfoCard.dart';
+import 'package:mddblog/theme/app_colors.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
 class OverlayToggle extends StatelessWidget {
@@ -16,6 +17,7 @@ class OverlayToggle extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
+    final currentRoute = ModalRoute.of(context)?.settings.name ?? "";
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -44,16 +46,24 @@ class OverlayToggle extends StatelessWidget {
                   SizedBox(height: 32),
 
                   // Thanh điều hướng
-                  ...menuItems.map(
-                    (item) => Padding(
+                  ...menuItems.map((item) {
+                    final isActive = item["route"] == currentRoute;
+
+                    return Padding(
                       padding: EdgeInsets.only(bottom: spacing),
                       child: GestureDetector(
                         onTap:
                             () => Navigator.pushNamed(context, item["route"]!),
-                        child: Text(item["title"]!, style: AppTextStyles.h2),
+                        child: Text(
+                          item["title"]!,
+                          style: AppTextStyles.h2.copyWith(
+                            color:
+                                isActive ? AppColors.secondary : Colors.white,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                 ],
               ),
             ),

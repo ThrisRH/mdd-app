@@ -30,11 +30,11 @@ class AppTextStyles {
 
   // Heading 0
   static const TextStyle h0 = TextStyle(
-    fontSize: 40,
+    fontSize: 32,
     fontWeight: FontWeight.bold,
     letterSpacing: 0,
     fontFamily: 'Lora',
-    color: Colors.white,
+    color: Colors.black,
   );
 
   // Heading 1
@@ -43,12 +43,12 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     letterSpacing: 0,
     fontFamily: 'Lora',
-    color: Colors.white,
+    color: Colors.black,
   );
 
   // Heading 2
   static const TextStyle h2 = TextStyle(
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     fontFamily: 'Lora',
