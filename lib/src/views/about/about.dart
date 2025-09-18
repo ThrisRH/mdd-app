@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mddblog/src/models/about_model.dart';
 import 'package:mddblog/src/services/about_service.dart';
+import 'package:mddblog/src/widgets/about/aboutAvatarContainer.dart';
+import 'package:mddblog/src/widgets/about/aboutContactInfoSection.dart';
+import 'package:mddblog/src/widgets/about/aboutContentSection.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
-import 'package:mddblog/src/widgets/post/headerLine.dart';
 import 'package:mddblog/theme/app_colors.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
@@ -14,6 +18,8 @@ class About extends StatefulWidget {
   @override
   State<About> createState() => _AboutState();
 }
+
+final String baseUrl = dotenv.env['BASE_URL_WITHOUT_API'] ?? "";
 
 class _AboutState extends State<About> {
   final AboutService _aboutService = AboutService();
@@ -51,29 +57,9 @@ class _AboutState extends State<About> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("Câu hỏi thường gặp", style: AppTextStyles.h0),
-                      SizedBox(height: 32),
-
-                      // Thanh ngang
-                      HeaderLine(
-                        child: Row(
-                          children: List.generate(8, (index) {
-                            return Container(
-                              margin: EdgeInsets.only(left: 4, right: 4),
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                shape: BoxShape.circle,
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
-                      SizedBox(height: 32),
-
                       // Nội dung FAQ
                       Container(
+                        margin: EdgeInsets.only(top: 172 / 2),
                         width: double.infinity,
                         padding: EdgeInsets.only(
                           left: 40,
@@ -97,17 +83,67 @@ class _AboutState extends State<About> {
                             } else if (!snapshot.hasData) {
                               return const Center(child: Text("No FAQs found"));
                             } else {
+                              // Khai báo data từ api
                               final aboutList =
                                   snapshot.data!.data.aboutContent;
-                              print("Length: ${aboutList.length}");
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: aboutList.length,
-                                itemBuilder: (context, index) {
-                                  final about = aboutList[index];
-                                  return Text(about.type);
-                                },
+                              final avatar = snapshot.data!.data.authorAvt;
+                              final contactList = snapshot.data!.data.contact;
+
+                              // Gán vào UI
+                              return Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Positioned(
+                                    top: -(172 / 2),
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: AboutAvatarContainer(
+                                        imageUrl: "$baseUrl${avatar.url}",
+                                      ),
+                                    ),
+                                  ),
+
+                                  Container(
+                                    margin: EdgeInsets.only(top: 100),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SvgPicture.asset(
+                                          "assets/svg/AboutMDD.svg",
+                                        ),
+
+                                        // Vùng chứa nội dụng About
+                                        AboutContentSection(
+                                          contents: aboutList,
+                                        ),
+
+                                        // Vùng chứa nội dung Contact Info
+                                        AboutContactInfoSection(
+                                          contacts: contactList,
+                                        ),
+
+                                        // Lời chúc
+                                        SizedBox(height: 32),
+                                        Text(
+                                          'Have a nice day! ',
+                                          style: AppTextStyles.h4.copyWith(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 16),
+                                        Text(
+                                          'my MDD diary',
+                                          style: AppTextStyles.body1.copyWith(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               );
                             }
                           },
