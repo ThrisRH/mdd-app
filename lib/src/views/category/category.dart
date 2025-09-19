@@ -1,7 +1,6 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/state_manager.dart';
 import 'package:mddblog/src/models/blog_model.dart';
 import 'package:mddblog/src/services/blog_service.dart';
 import 'package:mddblog/src/views/blog_details/blog_details.dart';
@@ -9,30 +8,35 @@ import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/main/PaginationBar.dart';
-import 'package:mddblog/src/widgets/post/postCard.dart';
+import 'package:mddblog/src/widgets/post/PostCard.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
-class BlogController extends GetxController {
+class BlogByCateController extends GetxController {
   final BlogService _blogService = BlogService();
 
   var blogs = <BlogData>[].obs;
   var isLoading = true.obs;
   var currentPage = RxInt(1);
   var totalPages = 1.obs;
+  late String cateId, cateName;
 
   @override
   void onInit() {
     super.onInit();
-    fetchPage(currentPage.value);
+    cateId = Get.arguments['id'] as String;
+    cateName = Get.arguments['name'] as String;
+    fetchBlogByCate(cateId, currentPage.value);
   }
 
-  // Fetch toàn bộ blogs ( 3 blogs/trang )
-  void fetchPage(int page) async {
+  // Fetch blog theo CateId
+  void fetchBlogByCate(String cateId, int page) async {
     try {
       isLoading.value = true;
       currentPage.value = page;
-
-      final response = await _blogService.getBlogs(page: currentPage.value);
+      final response = await _blogService.getBlogsByCate(
+        cateId,
+        page: currentPage.value,
+      );
       totalPages.value = response.meta.pagination.pageCount;
       blogs.assignAll(response.data);
     } catch (error) {
@@ -53,8 +57,8 @@ class BlogController extends GetxController {
   }
 }
 
-class Home extends GetWidget<BlogController> {
-  Home({super.key});
+class Category extends GetWidget<BlogByCateController> {
+  Category({super.key});
 
   final RxBool showOverlay = false.obs;
 
@@ -73,7 +77,7 @@ class Home extends GetWidget<BlogController> {
                 // Header Bar
                 MDDNavbar(onSearchTap: () => {}, onMenuTap: toggleOverlay),
                 SizedBox(height: 32),
-                Text("Blogs", style: AppTextStyles.h0),
+                Text(controller.cateName, style: AppTextStyles.h0),
 
                 // Body
                 Padding(
@@ -96,7 +100,6 @@ class Home extends GetWidget<BlogController> {
                     );
                   }),
                 ),
-
                 // Pagination Area
                 Obx(
                   () => PaginationBar(
@@ -104,7 +107,12 @@ class Home extends GetWidget<BlogController> {
                     onPageSelected:
                         (page) => {
                           if (page != controller.currentPage.value)
-                            {controller.fetchPage(page)},
+                            {
+                              controller.fetchBlogByCate(
+                                controller.cateId,
+                                page,
+                              ),
+                            },
                         },
                     currentPage: controller.currentPage.value,
                   ),

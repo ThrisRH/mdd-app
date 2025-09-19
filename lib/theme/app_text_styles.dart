@@ -7,7 +7,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     letterSpacing: 0,
     fontFamily: 'Inter',
-    color: Colors.white,
+    color: Colors.black,
   );
 
   // Body 2
@@ -16,7 +16,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     fontFamily: 'Inter',
-    color: Colors.white,
+    color: Colors.black,
   );
 
   // Body 3
@@ -25,7 +25,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     fontFamily: 'Inter',
-    color: Colors.white,
+    color: Colors.black,
   );
 
   // Heading 0
@@ -52,7 +52,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     fontFamily: 'Lora',
-    color: Colors.white,
+    color: Colors.black,
   );
 
   // Heading 3
@@ -61,7 +61,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     fontFamily: 'Lora',
-    color: Colors.white,
+    color: Colors.black,
   );
 
   // Heading 4
@@ -70,7 +70,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     fontFamily: 'Lora',
-    color: Colors.white,
+    color: Colors.black,
   );
 
   // Heading 5
@@ -79,6 +79,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     fontFamily: 'Lora',
-    color: Colors.white,
+    color: Colors.black,
   );
 }

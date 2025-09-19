@@ -28,10 +28,13 @@ class _UserInfoCardState extends State<UserInfoCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("MDD", style: AppTextStyles.h2),
+                Text(
+                  "MDD",
+                  style: AppTextStyles.h2.copyWith(color: Colors.white),
+                ),
                 Text(
                   "Coding, Designing, Writing blogs",
-                  style: AppTextStyles.body3,
+                  style: AppTextStyles.body3.copyWith(color: Colors.white),
                 ),
               ],
             ),

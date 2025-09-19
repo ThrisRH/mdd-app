@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mddblog/src/models/faq_model.dart';
 import 'package:mddblog/src/services/faq_service.dart';
 import 'package:mddblog/src/widgets/faq/faqCard.dart';
@@ -11,29 +12,48 @@ import 'package:mddblog/src/widgets/post/headerLine.dart';
 import 'package:mddblog/theme/app_colors.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
-class FAQ extends StatefulWidget {
-  const FAQ({super.key});
+// Controller
+class FaqController extends GetxController {
+  final FaqService _faqService = FaqService();
+
+  var faqs = <QuestionAnswer>[].obs;
+  var isLoading = true.obs;
+  var selectedIndex = RxnInt();
 
   @override
-  State<FAQ> createState() => _FAQState();
-}
-
-class _FAQState extends State<FAQ> {
-  final FaqService _faqService = FaqService();
-  late Future<FaqResponse> _faqs;
-  int? selectedIndex = 0;
-  bool showOverlay = false;
-
-  void toggleOverlay() {
-    setState(() {
-      showOverlay = !showOverlay;
-    });
+  void onInit() {
+    super.onInit();
+    fetchFAQs();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _faqs = _faqService.getFaqs();
+  void fetchFAQs() async {
+    try {
+      isLoading.value = true;
+      final response = await _faqService.getFaqs();
+      faqs.assignAll(response.data.questionAnswers);
+    } catch (error) {
+      Get.snackbar("Error", error.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void toggleAnswer(int index) {
+    if (selectedIndex.value == index) {
+      selectedIndex.value = null;
+    } else {
+      selectedIndex.value = index;
+    }
+  }
+}
+
+class FAQ extends GetWidget<FaqController> {
+  FAQ({super.key});
+
+  final RxBool showOverlay = false.obs;
+
+  void toggleOverlay() {
+    showOverlay.value = !showOverlay.value;
   }
 
   @override
@@ -87,45 +107,32 @@ class _FAQState extends State<FAQ> {
                           color: AppColors.primary.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(40),
                         ),
-                        child: FutureBuilder<FaqResponse>(
-                          future: _faqs,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                child: Text("Error: ${snapshot.error}"),
+                        child: Obx(() {
+                          if (controller.isLoading.value) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                          if (controller.faqs.isEmpty) {
+                            return Center(child: Text("No FAQs Found!"));
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: controller.faqs.length,
+                            itemBuilder: (context, index) {
+                              final faq = controller.faqs[index];
+                              return Obx(
+                                () => FAQCard(
+                                  question: faq.question,
+                                  answer: faq.answer,
+                                  toggleAnswer:
+                                      () => controller.toggleAnswer(index),
+                                  isSelected:
+                                      controller.selectedIndex.value == index,
+                                ),
                               );
-                            } else if (!snapshot.hasData) {
-                              return const Center(child: Text("No FAQs found"));
-                            } else {
-                              final faqList =
-                                  snapshot.data!.data.questionAnswers;
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: faqList.length,
-                                itemBuilder: (context, index) {
-                                  final faq = faqList[index];
-                                  return FAQCard(
-                                    question: faq.question,
-                                    answer: faq.answer,
-                                    toggleAnswer: () {
-                                      setState(() {
-                                        selectedIndex =
-                                            selectedIndex == index
-                                                ? null
-                                                : index;
-                                      });
-                                    },
-                                    isSelected: selectedIndex == index,
-                                  );
-                                },
-                              );
-                            }
-                          },
-                        ),
+                            },
+                          );
+                        }),
                       ),
                     ],
                   ),
@@ -138,7 +145,12 @@ class _FAQState extends State<FAQ> {
         ),
 
         // Show ra Overlay nav điều hướng khi showOverlay === true
-        if (showOverlay) OverlayToggle(closeOverlay: toggleOverlay),
+        Obx(
+          () =>
+              showOverlay.value
+                  ? OverlayToggle(closeOverlay: toggleOverlay)
+                  : SizedBox.shrink(),
+        ),
       ],
     );
   }

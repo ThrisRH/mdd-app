@@ -1,11 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mddblog/src/models/category_model.dart';
+import 'package:mddblog/src/services/category_service.dart';
+import 'package:mddblog/src/views/category/category.dart';
+import 'package:mddblog/src/widgets/header/topic_nav.dart';
 import 'package:mddblog/src/widgets/header/userInfoCard.dart';
 import 'package:mddblog/theme/app_colors.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
+class CategoryController extends GetxController {
+  final CategoryService _categoryService = CategoryService();
+  var cates = <CategoryData>[].obs;
+  var isLoading = true.obs;
+  var isOpenCate = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchCategory();
+  }
+
+  void fetchCategory() async {
+    try {
+      isLoading.value = true;
+      final response = await _categoryService.getCategories();
+      cates.assignAll(response.data);
+    } catch (error) {
+      Get.snackbar("Error", error.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void openCate() {
+    isOpenCate.value = !isOpenCate.value;
+  }
+
+  void toCategoryView(String documentId, String cateName) {
+    Get.offNamed(
+      '/topics/$documentId',
+      arguments: {"id": documentId, "name": cateName},
+    );
+  }
+}
+
 class OverlayToggle extends StatelessWidget {
   final VoidCallback closeOverlay;
-  const OverlayToggle({super.key, required this.closeOverlay});
+  OverlayToggle({super.key, required this.closeOverlay});
+
+  final CategoryController c = Get.put(CategoryController());
 
   final double spacing = 32;
 
@@ -52,15 +95,33 @@ class OverlayToggle extends StatelessWidget {
                     return Padding(
                       padding: EdgeInsets.only(bottom: spacing),
                       child: GestureDetector(
-                        onTap:
-                            () => Navigator.pushNamed(context, item["route"]!),
-                        child: Text(
-                          item["title"]!,
-                          style: AppTextStyles.h2.copyWith(
-                            color:
-                                isActive ? AppColors.secondary : Colors.white,
-                          ),
-                        ),
+                        onTap: () {
+                          if (item['route'] != "/topics") {
+                            closeOverlay();
+                            Get.toNamed(item['route']!);
+                          } else {
+                            c.openCate();
+                          }
+                        },
+                        child:
+                            item["route"] == "/topics"
+                                ? Obx(
+                                  () => TopicNav(
+                                    isSelected: isActive,
+                                    isOpenCate: c.isOpenCate.value,
+                                    cates: c.cates,
+                                    navLabel: item["title"]!,
+                                  ),
+                                )
+                                : Text(
+                                  item["title"]!,
+                                  style: AppTextStyles.h2.copyWith(
+                                    color:
+                                        isActive
+                                            ? AppColors.secondary
+                                            : Colors.white,
+                                  ),
+                                ),
                       ),
                     );
                   }),
