@@ -8,9 +8,11 @@ import 'package:mddblog/src/widgets/post/headerLine.dart';
 import 'package:intl/intl.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
-class PostCard extends GetWidget<BlogController> {
+class PostCard extends StatelessWidget {
   final BlogData blogData;
-  const PostCard({super.key, required this.blogData});
+  final VoidCallback onTap;
+
+  const PostCard({super.key, required this.blogData, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -71,13 +73,7 @@ class PostCard extends GetWidget<BlogController> {
               style: AppTextStyles.body2.copyWith(color: Colors.black),
             ),
             SizedBox(height: 24),
-            MDDButton(
-              isPrimary: true,
-              label: "Xem thêm",
-              onTap: () {
-                controller.openBlogsDetail(blogData.slug);
-              },
-            ),
+            MDDButton(isPrimary: true, label: "Xem thêm", onTap: onTap),
           ],
         ),
         SizedBox(height: 40),

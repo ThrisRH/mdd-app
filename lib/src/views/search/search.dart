@@ -1,10 +1,7 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/src/models/blog_model.dart';
 import 'package:mddblog/src/services/blog_service.dart';
-import 'package:mddblog/src/views/blog_details/blog_details.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
@@ -14,61 +11,47 @@ import 'package:mddblog/src/widgets/main/PaginationBar.dart';
 import 'package:mddblog/src/widgets/post/PostCard.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
-class BlogController extends GetxController {
+class BlogBySearchQueryController extends GetxController {
   final BlogService _blogService = BlogService();
 
   var blogs = <BlogData>[].obs;
-  var favoriteBlogs = <BlogData>[].obs; // Cho bảng favorite trong trang cá nhân
-
   var isLoading = true.obs;
   var currentPage = RxInt(1);
   var totalPages = 1.obs;
+  late String query;
 
   @override
   void onInit() {
     super.onInit();
-
-    Future.delayed(Duration(seconds: 1), () {
-      fetchPage(currentPage.value);
-      fetchFavorites();
-    });
+    query = Get.arguments['query'] as String;
+    fetchBlogByCate(query, currentPage.value);
   }
 
-  // Fetch toàn bộ blogs ( 3 blogs/trang )
-  void fetchPage(int page) async {
+  // Fetch blog theo CateId
+  void fetchBlogByCate(String query, int page) async {
     try {
       isLoading.value = true;
       currentPage.value = page;
-
-      final response = await _blogService.getBlogs(page: currentPage.value);
+      final response = await _blogService.getBlogsByQuery(
+        query,
+        page: currentPage.value,
+      );
       totalPages.value = response.meta.pagination.pageCount;
       blogs.assignAll(response.data);
     } catch (error) {
-      Get.snackbar("Error", error.toString());
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  // Fetch cho trang cá nhân (6 blogs/trang)
-  void fetchFavorites() async {
-    try {
-      isLoading.value = true;
-      final response = await _blogService.getBlogs(page: 1, pageSize: 6);
-      favoriteBlogs.assignAll(response.data);
+      return;
     } finally {
       isLoading.value = false;
     }
   }
 
   void openBlogsDetail(String slug) {
-    Get.delete<BlogDetailsController>();
     Get.toNamed('/home/$slug', arguments: {'slug': slug});
   }
 }
 
-class Home extends GetWidget<BlogController> {
-  Home({super.key});
+class BlogBySearchQueryPage extends GetWidget<BlogBySearchQueryController> {
+  BlogBySearchQueryPage({super.key});
 
   final RxBool showOverlay = false.obs;
 
@@ -86,22 +69,26 @@ class Home extends GetWidget<BlogController> {
               children: [
                 // Header Bar
                 MDDNavbar(onMenuTap: toggleOverlay),
-                SizedBox(height: 32),
-                Text("Blogs", style: AppTextStyles.h0),
 
+                // Body
                 Obx(() {
-                  // Body
                   if (controller.isLoading.value) {
                     return Center(child: Loading());
                   }
                   if (controller.blogs.isEmpty) {
                     return ErrorNotification();
                   }
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: ListView.builder(
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 32),
+                        Text(
+                          "Kết quả tìm kiếm cho: ${controller.query}",
+                          style: AppTextStyles.h0,
+                          textAlign: TextAlign.center,
+                        ),
+                        ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: controller.blogs.length,
@@ -114,24 +101,33 @@ class Home extends GetWidget<BlogController> {
                             );
                           },
                         ),
-                      ),
-
-                      // Pagination Area
-                      PaginationBar(
-                        totalPages: controller.totalPages.value,
-                        onPageSelected:
-                            (page) => {
-                              if (page != controller.currentPage.value)
-                                {controller.fetchPage(page)},
-                            },
-                        currentPage: controller.currentPage.value,
-                      ),
-
-                      // Footer
-                      Footer(),
-                    ],
+                      ],
+                    ),
                   );
                 }),
+                // Pagination Area
+                Obx(() {
+                  if (controller.blogs.isEmpty) {
+                    return SizedBox.shrink();
+                  }
+                  return PaginationBar(
+                    totalPages: controller.totalPages.value,
+                    onPageSelected:
+                        (page) => {
+                          if (page != controller.currentPage.value)
+                            {
+                              controller.fetchBlogByCate(
+                                controller.query,
+                                page,
+                              ),
+                            },
+                        },
+                    currentPage: controller.currentPage.value,
+                  );
+                }),
+
+                // Footer
+                Footer(),
               ],
             ),
           ),

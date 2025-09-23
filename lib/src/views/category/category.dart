@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 import 'package:mddblog/src/models/blog_model.dart';
 import 'package:mddblog/src/services/blog_service.dart';
-import 'package:mddblog/src/views/blog_details/blog_details.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
@@ -25,7 +23,9 @@ class BlogByCateController extends GetxController {
     super.onInit();
     cateId = Get.arguments['id'] as String;
     cateName = Get.arguments['name'] as String;
-    fetchBlogByCate(cateId, currentPage.value);
+    Future.delayed(Duration(seconds: 1), () {
+      fetchBlogByCate(cateId, currentPage.value);
+    });
   }
 
   // Fetch blog theo CateId
@@ -47,13 +47,7 @@ class BlogByCateController extends GetxController {
   }
 
   void openBlogsDetail(String slug) {
-    Get.to(
-      () => BlogDetailsPage(),
-      binding: BindingsBuilder(() {
-        Get.put(BlogDetailsController());
-      }),
-      arguments: slug,
-    );
+    Get.toNamed('/home/$slug', arguments: {'slug': slug});
   }
 }
 
@@ -75,7 +69,7 @@ class Category extends GetWidget<BlogByCateController> {
             child: Column(
               children: [
                 // Header Bar
-                MDDNavbar(onSearchTap: () => {}, onMenuTap: toggleOverlay),
+                MDDNavbar(onMenuTap: toggleOverlay),
                 SizedBox(height: 32),
                 Text(controller.cateName, style: AppTextStyles.h0),
 
@@ -95,7 +89,10 @@ class Category extends GetWidget<BlogByCateController> {
                       itemCount: controller.blogs.length,
                       itemBuilder: (context, index) {
                         final blog = controller.blogs[index];
-                        return PostCard(blogData: blog);
+                        return PostCard(
+                          blogData: blog,
+                          onTap: () => controller.openBlogsDetail(blog.slug),
+                        );
                       },
                     );
                   }),

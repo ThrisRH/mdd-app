@@ -1,5 +1,8 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mddblog/src/controllers/author_controller.dart';
 import 'package:mddblog/src/models/category_model.dart';
 import 'package:mddblog/src/services/category_service.dart';
 import 'package:mddblog/src/views/category/category.dart';
@@ -14,6 +17,8 @@ class CategoryController extends GetxController {
   var isLoading = true.obs;
   var isOpenCate = false.obs;
 
+  var selectedCate = Rxn<CategoryData>();
+
   @override
   void onInit() {
     super.onInit();
@@ -25,6 +30,10 @@ class CategoryController extends GetxController {
       isLoading.value = true;
       final response = await _categoryService.getCategories();
       cates.assignAll(response.data);
+
+      if (cates.isNotEmpty) {
+        selectedCate.value = cates.first;
+      }
     } catch (error) {
       Get.snackbar("Error", error.toString());
     } finally {
@@ -36,7 +45,14 @@ class CategoryController extends GetxController {
     isOpenCate.value = !isOpenCate.value;
   }
 
+  void changeCategory(CategoryData? cate) {
+    if (cate != null) {
+      selectedCate.value = cate;
+    }
+  }
+
   void toCategoryView(String documentId, String cateName) {
+    Get.delete<BlogByCateController>();
     Get.offNamed(
       '/topics/$documentId',
       arguments: {"id": documentId, "name": cateName},
@@ -49,6 +65,7 @@ class OverlayToggle extends StatelessWidget {
   OverlayToggle({super.key, required this.closeOverlay});
 
   final CategoryController c = Get.put(CategoryController());
+  final AuthorController authorController = Get.put(AuthorController());
 
   final double spacing = 32;
 
@@ -83,7 +100,16 @@ class OverlayToggle extends StatelessWidget {
                 children: [
                   // Thông tin của Blogger
                   SizedBox(height: 32),
-                  UserInfoCard(),
+                  Obx(() {
+                    final data = authorController.authorInfo.value;
+                    if (data == null) {
+                      return Text('Author not found');
+                    }
+                    return GestureDetector(
+                      onTap: () => authorController.toAuthorPage(),
+                      child: UserInfoCard(data: data),
+                    );
+                  }),
                   SizedBox(height: 32),
                   Divider(color: Colors.white.withOpacity(0.2), thickness: 1),
                   SizedBox(height: 32),
@@ -115,7 +141,7 @@ class OverlayToggle extends StatelessWidget {
                                 )
                                 : Text(
                                   item["title"]!,
-                                  style: AppTextStyles.h2.copyWith(
+                                  style: AppTextStyles.h3.copyWith(
                                     color:
                                         isActive
                                             ? AppColors.secondary

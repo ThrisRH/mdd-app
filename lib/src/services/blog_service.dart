@@ -29,7 +29,6 @@ class BlogService {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body);
-      print("jsonData: $jsonData");
       return BlogDetailsResponse.fromJson(jsonData);
     } else {
       throw Exception("Failed to load About");
@@ -44,7 +43,20 @@ class BlogService {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body);
-      print('jsonData: $jsonData');
+      return BlogResponse.fromJson(jsonData);
+    } else {
+      throw Exception("Failed to load Blogs");
+    }
+  }
+
+  Future<BlogResponse> getBlogsByQuery(String query, {int page = 1}) async {
+    final url = Uri.parse(
+      '$baseUrl/blogs/by-title/$query?page=$page&pageSize=3&populate=*',
+    );
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonData = json.decode(response.body);
       return BlogResponse.fromJson(jsonData);
     } else {
       throw Exception("Failed to load Blogs");

@@ -6,11 +6,17 @@ class MDDButton extends StatelessWidget {
   final bool isPrimary;
   final String label;
   final VoidCallback onTap;
+  final double? height;
+  final double? fontSize;
+  final double? radius;
   const MDDButton({
     super.key,
     required this.isPrimary,
     required this.label,
     required this.onTap,
+    this.height,
+    this.fontSize,
+    this.radius,
   });
 
   @override
@@ -20,16 +26,19 @@ class MDDButton extends StatelessWidget {
 
       child: Container(
         width: double.infinity,
-        height: 44,
+        height: height ?? 44,
         decoration: BoxDecoration(
           color: isPrimary ? AppColors.primary : AppColors.secondary,
 
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(radius ?? 8),
         ),
         child: Center(
           child: Text(
             label,
-            style: AppTextStyles.h3.copyWith(color: Colors.black),
+            style: AppTextStyles.h3.copyWith(
+              color: Colors.black,
+              fontSize: fontSize ?? 20,
+            ),
           ),
         ),
       ),

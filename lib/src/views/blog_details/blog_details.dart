@@ -1,35 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/src/models/blog_details_model.dart';
+import 'package:mddblog/src/models/blog_model.dart';
 import 'package:mddblog/src/services/blog_service.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
+import 'package:mddblog/src/widgets/main/Error.dart';
+import 'package:mddblog/src/widgets/main/Loading.dart';
 import 'package:mddblog/src/widgets/post/PostDetails.dart';
+import 'package:mddblog/src/widgets/post/RelativePost.dart';
+import 'package:mddblog/src/widgets/post/ShareWith.dart';
 
 // Controller
 class BlogDetailsController extends GetxController {
   final BlogService _blogService = BlogService();
+  late String blogSlug;
 
   var blogDetail = Rxn<BlogDetails>();
-  var isLoading = true.obs;
+  var relativeBlogs = <BlogData>[].obs;
+  var isDetailLoading = true.obs;
+  var isRelativeLoading = true.obs;
 
   @override
   void onInit() {
     super.onInit();
-    final slug = Get.arguments as String;
-    fetchBlogDetails(slug);
+    blogSlug = Get.arguments['slug'] as String;
+
+    Future.delayed(Duration(seconds: 1), () {
+      fetchBlogDetails(blogSlug);
+    });
+
+    ever(blogDetail, (detail) {
+      if (detail?.categoryData != null) {
+        fetchRelativeBlogs(detail!.categoryData.documentId);
+      }
+    });
   }
 
   Future<void> fetchBlogDetails(String slug) async {
     try {
-      isLoading.value = true;
+      isDetailLoading.value = true;
       final response = await _blogService.getBlogsBySlug(slug);
       blogDetail.value = response.data;
+
+      if (blogDetail.value?.categoryData != null) {
+        fetchRelativeBlogs(blogDetail.value!.categoryData.documentId);
+      }
     } catch (error) {
       Get.snackbar("Error", error.toString());
     } finally {
-      isLoading.value = false;
+      isDetailLoading.value = false;
+    }
+  }
+
+  Future<void> fetchRelativeBlogs(String cateId) async {
+    try {
+      isRelativeLoading.value = true;
+      final response = await _blogService.getBlogsByCate(cateId);
+      relativeBlogs.assignAll(response.data);
+    } catch (error) {
+      Get.snackbar("Error", error.toString());
+    } finally {
+      isRelativeLoading.value = false;
     }
   }
 }
@@ -52,19 +86,32 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
             child: Column(
               children: [
                 // Header Bar
-                MDDNavbar(onSearchTap: () => {}, onMenuTap: toggleOverlay),
+                MDDNavbar(onMenuTap: toggleOverlay),
 
                 // // Body
                 Obx(() {
                   final detail = controller.blogDetail.value;
-                  if (detail == null) {
-                    return Center(child: CircularProgressIndicator());
+                  final relativePosts = controller.relativeBlogs;
+
+                  if (controller.isDetailLoading.value) {
+                    return Center(child: Loading());
                   }
+                  if (detail == null) {
+                    return ErrorNotification();
+                  }
+
                   return Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     margin: EdgeInsets.only(top: 40),
-                    child: BlogDetailsContainer(detail: detail),
+                    child: Column(
+                      spacing: 16,
+                      children: [
+                        BlogDetailsContainer(detail: detail),
+                        ShareWith(),
+                        RelativePost(relativePosts),
+                      ],
+                    ),
                   );
                 }),
                 // Footer

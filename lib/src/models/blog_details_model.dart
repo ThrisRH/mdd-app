@@ -1,4 +1,5 @@
 import 'package:mddblog/src/models/blog_model.dart';
+import 'package:mddblog/src/models/category_model.dart';
 
 class BlogDetailsResponse {
   final BlogDetails data;
@@ -12,6 +13,7 @@ class BlogDetailsResponse {
 class BlogDetails extends BlogData {
   final List<SubContent> subContent;
   final List<OptionImage>? optionImage;
+  final CategoryData categoryData;
   BlogDetails({
     required super.documentId,
     required super.title,
@@ -19,6 +21,7 @@ class BlogDetails extends BlogData {
     required super.mainContent,
     required super.slug,
     required super.cover,
+    required this.categoryData,
     required this.subContent,
     required this.optionImage,
   });
@@ -40,6 +43,7 @@ class BlogDetails extends BlogData {
         (json['subContent'] as List<dynamic>)
             .map((e) => SubContent.fromJson(e))
             .toList(),
+    categoryData: CategoryData.fromJson(json['cate']),
   );
 }
 

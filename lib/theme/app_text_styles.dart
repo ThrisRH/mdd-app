@@ -48,7 +48,7 @@ class AppTextStyles {
 
   // Heading 2
   static const TextStyle h2 = TextStyle(
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     fontFamily: 'Lora',

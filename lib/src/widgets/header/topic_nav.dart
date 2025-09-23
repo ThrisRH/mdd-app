@@ -52,24 +52,27 @@ class TopicNav extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ...cates.map(
-                    (cate) => GestureDetector(
-                      onTap: () {
-                        c.toCategoryView(cate.documentId, cate.tile);
-                      },
-                      child: Column(
-                        children: [
-                          SizedBox(height: 32),
+                    (cate) => Padding(
+                      padding: EdgeInsets.only(left: 16),
+                      child: GestureDetector(
+                        onTap: () {
+                          c.toCategoryView(cate.documentId, cate.tile);
+                        },
+                        child: Column(
+                          children: [
+                            SizedBox(height: 32),
 
-                          Text(
-                            cate.tile,
-                            style: AppTextStyles.body2.copyWith(
-                              color:
-                                  cate.documentId == currentCateId
-                                      ? AppColors.secondary
-                                      : Colors.white,
+                            Text(
+                              cate.tile,
+                              style: AppTextStyles.body2.copyWith(
+                                color:
+                                    cate.documentId == currentCateId
+                                        ? AppColors.secondary
+                                        : Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

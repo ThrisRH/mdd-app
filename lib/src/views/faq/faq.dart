@@ -8,6 +8,8 @@ import 'package:mddblog/src/widgets/faq/faqCard.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
+import 'package:mddblog/src/widgets/main/Error.dart';
+import 'package:mddblog/src/widgets/main/Loading.dart';
 import 'package:mddblog/src/widgets/post/headerLine.dart';
 import 'package:mddblog/theme/app_colors.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
@@ -23,7 +25,9 @@ class FaqController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchFAQs();
+    Future.delayed(Duration(seconds: 1), () {
+      fetchFAQs();
+    });
   }
 
   void fetchFAQs() async {
@@ -65,7 +69,7 @@ class FAQ extends GetWidget<FaqController> {
             child: Column(
               children: [
                 // Header Bar
-                MDDNavbar(onSearchTap: () => {}, onMenuTap: toggleOverlay),
+                MDDNavbar(onMenuTap: toggleOverlay),
                 SizedBox(height: 32),
 
                 //  Body
@@ -109,10 +113,10 @@ class FAQ extends GetWidget<FaqController> {
                         ),
                         child: Obx(() {
                           if (controller.isLoading.value) {
-                            return Center(child: CircularProgressIndicator());
+                            return Center(child: Loading());
                           }
                           if (controller.faqs.isEmpty) {
-                            return Center(child: Text("No FAQs Found!"));
+                            return Center(child: ErrorNotification());
                           }
                           return ListView.builder(
                             shrinkWrap: true,

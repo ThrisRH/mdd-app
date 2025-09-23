@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mddblog/src/config/constants.dart';
+import 'package:mddblog/src/models/author_model.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
-class UserInfoCard extends StatefulWidget {
-  const UserInfoCard({super.key});
+class UserInfoCard extends StatelessWidget {
+  final AuthorInfo data;
+  const UserInfoCard({super.key, required this.data});
 
-  @override
-  State<UserInfoCard> createState() => _UserInfoCardState();
-}
-
-class _UserInfoCardState extends State<UserInfoCard> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -18,8 +16,11 @@ class _UserInfoCardState extends State<UserInfoCard> {
           SizedBox(
             width: 80,
             height: 80,
-            child: CircleAvatar(
-              backgroundImage: AssetImage("assets/banner/banner.jpg"),
+            child: ClipOval(
+              child: Image.network(
+                "$baseUrlNoUrl${data.authorAvatar.url}",
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(width: 16),
@@ -29,12 +30,19 @@ class _UserInfoCardState extends State<UserInfoCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "MDD",
+                  "my ${data.fullname} diary",
                   style: AppTextStyles.h2.copyWith(color: Colors.white),
                 ),
-                Text(
-                  "Coding, Designing, Writing blogs",
-                  style: AppTextStyles.body3.copyWith(color: Colors.white),
+                SizedBox(height: 4),
+                Row(
+                  children: [
+                    Text(
+                      data.authorHobbies
+                          .map((item) => item.interest)
+                          .join(", "),
+                      style: AppTextStyles.body3.copyWith(color: Colors.white),
+                    ),
+                  ],
                 ),
               ],
             ),

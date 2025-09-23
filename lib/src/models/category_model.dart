@@ -1,5 +1,3 @@
-import 'package:mddblog/src/models/blog_model.dart';
-
 class CategoryResponse {
   final List<CategoryData> data;
 
