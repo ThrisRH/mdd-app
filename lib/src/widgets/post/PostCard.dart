@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:mddblog/src/config/constants.dart';
 import 'package:mddblog/src/models/blog_model.dart';
-import 'package:mddblog/src/views/home/home.dart';
 import 'package:mddblog/src/widgets/main/Button.dart';
 import 'package:mddblog/src/widgets/post/headerLine.dart';
 import 'package:intl/intl.dart';

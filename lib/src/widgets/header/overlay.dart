@@ -2,12 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mddblog/src/controllers/auth_controller.dart';
 import 'package:mddblog/src/controllers/author_controller.dart';
+import 'package:mddblog/src/controllers/blog_by_cate_controller.dart';
 import 'package:mddblog/src/models/category_model.dart';
 import 'package:mddblog/src/services/category_service.dart';
-import 'package:mddblog/src/views/category/category.dart';
 import 'package:mddblog/src/widgets/header/topic_nav.dart';
 import 'package:mddblog/src/widgets/header/userInfoCard.dart';
+import 'package:mddblog/src/widgets/main/Button.dart';
 import 'package:mddblog/theme/app_colors.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
@@ -66,6 +68,7 @@ class OverlayToggle extends StatelessWidget {
 
   final CategoryController c = Get.put(CategoryController());
   final AuthorController authorController = Get.put(AuthorController());
+  final AuthController authController = Get.put(AuthController());
 
   final double spacing = 32;
 
@@ -149,6 +152,21 @@ class OverlayToggle extends StatelessWidget {
                                   ),
                                 ),
                       ),
+                    );
+                  }),
+                  Obx(() {
+                    if (authController.isLoggedIn.value) {
+                      return GestureDetector(
+                        child: MDDButton(
+                          isPrimary: true,
+                          label: "Đăng xuất",
+                          onTap: () => authController.logout(),
+                        ),
+                      );
+                    }
+                    return RainbowButton(
+                      label: "Đăng nhập ngay!",
+                      onTap: () => {Get.toNamed("/login")},
                     );
                   }),
                 ],

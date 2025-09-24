@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mddblog/src/config/constants.dart';
+import 'package:mddblog/src/controllers/blog_controller.dart';
 import 'package:mddblog/src/models/blog_model.dart';
-import 'package:mddblog/src/views/home/home.dart';
 import 'package:mddblog/src/widgets/post/SectionWrapper.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 

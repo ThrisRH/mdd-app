@@ -13,7 +13,6 @@ class CategoryService {
 
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
-      print("Cate: $body");
       return CategoryResponse.fromJson(body);
     } else {
       throw Exception("Failed to load Category");

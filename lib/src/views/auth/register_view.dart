@@ -6,8 +6,8 @@ import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/main/Button.dart';
 import 'package:mddblog/theme/app_text_styles.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class RegisterPage extends StatelessWidget {
+  RegisterPage({super.key});
 
   final RxBool showOverlay = false.obs;
 
@@ -16,6 +16,7 @@ class LoginPage extends StatelessWidget {
   }
 
   final AuthController _authController = Get.put(AuthController());
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final RxBool _obscurePassword = true.obs;
@@ -49,6 +50,23 @@ class LoginPage extends StatelessWidget {
                       SizedBox(height: 12),
 
                       // Username Field
+                      SizedBox(
+                        height: 48,
+                        child: TextField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            labelText: "Username",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            _authController.errorMessage.value = "";
+                          },
+                        ),
+                      ),
+
+                      // Email Field
                       SizedBox(
                         height: 48,
                         child: TextField(
@@ -111,11 +129,12 @@ class LoginPage extends StatelessWidget {
                       // Sign In Button
                       MDDButton(
                         isPrimary: false,
-                        color: Colors.white,
-                        label: "Đăng nhập",
                         fontSize: 16,
+                        color: Colors.white,
+                        label: "Đăng ký",
                         onTap: () async {
-                          _authController.signIn(
+                          _authController.signUp(
+                            _usernameController.text.trim(),
                             _emailController.text.trim(),
                             _passwordController.text.trim(),
                           );
@@ -123,33 +142,10 @@ class LoginPage extends StatelessWidget {
                       ),
                       MDDButton(
                         isPrimary: true,
-                        label: "Đăng ký",
                         fontSize: 16,
-                        onTap: () => _authController.toRegister(),
+                        label: "Đăng nhập",
+                        onTap: () => _authController.toSignIn(),
                       ),
-                      // GoogleButton(
-                      //   onTap: () async {
-                      //     try {
-                      //       final result = await FlutterWebAuth2.authenticate(
-                      //         url:
-                      //             "https://oversilently-calcinable-wilfredo.ngrok-free.dev/auth/mobile",
-                      //         callbackUrlScheme: "myapp",
-                      //       );
-
-                      //       // result = myapp://auth/callback?token=xxx
-                      //       final token =
-                      //           Uri.parse(result).queryParameters['token'];
-
-                      //       if (token != null) {
-                      //         // Lưu token vào secure storage hoặc controller
-                      //         print("Got token: $token");
-                      //       }
-                      //     } catch (e) {
-                      //       print("Login error: $e");
-                      //     }
-                      //   },
-                      //   label: "Đăng nhập với Google",
-                      // ),
                     ],
                   ),
                 ),

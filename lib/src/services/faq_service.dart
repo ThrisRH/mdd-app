@@ -13,7 +13,6 @@ class FaqService {
 
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
-      print("body: $body");
 
       return FaqResponse.fromJson(body);
     } else {
