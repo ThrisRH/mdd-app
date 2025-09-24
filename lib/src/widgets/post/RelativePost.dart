@@ -18,8 +18,10 @@ class RelativePost extends StatelessWidget {
     return SectionWrapper(
       child: Obx(() {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 16,
           children: [
+            Text("BÀI VIẾT LIÊN QUAN", style: AppTextStyles.h4),
             ...relativeBlogs.map(
               (item) => GestureDetector(
                 onTap: () => c.openBlogsDetail(item.slug),

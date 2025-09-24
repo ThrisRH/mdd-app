@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mddblog/src/services/comment_controller.dart';
 import 'package:mddblog/src/models/blog_details_model.dart';
 import 'package:mddblog/src/models/blog_model.dart';
+import 'package:mddblog/src/models/comment_model.dart';
 import 'package:mddblog/src/services/blog_service.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/main/Error.dart';
 import 'package:mddblog/src/widgets/main/Loading.dart';
+import 'package:mddblog/src/widgets/post/LeaveComment.dart';
 import 'package:mddblog/src/widgets/post/PostDetails.dart';
 import 'package:mddblog/src/widgets/post/RelativePost.dart';
 import 'package:mddblog/src/widgets/post/ShareWith.dart';
@@ -15,12 +18,15 @@ import 'package:mddblog/src/widgets/post/ShareWith.dart';
 // Controller
 class BlogDetailsController extends GetxController {
   final BlogService _blogService = BlogService();
+  final CommentService _commentService = CommentService();
   late String blogSlug;
 
   var blogDetail = Rxn<BlogDetails>();
   var relativeBlogs = <BlogData>[].obs;
+  var comments = <CommentContent>[].obs;
   var isDetailLoading = true.obs;
   var isRelativeLoading = true.obs;
+  var isCommentLoading = true.obs;
 
   @override
   void onInit() {
@@ -34,6 +40,9 @@ class BlogDetailsController extends GetxController {
     ever(blogDetail, (detail) {
       if (detail?.categoryData != null) {
         fetchRelativeBlogs(detail!.categoryData.documentId);
+      }
+      if (detail?.documentId != null) {
+        fetchComment(detail!.documentId);
       }
     });
   }
@@ -65,6 +74,60 @@ class BlogDetailsController extends GetxController {
       isRelativeLoading.value = false;
     }
   }
+
+  // Comment
+
+  Future<void> fetchComment(String blogId) async {
+    try {
+      isCommentLoading.value = true;
+      final response = await _commentService.getComment(blogId);
+      comments.assignAll(response.comments);
+    } finally {
+      isCommentLoading.value = false;
+    }
+  }
+
+  Future<bool> sendComment(
+    String blogId,
+    String readerId,
+    String comment,
+  ) async {
+    if (blogId == "" || readerId == "" || comment == "") {
+      Get.snackbar(
+        "Error Comment!",
+        "Không được để trống!!",
+        colorText: Colors.white,
+        backgroundColor: Colors.red.withValues(alpha: 0.4),
+      );
+      return false;
+    }
+
+    if (comment.length < 8) {
+      Get.snackbar(
+        "Error Comment!",
+        "Comment quá ngắn!",
+        colorText: Colors.white,
+        backgroundColor: Colors.red.withValues(alpha: 0.4),
+      );
+      return false;
+    }
+
+    final response = await _commentService.sendComment(
+      readerId,
+      comment,
+      blogId,
+    );
+    if (!response) {
+      Get.snackbar(
+        "Error Comment!",
+        "Gửi comment thất bại!!",
+        colorText: Colors.white,
+        backgroundColor: Colors.red.withValues(alpha: 0.4),
+      );
+      return false;
+    }
+    return true;
+  }
 }
 
 class BlogDetailsPage extends GetWidget<BlogDetailsController> {
@@ -91,6 +154,7 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
                 Obx(() {
                   final detail = controller.blogDetail.value;
                   final relativePosts = controller.relativeBlogs;
+                  final comments = controller.comments;
 
                   if (controller.isDetailLoading.value) {
                     return Center(child: Loading());
@@ -109,6 +173,7 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
                         BlogDetailsContainer(detail: detail),
                         ShareWith(),
                         RelativePost(relativePosts),
+                        LeaveComment(comments, blogId: detail.documentId),
                       ],
                     ),
                   );

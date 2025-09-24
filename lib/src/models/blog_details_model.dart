@@ -43,6 +43,7 @@ class BlogDetails extends BlogData {
         (json['subContent'] as List<dynamic>)
             .map((e) => SubContent.fromJson(e))
             .toList(),
+
     categoryData: CategoryData.fromJson(json['cate']),
   );
 }
