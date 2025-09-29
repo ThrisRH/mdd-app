@@ -4,9 +4,9 @@ import 'package:mddblog/src/controllers/blog_by_cate_controller.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
-import 'package:mddblog/src/widgets/main/PaginationBar.dart';
-import 'package:mddblog/src/widgets/post/PostCard.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/src/widgets/main/loading.dart';
+import 'package:mddblog/src/widgets/main/pagination_bar.dart';
+import 'package:mddblog/src/widgets/post/post_card.dart';
 
 class Category extends GetWidget<BlogByCateController> {
   Category({super.key});
@@ -22,59 +22,76 @@ class Category extends GetWidget<BlogByCateController> {
     return Stack(
       children: [
         Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Header Bar
-                MDDNavbar(onMenuTap: toggleOverlay),
-                SizedBox(height: 32),
-                Text(controller.cateName, style: AppTextStyles.h0),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              controller.fetchBlogByCate(
+                controller.cateId,
+                controller.currentPage.value,
+              );
+            },
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                spacing: 32,
+                children: [
+                  // Header Bar
+                  MDDNavbar(onMenuTap: toggleOverlay),
 
-                // Body
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Obx(() {
-                    if (controller.isLoading.value) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                    if (controller.blogs.isEmpty) {
-                      return Center(child: Text("No blogs found"));
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: controller.blogs.length,
-                      itemBuilder: (context, index) {
-                        final blog = controller.blogs[index];
-                        return PostCard(
-                          blogData: blog,
-                          onTap: () => controller.openBlogsDetail(blog.slug),
-                        );
-                      },
-                    );
-                  }),
-                ),
-                // Pagination Area
-                Obx(
-                  () => PaginationBar(
-                    totalPages: controller.totalPages.value,
-                    onPageSelected:
-                        (page) => {
-                          if (page != controller.currentPage.value)
-                            {
-                              controller.fetchBlogByCate(
-                                controller.cateId,
-                                page,
-                              ),
+                  // Body
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          controller.cateName,
+                          style: Theme.of(context).textTheme.headlineLarge,
+                        ),
+                        Obx(() {
+                          if (controller.isLoading.value) {
+                            return Center(child: Loading());
+                          }
+                          if (controller.blogs.isEmpty) {
+                            return Center(child: Text("No blogs found"));
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: controller.blogs.length,
+                            itemBuilder: (context, index) {
+                              final blog = controller.blogs[index];
+                              return PostCard(
+                                blogData: blog,
+                                onTap:
+                                    () => controller.openBlogsDetail(blog.slug),
+                              );
                             },
-                        },
-                    currentPage: controller.currentPage.value,
+                          );
+                        }),
+                      ],
+                    ),
                   ),
-                ),
+                  // Pagination Area
+                  Obx(
+                    () => PaginationBar(
+                      totalPages: controller.totalPages.value,
+                      onPageSelected:
+                          (page) => {
+                            if (page != controller.currentPage.value)
+                              {
+                                controller.fetchBlogByCate(
+                                  controller.cateId,
+                                  page,
+                                ),
+                              },
+                          },
+                      currentPage: controller.currentPage.value,
+                    ),
+                  ),
 
-                // Footer
-                Footer(),
-              ],
+                  // Footer
+                  Footer(),
+                ],
+              ),
             ),
           ),
         ),

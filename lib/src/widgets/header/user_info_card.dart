@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mddblog/src/config/constants.dart';
 import 'package:mddblog/src/models/author_model.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
 
 class UserInfoCard extends StatelessWidget {
   final AuthorInfo data;
@@ -12,6 +11,7 @@ class UserInfoCard extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: Row(
+        spacing: 16,
         children: [
           SizedBox(
             width: 80,
@@ -23,24 +23,25 @@ class UserInfoCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 16),
           Flexible(
             flex: 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
               children: [
                 Text(
                   "my ${data.fullname} diary",
-                  style: AppTextStyles.h2.copyWith(color: Colors.white),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineMedium?.copyWith(fontSize: 22),
                 ),
-                SizedBox(height: 4),
                 Row(
                   children: [
                     Text(
                       data.authorHobbies
                           .map((item) => item.interest)
                           .join(", "),
-                      style: AppTextStyles.body3.copyWith(color: Colors.white),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mddblog/src/config/constants.dart';
 import 'package:mddblog/src/models/author_model.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InfoCard extends StatelessWidget {
@@ -20,7 +19,7 @@ class InfoCard extends StatelessWidget {
     }
   }
 
-  Widget contactIcon(String platform, String url) {
+  Widget contactIcon(String platform, String url, BuildContext context) {
     switch (platform) {
       case "fb":
         return Row(
@@ -31,6 +30,7 @@ class InfoCard extends StatelessWidget {
                 "assets/svg/Fb.svg",
                 width: 24,
                 height: 24,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -44,6 +44,7 @@ class InfoCard extends StatelessWidget {
                 "assets/svg/Ig.svg",
                 width: 24,
                 height: 24,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -57,6 +58,7 @@ class InfoCard extends StatelessWidget {
                 "assets/svg/x.svg",
                 width: 24,
                 height: 24,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -70,6 +72,7 @@ class InfoCard extends StatelessWidget {
                 "assets/svg/linkedin.svg",
                 width: 24,
                 height: 24,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -97,14 +100,20 @@ class InfoCard extends StatelessWidget {
               ),
             ),
           ),
-          Text('my ${data.fullname} diary', style: AppTextStyles.h2),
+          Text(
+            'my ${data.fullname} diary',
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontSize: 22),
+          ),
           Text(
             data.authorHobbies.map((item) => item.interest).join(", "),
-            style: AppTextStyles.body3,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           Text(
             data.biography,
-            style: AppTextStyles.body3,
+            style: Theme.of(context).textTheme.bodySmall,
+
             textAlign: TextAlign.center,
           ),
           Row(
@@ -112,7 +121,7 @@ class InfoCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ...data.contactSocialMedia.map(
-                (e) => contactIcon(e.platform, e.url),
+                (e) => contactIcon(e.platform, e.url, context),
               ),
             ],
           ),

@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/src/models/category_model.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
 
 class MoreTopicSection extends GetWidget<CategoryController> {
   const MoreTopicSection({super.key});
@@ -54,7 +53,7 @@ class MoreTopicSection extends GetWidget<CategoryController> {
                                 value: cate,
                                 child: Text(
                                   cate.tile,
-                                  style: AppTextStyles.body2,
+                                  style: TextStyle(color: Colors.black),
                                 ),
                               ),
                             )

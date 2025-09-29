@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/src/controllers/blog_controller.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
 
 class FavoriteContent extends GetWidget<BlogController> {
   const FavoriteContent({super.key});
@@ -45,20 +44,22 @@ class FavoriteContent extends GetWidget<BlogController> {
                   itemCount: controller.favoriteBlogs.length,
                   itemBuilder: (context, index) {
                     final blog = controller.favoriteBlogs[index];
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () => controller.openBlogsDetail(blog.slug),
-                          child: Text(
-                            "${index + 1}.   ${blog.title}",
-                            style: AppTextStyles.body1.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+                    return Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 16),
+                      child: GestureDetector(
+                        onTap: () => controller.openBlogsDetail(blog.slug),
+                        child: Text(
+                          "${index + 1}.   ${blog.title}",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
                           ),
+                          textAlign: TextAlign.justify,
                         ),
-                        SizedBox(height: 16),
-                      ],
+                      ),
                     ); // render blog tùy bạn
                   },
                 );

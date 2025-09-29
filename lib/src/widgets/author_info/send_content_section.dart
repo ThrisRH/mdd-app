@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/widgets/main/Button.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/src/widgets/main/button.dart';
+import 'package:mddblog/theme/element/app_colors.dart';
 
 class SendContentSection extends GetWidget {
   const SendContentSection({super.key});
@@ -36,7 +36,9 @@ class SendContentSection extends GetWidget {
                 children: [
                   Text(
                     "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                    style: AppTextStyles.body3,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.black),
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 12.0),
@@ -49,16 +51,19 @@ class SendContentSection extends GetWidget {
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: "Nhập email của bạn",
-                        hintStyle: AppTextStyles.body2.copyWith(
-                          color: Color(0xFF8B8B8B),
-                        ),
+                        hintStyle: Theme.of(context).textTheme.bodySmall
+                            ?.copyWith(color: Color(0xFF8B8B8B)),
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
                       ),
                     ),
                   ),
-                  MDDButton(isPrimary: true, label: "Đăng ký", onTap: () {}),
+                  MDDButton(
+                    bgColor: AppColors.primary,
+                    label: "Đăng ký",
+                    onTap: () {},
+                  ),
                 ],
               ),
             ),

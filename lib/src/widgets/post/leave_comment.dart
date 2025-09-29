@@ -4,11 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:mddblog/src/config/constants.dart';
 import 'package:mddblog/src/models/comment_model.dart';
 import 'package:mddblog/src/views/blog_details/blog_details.dart';
-import 'package:mddblog/src/widgets/post/SectionWrapper.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/src/widgets/post/section_wrapper.dart';
 
 class LeaveComment extends GetWidget {
   final List<CommentContent> comments;
+
   final String blogId;
   LeaveComment(this.comments, {super.key, required this.blogId});
 
@@ -22,7 +22,7 @@ class LeaveComment extends GetWidget {
         spacing: 24,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('LEAVE A COMMENT', style: AppTextStyles.h4),
+          Text('LEAVE A COMMENT', style: Theme.of(context).textTheme.bodySmall),
 
           Obx(() {
             if (comments.isEmpty) {
@@ -59,9 +59,11 @@ class LeaveComment extends GetWidget {
                                 children: [
                                   Text(
                                     item.reader.readerName,
-                                    style: AppTextStyles.body3.copyWith(
-                                      fontSize: 16,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall?.copyWith(
                                       fontWeight: FontWeight.bold,
+                                      fontSize: 16,
                                     ),
                                   ),
                                   Spacer(),
@@ -69,18 +71,14 @@ class LeaveComment extends GetWidget {
                                     DateFormat(
                                       'dd.MM.yyy',
                                     ).format(DateTime.parse(item.createdAt)),
-                                    style: AppTextStyles.body3.copyWith(
-                                      fontSize: 14,
-                                      color: Colors.grey.shade500,
-                                    ),
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(color: Colors.grey.shade500),
                                   ),
                                 ],
                               ),
                               Text(
                                 item.content,
-                                style: AppTextStyles.body3.copyWith(
-                                  fontSize: 14,
-                                ),
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
                           ),
@@ -149,9 +147,17 @@ class LeaveComment extends GetWidget {
                         height: 60,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          border: Border.all(width: 1, color: Colors.black),
+                          border: Border.all(
+                            width: 1,
+                            color: Color(0xFFD5CBCB),
+                          ),
                         ),
-                        child: Center(child: Text('Post Comment')),
+                        child: Center(
+                          child: Text(
+                            'Post Comment',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
                       ),
                     ),
                   ),

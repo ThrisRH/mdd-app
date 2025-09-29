@@ -1,169 +1,190 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/src/controllers/auth_controller.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
-import 'package:mddblog/src/widgets/main/Button.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/src/widgets/main/button.dart';
+import 'package:mddblog/src/widgets/main/input.dart';
+import 'package:mddblog/theme/element/app_colors.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends GetWidget {
   LoginPage({super.key});
 
   final RxBool showOverlay = false.obs;
+  final storage = const FlutterSecureStorage();
 
   void toggleOverlay() {
     showOverlay.value = !showOverlay.value;
   }
 
-  final AuthController _authController = Get.put(AuthController());
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final RxBool _obscurePassword = true.obs;
+  final AuthController authController = Get.put(AuthController());
+  final InputController inputController = Get.put(InputController());
+
+  // Trạng thái đăng nhập Google
+  final RxString googleToken = "".obs;
+
+  Future<void> checkToken() async {
+    final token = await storage.read(key: "accessToken");
+    if (token != null && token.isNotEmpty) {
+      googleToken.value = token;
+    } else {
+      googleToken.value = "";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Khi vào page thì kiểm tra token
+    checkToken();
+
     return Stack(
       children: [
         Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Header Bar
-                MDDNavbar(onMenuTap: toggleOverlay),
-                SizedBox(height: 32),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              authController.clearInput();
+            },
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                spacing: 32,
+                children: [
+                  MDDNavbar(onMenuTap: toggleOverlay),
 
-                //  Body
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    spacing: 16,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Title
-                      Center(
-                        child: Text(
-                          "Đăng nhập vào Blog",
-                          style: AppTextStyles.h1,
-                        ),
-                      ),
-                      SizedBox(height: 12),
-
-                      // Username Field
-                      SizedBox(
-                        height: 48,
-                        child: TextField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            labelText: "Email",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      spacing: 16,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Text(
+                            "Login to Your Account",
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
-                          onChanged: (value) {
-                            _authController.errorMessage.value = "";
-                          },
                         ),
-                      ),
+                        const SizedBox(height: 12),
 
-                      // Password Field
-                      Obx(
-                        () => SizedBox(
-                          height: 48,
-                          child: TextField(
-                            controller: _passwordController,
-                            obscureText: _obscurePassword.value,
-                            decoration: InputDecoration(
-                              labelText: "Password",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  _obscurePassword.value =
-                                      !_obscurePassword.value;
+                        // Email + Password login ...
+                        MDDTextInputField(
+                          textController: authController.emailController,
+                          label: "Email",
+                          hint: "john.smith@example.com",
+                          onChange:
+                              (value) => {
+                                authController.errorMessage.value = "",
+                              },
+                        ),
+
+                        MDDPasswordInputField(
+                          textController: authController.passwordController,
+                          label: "Password",
+                          hint: "Enter your password",
+                          onChange:
+                              (value) => {
+                                authController.errorMessage.value = "",
+                              },
+                        ),
+
+                        Obx(() {
+                          if (authController.errorMessage.value == "") {
+                            return SizedBox.shrink();
+                          }
+                          return Text(
+                            authController.errorMessage.value,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodySmall?.copyWith(color: Colors.red),
+                          );
+                        }),
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 24,
+                          children: [
+                            Obx(
+                              () => MDDButton(
+                                color: Colors.white,
+                                bgColor:
+                                    authController.isLoading.value
+                                        ? Colors.grey.shade300
+                                        : AppColors.secondary,
+                                label: "Sign In",
+                                fontSize: 16,
+                                isDisabled: authController.isLoading.value,
+                                onTap: () async {
+                                  authController.signIn();
                                 },
                               ),
                             ),
-                            onChanged: (value) {
-                              _authController.errorMessage.value = "";
-                            },
-                          ),
-                        ),
-                      ),
-                      Obx(() {
-                        if (_authController.errorMessage.value != "") {
-                          return Text(
-                            _authController.errorMessage.value,
-                            style: AppTextStyles.body3.copyWith(
-                              fontSize: 12,
-                              color: Colors.red,
+
+                            RichText(
+                              text: TextSpan(
+                                text: "Don't have an account? ",
+                                style: Theme.of(context).textTheme.bodySmall,
+                                children: [
+                                  TextSpan(
+                                    text: "Sign Up!",
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall?.copyWith(
+                                      color: AppColors.secondary,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: AppColors.secondary,
+                                    ),
+                                    recognizer:
+                                        TapGestureRecognizer()
+                                          ..onTap =
+                                              () => authController.toRegister(),
+                                  ),
+                                ],
+                              ),
                             ),
-                          );
-                        }
-                        return SizedBox.shrink();
-                      }),
+                          ],
+                        ),
 
-                      // Sign In Button
-                      MDDButton(
-                        isPrimary: false,
-                        color: Colors.white,
-                        label: "Đăng nhập",
-                        fontSize: 16,
-                        onTap: () async {
-                          _authController.signIn(
-                            _emailController.text.trim(),
-                            _passwordController.text.trim(),
-                          );
-                        },
-                      ),
-                      MDDButton(
-                        isPrimary: true,
-                        label: "Đăng ký",
-                        fontSize: 16,
-                        onTap: () => _authController.toRegister(),
-                      ),
-                      // GoogleButton(
-                      //   onTap: () async {
-                      //     try {
-                      //       final result = await FlutterWebAuth2.authenticate(
-                      //         url:
-                      //             "https://oversilently-calcinable-wilfredo.ngrok-free.dev/auth/mobile",
-                      //         callbackUrlScheme: "myapp",
-                      //       );
+                        // Hiển thị login / logout Google dựa vào token
+                        // GoogleButton(
+                        //   onTap: () async {
+                        //     try {
+                        //       final result = await FlutterWebAuth2.authenticate(
+                        //         url:
+                        //             "https://oversilently-calcinable-wilfredo.ngrok-free.dev",
+                        //         callbackUrlScheme: "myapp",
+                        //       );
 
-                      //       // result = myapp://auth/callback?token=xxx
-                      //       final token =
-                      //           Uri.parse(result).queryParameters['token'];
-
-                      //       if (token != null) {
-                      //         // Lưu token vào secure storage hoặc controller
-                      //         print("Got token: $token");
-                      //       }
-                      //     } catch (e) {
-                      //       print("Login error: $e");
-                      //     }
-                      //   },
-                      //   label: "Đăng nhập với Google",
-                      // ),
-                    ],
+                        //       final token =
+                        //           Uri.parse(result).queryParameters['token'];
+                        //       if (token != null) {
+                        //         await storage.write(
+                        //           key: "accessToken",
+                        //           value: token,
+                        //         );
+                        //         googleToken.value = token;
+                        //         print("Got token: $token");
+                        //       }
+                        //     } catch (e) {
+                        //       print("Login error: $e");
+                        //     }
+                        //   },
+                        //   label: "Đăng nhập với Google",
+                        // ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
 
-        // Show ra Overlay nav điều hướng khi showOverlay === true
         Obx(
           () =>
               showOverlay.value
                   ? OverlayToggle(closeOverlay: toggleOverlay)
-                  : SizedBox.shrink(),
+                  : const SizedBox.shrink(),
         ),
       ],
     );

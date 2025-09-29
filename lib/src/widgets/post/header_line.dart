@@ -17,10 +17,17 @@ class HeaderLine extends StatelessWidget {
             clipBehavior:
                 Clip.none, // Cho phép tràn viền, => SVG right -10 sẽ không bị cắt mất
             children: [
-              Divider(thickness: 2, color: Colors.black),
+              Divider(
+                thickness: 2,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               Positioned(
                 right: -10,
-                child: SvgPicture.asset("assets/svg/VectorArrow.svg"),
+                child: SvgPicture.asset(
+                  "assets/svg/VectorArrow.svg",
+                  // ignore: deprecated_member_use
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -35,12 +42,19 @@ class HeaderLine extends StatelessWidget {
             clipBehavior:
                 Clip.none, // Cho phép tràn viền, => SVG right -10 sẽ không bị cắt mất
             children: [
-              Divider(thickness: 2, color: Colors.black),
+              Divider(
+                thickness: 2,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               Positioned(
                 left: -10,
                 child: RotatedBox(
                   quarterTurns: 2,
-                  child: SvgPicture.asset("assets/svg/VectorArrow.svg"),
+                  child: SvgPicture.asset(
+                    "assets/svg/VectorArrow.svg",
+                    // ignore: deprecated_member_use
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
               ),
             ],

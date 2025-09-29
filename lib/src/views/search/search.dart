@@ -5,11 +5,10 @@ import 'package:mddblog/src/services/blog_service.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
-import 'package:mddblog/src/widgets/main/Error.dart';
-import 'package:mddblog/src/widgets/main/Loading.dart';
-import 'package:mddblog/src/widgets/main/PaginationBar.dart';
-import 'package:mddblog/src/widgets/post/PostCard.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/src/widgets/main/error.dart';
+import 'package:mddblog/src/widgets/main/loading.dart';
+import 'package:mddblog/src/widgets/main/pagination_bar.dart';
+import 'package:mddblog/src/widgets/post/post_card.dart';
 
 class BlogBySearchQueryController extends GetxController {
   final BlogService _blogService = BlogService();
@@ -24,11 +23,11 @@ class BlogBySearchQueryController extends GetxController {
   void onInit() {
     super.onInit();
     query = Get.arguments['query'] as String;
-    fetchBlogByCate(query, currentPage.value);
+    fetchBlogByQuery(query, currentPage.value);
   }
 
-  // Fetch blog theo CateId
-  void fetchBlogByCate(String query, int page) async {
+  // Fetch blog theo Query
+  void fetchBlogByQuery(String query, int page) async {
     try {
       isLoading.value = true;
       currentPage.value = page;
@@ -64,71 +63,83 @@ class BlogBySearchQueryPage extends GetWidget<BlogBySearchQueryController> {
     return Stack(
       children: [
         Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Header Bar
-                MDDNavbar(onMenuTap: toggleOverlay),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              controller.fetchBlogByQuery(
+                controller.query,
+                controller.currentPage.value,
+              );
+            },
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  // Header Bar
+                  MDDNavbar(onMenuTap: toggleOverlay),
 
-                // Body
-                Obx(() {
-                  if (controller.isLoading.value) {
-                    return Center(child: Loading());
-                  }
-                  if (controller.blogs.isEmpty) {
-                    return ErrorNotification();
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 32),
-                        Text(
-                          "Kết quả tìm kiếm cho: ${controller.query}",
-                          style: AppTextStyles.h0,
-                          textAlign: TextAlign.center,
-                        ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: controller.blogs.length,
-                          itemBuilder: (context, index) {
-                            final blog = controller.blogs[index];
-                            return PostCard(
-                              blogData: blog,
-                              onTap:
-                                  () => controller.openBlogsDetail(blog.slug),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-                // Pagination Area
-                Obx(() {
-                  if (controller.blogs.isEmpty) {
-                    return SizedBox.shrink();
-                  }
-                  return PaginationBar(
-                    totalPages: controller.totalPages.value,
-                    onPageSelected:
-                        (page) => {
-                          if (page != controller.currentPage.value)
-                            {
-                              controller.fetchBlogByCate(
-                                controller.query,
-                                page,
-                              ),
+                  // Body
+                  Obx(() {
+                    if (controller.isLoading.value) {
+                      return Center(child: Loading());
+                    }
+                    if (controller.blogs.isEmpty) {
+                      return ErrorNotification();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        right: 16.0,
+                        left: 16.0,
+                        top: 32.0,
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Kết quả tìm kiếm cho: ${controller.query}",
+                            style: Theme.of(context).textTheme.headlineLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: controller.blogs.length,
+                            itemBuilder: (context, index) {
+                              final blog = controller.blogs[index];
+                              return PostCard(
+                                blogData: blog,
+                                onTap:
+                                    () => controller.openBlogsDetail(blog.slug),
+                              );
                             },
-                        },
-                    currentPage: controller.currentPage.value,
-                  );
-                }),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                  // Pagination Area
+                  Obx(() {
+                    if (controller.blogs.isEmpty) {
+                      return SizedBox.shrink();
+                    }
+                    return PaginationBar(
+                      totalPages: controller.totalPages.value,
+                      onPageSelected:
+                          (page) => {
+                            if (page != controller.currentPage.value)
+                              {
+                                controller.fetchBlogByQuery(
+                                  controller.query,
+                                  page,
+                                ),
+                              },
+                          },
+                      currentPage: controller.currentPage.value,
+                    );
+                  }),
 
-                // Footer
-                Footer(),
-              ],
+                  // Footer
+                  Footer(),
+                ],
+              ),
             ),
           ),
         ),

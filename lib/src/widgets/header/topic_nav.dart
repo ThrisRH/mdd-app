@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/src/models/category_model.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
-import 'package:mddblog/theme/app_colors.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/theme/element/app_colors.dart';
 
 class TopicNav extends StatelessWidget {
   final List<CategoryData> cates;
@@ -32,8 +31,12 @@ class TopicNav extends StatelessWidget {
             children: [
               Text(
                 navLabel,
-                style: AppTextStyles.h2.copyWith(
-                  color: isSelected ? AppColors.secondary : Colors.white,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontSize: 22,
+                  color:
+                      isSelected
+                          ? AppColors.secondary
+                          : Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               Spacer(),
@@ -41,7 +44,7 @@ class TopicNav extends StatelessWidget {
                 !isOpenCate
                     ? Icons.keyboard_arrow_down
                     : Icons.keyboard_arrow_up,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ],
           ),
@@ -60,15 +63,20 @@ class TopicNav extends StatelessWidget {
                         },
                         child: Column(
                           children: [
-                            SizedBox(height: 32),
-
-                            Text(
-                              cate.tile,
-                              style: AppTextStyles.body2.copyWith(
-                                color:
-                                    cate.documentId == currentCateId
-                                        ? AppColors.secondary
-                                        : Colors.white,
+                            Container(
+                              margin: EdgeInsets.only(top: 32),
+                              child: Text(
+                                cate.tile,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
+                                  color:
+                                      cate.documentId == currentCateId
+                                          ? AppColors.secondary
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
+                                ),
                               ),
                             ),
                           ],

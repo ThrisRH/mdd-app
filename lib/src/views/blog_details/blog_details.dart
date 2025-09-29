@@ -8,12 +8,12 @@ import 'package:mddblog/src/services/blog_service.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
-import 'package:mddblog/src/widgets/main/Error.dart';
-import 'package:mddblog/src/widgets/main/Loading.dart';
-import 'package:mddblog/src/widgets/post/LeaveComment.dart';
-import 'package:mddblog/src/widgets/post/PostDetails.dart';
-import 'package:mddblog/src/widgets/post/RelativePost.dart';
-import 'package:mddblog/src/widgets/post/ShareWith.dart';
+import 'package:mddblog/src/widgets/main/error.dart';
+import 'package:mddblog/src/widgets/main/loading.dart';
+import 'package:mddblog/src/widgets/post/leave_comment.dart';
+import 'package:mddblog/src/widgets/post/post_detail.dart';
+import 'package:mddblog/src/widgets/post/relative_post.dart';
+import 'package:mddblog/src/widgets/post/share_with.dart';
 
 // Controller
 class BlogDetailsController extends GetxController {
@@ -144,43 +144,53 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
     return Stack(
       children: [
         Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Header Bar
-                MDDNavbar(onMenuTap: toggleOverlay),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              controller.fetchBlogDetails(controller.blogSlug);
+              controller.fetchComment(controller.blogDetail.value!.documentId);
+              controller.fetchRelativeBlogs(
+                controller.blogDetail.value!.categoryData.documentId,
+              );
+            },
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  // Header Bar
+                  MDDNavbar(onMenuTap: toggleOverlay),
 
-                // // Body
-                Obx(() {
-                  final detail = controller.blogDetail.value;
-                  final relativePosts = controller.relativeBlogs;
-                  final comments = controller.comments;
+                  // // Body
+                  Obx(() {
+                    final detail = controller.blogDetail.value;
+                    final relativePosts = controller.relativeBlogs;
+                    final comments = controller.comments;
 
-                  if (controller.isDetailLoading.value) {
-                    return Center(child: Loading());
-                  }
-                  if (detail == null) {
-                    return ErrorNotification();
-                  }
+                    if (controller.isDetailLoading.value) {
+                      return Center(child: Loading());
+                    }
+                    if (detail == null) {
+                      return ErrorNotification();
+                    }
 
-                  return Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    margin: EdgeInsets.only(top: 40),
-                    child: Column(
-                      spacing: 16,
-                      children: [
-                        BlogDetailsContainer(detail: detail),
-                        ShareWith(),
-                        RelativePost(relativePosts),
-                        LeaveComment(comments, blogId: detail.documentId),
-                      ],
-                    ),
-                  );
-                }),
-                // Footer
-                Footer(),
-              ],
+                    return Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      margin: EdgeInsets.only(top: 40),
+                      child: Column(
+                        spacing: 16,
+                        children: [
+                          BlogDetailsContainer(detail: detail),
+                          ShareWith(),
+                          RelativePost(relativePosts),
+                          LeaveComment(comments, blogId: detail.documentId),
+                        ],
+                      ),
+                    );
+                  }),
+                  // Footer
+                  Footer(),
+                ],
+              ),
             ),
           ),
         ),

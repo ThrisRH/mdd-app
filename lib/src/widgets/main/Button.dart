@@ -1,45 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mddblog/theme/app_colors.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
 
 class MDDButton extends StatelessWidget {
-  final bool isPrimary;
   final String label;
   final VoidCallback onTap;
   final double? height;
   final double? fontSize;
   final double? radius;
   final Color? color;
+  final Color? bgColor;
+  final bool isDisabled;
   const MDDButton({
     super.key,
-    required this.isPrimary,
     required this.label,
     required this.onTap,
     this.height,
     this.fontSize,
     this.radius,
     this.color,
+    this.bgColor = Colors.black,
+    this.isDisabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(),
+      onTap: isDisabled ? null : onTap,
 
       child: Container(
         width: double.infinity,
         height: height ?? 44,
         decoration: BoxDecoration(
-          color: isPrimary ? AppColors.primary : AppColors.secondary,
+          color: bgColor,
 
           borderRadius: BorderRadius.circular(radius ?? 8),
         ),
         child: Center(
           child: Text(
             label,
-            style: AppTextStyles.h3.copyWith(
-              color: color ?? Colors.black,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: color ?? Theme.of(context).colorScheme.onSurface,
               fontSize: fontSize ?? 20,
             ),
           ),
@@ -85,14 +85,7 @@ class GoogleButton extends StatelessWidget {
               // ignore: deprecated_member_use
               colorBlendMode: BlendMode.srcIn,
             ),
-            Text(
-              label,
-              style: AppTextStyles.h3.copyWith(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text(label, style: Theme.of(context).textTheme.headlineSmall),
           ],
         ),
       ),
@@ -148,18 +141,23 @@ class RainbowButton extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            style: AppTextStyles.h3.copyWith(
-              color: Colors.black,
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  blurRadius: 4,
-                  color: Colors.black.withValues(alpha: 0.2),
-                  offset: const Offset(1, 1),
+            style: Theme.of(context).textTheme.headlineMedium
+                ?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 16,
+                )
+                .copyWith(
+                  color: Colors.black,
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 4,
+                      color: Colors.black.withValues(alpha: 0.2),
+                      offset: const Offset(1, 1),
+                    ),
+                  ],
                 ),
-              ],
-            ),
           ),
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mddblog/theme/app_colors.dart';
+import 'package:mddblog/theme/element/app_colors.dart';
 
 class Loading extends StatelessWidget {
   const Loading({super.key});

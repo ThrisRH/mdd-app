@@ -4,16 +4,15 @@ import 'package:get/get.dart';
 import 'package:mddblog/src/config/constants.dart';
 import 'package:mddblog/src/models/about_model.dart';
 import 'package:mddblog/src/services/about_service.dart';
-import 'package:mddblog/src/widgets/about/aboutAvatarContainer.dart';
-import 'package:mddblog/src/widgets/about/aboutContactInfoSection.dart';
-import 'package:mddblog/src/widgets/about/aboutContentSection.dart';
+import 'package:mddblog/src/widgets/about/about_avatar_container.dart';
+import 'package:mddblog/src/widgets/about/about_contact_info_section.dart';
+import 'package:mddblog/src/widgets/about/about_content_section.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
-import 'package:mddblog/src/widgets/main/Error.dart';
-import 'package:mddblog/src/widgets/main/Loading.dart';
-import 'package:mddblog/theme/app_colors.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/src/widgets/main/error.dart';
+import 'package:mddblog/src/widgets/main/loading.dart';
+import 'package:mddblog/theme/element/app_colors.dart';
 
 // Controller
 class AboutController extends GetxController {
@@ -58,10 +57,10 @@ class About extends GetWidget<AboutController> {
         Scaffold(
           body: SingleChildScrollView(
             child: Column(
+              spacing: 32,
               children: [
                 // Header Bar
                 MDDNavbar(onMenuTap: toggleOverlay),
-                SizedBox(height: 32),
 
                 //  Body
                 Obx(() {
@@ -119,6 +118,7 @@ class About extends GetWidget<AboutController> {
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
+                                    spacing: 16,
                                     children: [
                                       SvgPicture.asset(
                                         "assets/svg/AboutMDD.svg",
@@ -135,20 +135,21 @@ class About extends GetWidget<AboutController> {
                                       ),
 
                                       // Lời chúc
-                                      SizedBox(height: 32),
-                                      Text(
-                                        'Have a nice day! ',
-                                        style: AppTextStyles.h4.copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
                                       SizedBox(height: 16),
                                       Text(
+                                        'Have a nice day! ',
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.headlineSmall,
+                                      ),
+
+                                      Text(
                                         'my MDD diary',
-                                        style: AppTextStyles.body1.copyWith(
-                                          color: Colors.black,
-                                        ),
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.bodyLarge,
                                       ),
                                     ],
                                   ),

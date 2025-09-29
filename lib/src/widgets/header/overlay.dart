@@ -5,13 +5,13 @@ import 'package:get/get.dart';
 import 'package:mddblog/src/controllers/auth_controller.dart';
 import 'package:mddblog/src/controllers/author_controller.dart';
 import 'package:mddblog/src/controllers/blog_by_cate_controller.dart';
+import 'package:mddblog/src/controllers/theme_controller.dart';
 import 'package:mddblog/src/models/category_model.dart';
 import 'package:mddblog/src/services/category_service.dart';
 import 'package:mddblog/src/widgets/header/topic_nav.dart';
-import 'package:mddblog/src/widgets/header/userInfoCard.dart';
-import 'package:mddblog/src/widgets/main/Button.dart';
-import 'package:mddblog/theme/app_colors.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/src/widgets/header/user_info_card.dart';
+import 'package:mddblog/src/widgets/main/button.dart';
+import 'package:mddblog/theme/element/app_colors.dart';
 
 class CategoryController extends GetxController {
   final CategoryService _categoryService = CategoryService();
@@ -81,100 +81,171 @@ class OverlayToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentRoute = ModalRoute.of(context)?.settings.name ?? "";
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: GestureDetector(
-                onTap: closeOverlay,
-                child: Icon(Icons.close, color: Colors.white),
+    return Obx(() {
+      if (authorController.isLoading.value) {
+        return SizedBox.shrink();
+      }
+      return Scaffold(
+        backgroundColor:
+            Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.white,
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: GestureDetector(
+                  onTap: closeOverlay,
+                  child: Icon(
+                    Icons.close,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
               ),
-            ),
-            Divider(color: Colors.white.withOpacity(0.2), thickness: 1),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 12,
                 children: [
                   // Thông tin của Blogger
-                  SizedBox(height: 32),
-                  Obx(() {
-                    final data = authorController.authorInfo.value;
-                    if (data == null) {
-                      return Text('Author not found');
-                    }
-                    return GestureDetector(
-                      onTap: () => authorController.toAuthorPage(),
-                      child: UserInfoCard(data: data),
-                    );
-                  }),
-                  SizedBox(height: 32),
-                  Divider(color: Colors.white.withOpacity(0.2), thickness: 1),
-                  SizedBox(height: 32),
+                  Divider(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.2),
+                    thickness: 1,
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Obx(() {
+                      final data = authorController.authorInfo.value;
+                      if (data == null) {
+                        return Text('Author not found');
+                      }
+                      return GestureDetector(
+                        onTap: () => authorController.toAuthorPage(),
+                        child: UserInfoCard(data: data),
+                      );
+                    }),
+                  ),
+                  Divider(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.2),
+                    thickness: 1,
+                  ),
 
                   // Thanh điều hướng
-                  ...menuItems.map((item) {
-                    final isActive = item["route"] == currentRoute;
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ...menuItems.map((item) {
+                          final isActive = item["route"] == currentRoute;
 
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: spacing),
-                      child: GestureDetector(
-                        onTap: () {
-                          if (item['route'] != "/topics") {
-                            closeOverlay();
-                            Get.toNamed(item['route']!);
-                          } else {
-                            c.openCate();
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: spacing),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (item['route'] != "/topics") {
+                                  closeOverlay();
+                                  Get.toNamed(item['route']!);
+                                } else {
+                                  c.openCate();
+                                }
+                              },
+                              child:
+                                  item["route"] == "/topics"
+                                      ? Obx(
+                                        () => TopicNav(
+                                          isSelected: isActive,
+                                          isOpenCate: c.isOpenCate.value,
+                                          cates: c.cates,
+                                          navLabel: item["title"]!,
+                                        ),
+                                      )
+                                      : Text(
+                                        item["title"]!,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.headlineMedium?.copyWith(
+                                          fontSize: 20,
+                                          color:
+                                              isActive
+                                                  ? AppColors.secondary
+                                                  : Theme.of(
+                                                    context,
+                                                  ).colorScheme.onSurface,
+                                        ),
+                                      ),
+                            ),
+                          );
+                        }),
+                        Obx(() {
+                          if (authController.isLoggedIn.value) {
+                            return GestureDetector(
+                              child: MDDButton(
+                                bgColor: AppColors.primary,
+                                label: "Đăng xuất",
+                                onTap: () => authController.logout(),
+                              ),
+                            );
                           }
-                        },
-                        child:
-                            item["route"] == "/topics"
-                                ? Obx(
-                                  () => TopicNav(
-                                    isSelected: isActive,
-                                    isOpenCate: c.isOpenCate.value,
-                                    cates: c.cates,
-                                    navLabel: item["title"]!,
+                          return RainbowButton(
+                            label: "Đăng nhập ngay!",
+                            onTap: () => {Get.toNamed("/login")},
+                          );
+                        }),
+
+                        Container(
+                          margin: EdgeInsets.only(top: 12),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Dark mode",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(fontSize: 20),
+                              ),
+                              Spacer(),
+                              Theme.of(context).brightness == Brightness.light
+                                  ? SizedBox(
+                                    child: IconButton(
+                                      style: ButtonStyle(
+                                        iconSize: WidgetStatePropertyAll(32),
+                                      ),
+                                      onPressed: () {
+                                        Get.find<ThemeController>()
+                                            .toggleTheme();
+                                      },
+                                      icon: Icon(Icons.toggle_off),
+                                    ),
+                                  )
+                                  : IconButton(
+                                    style: ButtonStyle(
+                                      iconSize: WidgetStatePropertyAll(32),
+                                    ),
+                                    onPressed: () {
+                                      Get.find<ThemeController>().toggleTheme();
+                                    },
+                                    icon: Icon(Icons.toggle_on),
                                   ),
-                                )
-                                : Text(
-                                  item["title"]!,
-                                  style: AppTextStyles.h3.copyWith(
-                                    color:
-                                        isActive
-                                            ? AppColors.secondary
-                                            : Colors.white,
-                                  ),
-                                ),
-                      ),
-                    );
-                  }),
-                  Obx(() {
-                    if (authController.isLoggedIn.value) {
-                      return GestureDetector(
-                        child: MDDButton(
-                          isPrimary: true,
-                          label: "Đăng xuất",
-                          onTap: () => authController.logout(),
+                            ],
+                          ),
                         ),
-                      );
-                    }
-                    return RainbowButton(
-                      label: "Đăng nhập ngay!",
-                      onTap: () => {Get.toNamed("/login")},
-                    );
-                  }),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mddblog/src/models/about_model.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
 
 class AboutContactInfoSection extends StatelessWidget {
   final List<ContactInfo> contacts;
@@ -9,17 +8,18 @@ class AboutContactInfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      spacing: 16,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 16),
-        Text(
-          'Liên hệ qua: ',
-          style: AppTextStyles.body1.copyWith(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+        Container(
+          margin: EdgeInsets.only(top: 16),
+          child: Text(
+            'Liên hệ qua: ',
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        SizedBox(height: 16),
         ...contacts.map((contact) => Text(contact.content)),
       ],
     );

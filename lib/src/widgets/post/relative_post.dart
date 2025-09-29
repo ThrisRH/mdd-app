@@ -4,8 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:mddblog/src/config/constants.dart';
 import 'package:mddblog/src/controllers/blog_controller.dart';
 import 'package:mddblog/src/models/blog_model.dart';
-import 'package:mddblog/src/widgets/post/SectionWrapper.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/src/widgets/post/section_wrapper.dart';
 
 class RelativePost extends StatelessWidget {
   final List<BlogData> relativeBlogs;
@@ -21,7 +20,10 @@ class RelativePost extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 16,
           children: [
-            Text("BÀI VIẾT LIÊN QUAN", style: AppTextStyles.h4),
+            Text(
+              "BÀI VIẾT LIÊN QUAN",
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
             ...relativeBlogs.map(
               (item) => GestureDetector(
                 onTap: () => c.openBlogsDetail(item.slug),
@@ -42,7 +44,7 @@ class RelativePost extends StatelessWidget {
                       ),
                       Text(
                         item.title,
-                        style: AppTextStyles.h4,
+                        style: Theme.of(context).textTheme.headlineSmall,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -50,7 +52,7 @@ class RelativePost extends StatelessWidget {
                         DateFormat(
                           "dd.MM.yyyy",
                         ).format(DateTime.parse(item.publishedAt)),
-                        style: AppTextStyles.body3,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
                   ),

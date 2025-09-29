@@ -14,7 +14,10 @@ class SectionWrapper extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.3,
-            child: Divider(height: 1, color: Colors.black),
+            child: Divider(
+              height: 1,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
         ),
         child,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mddblog/theme/app_colors.dart';
-import 'package:mddblog/theme/app_text_styles.dart';
+import 'package:mddblog/theme/element/app_colors.dart';
 
 class FAQCard extends StatelessWidget {
   final String question;
@@ -21,19 +20,32 @@ class FAQCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.black)),
+        border: Border(
+          bottom: BorderSide(color: Theme.of(context).colorScheme.onSurface),
+        ),
       ),
       child: Column(
+        spacing: 12,
         children: [
           Row(
+            spacing: 12,
             children: [
               Expanded(
                 child: Text(
                   question, // luôn là vị trí đầu tiên
-                  style: AppTextStyles.h2.copyWith(
-                    color: isSelected ? AppColors.secondary : Colors.black,
-                  ),
+                  style:
+                      isSelected
+                          ? Theme.of(
+                            context,
+                          ).textTheme.headlineMedium?.copyWith(
+                            color: AppColors.secondary,
+                            fontSize: 18,
+                          )
+                          : Theme.of(
+                            context,
+                          ).textTheme.headlineMedium?.copyWith(fontSize: 18),
                   softWrap: true, // named parameter
                 ),
               ),
@@ -43,17 +55,13 @@ class FAQCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16),
+
           if (isSelected)
-            Container(
+            SizedBox(
               width: double.infinity,
-              margin: EdgeInsets.only(bottom: 16),
               child: Text(
                 answer,
-                style: AppTextStyles.body2.copyWith(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                ),
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
         ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/src/views/search/search.dart';
-import 'package:mddblog/src/widgets/main/Button.dart';
-import 'package:mddblog/theme/app_colors.dart';
+import 'package:mddblog/src/widgets/main/button.dart';
+import 'package:mddblog/theme/element/app_colors.dart';
 
 class NavbarController extends GetxController {
   var isSearching = false.obs;
@@ -95,7 +95,7 @@ class MDDNavbar extends GetWidget<NavbarController> {
                                     radius: 18,
                                     height: 48,
                                     fontSize: 12,
-                                    isPrimary: true,
+                                    bgColor: AppColors.primary,
                                     label: "Tìm kiếm",
                                     onTap: () => controller.onSearch(),
                                   ),
@@ -180,6 +180,7 @@ class MDDNavbar extends GetWidget<NavbarController> {
                   ),
                 ),
               ),
+
               Positioned(
                 left: 0,
                 right: 0,
