@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:mddblog/src/controllers/auth_controller.dart';
-import 'package:mddblog/theme/controller/theme_controller.dart';
 import 'package:mddblog/src/controllers/author_controller.dart';
 import 'package:mddblog/src/controllers/blog_by_cate_controller.dart';
 import 'package:mddblog/src/controllers/blog_controller.dart';

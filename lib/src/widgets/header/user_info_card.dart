@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 import 'package:mddblog/src/config/constants.dart';
 import 'package:mddblog/src/controllers/auth_controller.dart';
 import 'package:mddblog/src/models/auth_model.dart';
@@ -80,12 +79,12 @@ class UserInfoCard extends GetWidget {
 class UserInfoCardUnAuth extends GetWidget {
   UserInfoCardUnAuth({super.key});
 
-  final AuthController controller = Get.put(AuthController());
+  final AuthController authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: controller.toSignIn,
+      onTap: authController.toSignIn,
       child: SizedBox(
         width: double.infinity,
         child: Row(
