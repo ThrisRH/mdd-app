@@ -19,4 +19,25 @@ class AuthorService {
       throw Exception("Fail to load Author");
     }
   }
+
+  Future<bool> sendContent(String contactEmail) async {
+    try {
+      final url = Uri.parse("$baseUrl/contacts");
+      final response = await http.post(
+        url,
+        headers: <String, String>{"Content-Type": "application/json"},
+        body: jsonEncode({
+          "data": {"contactEmail": contactEmail},
+        }),
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      throw Exception("Failed to send contact");
+    }
+  }
 }

@@ -49,10 +49,10 @@ class LeaveComment extends GetWidget {
                           width: 48,
                           child: ClipOval(
                             child: Image.network(
-                              item.reader.readerAvatar != null &&
-                                      item.reader.readerAvatar!.url.isNotEmpty
-                                  ? "$baseUrlNoUrl${item.reader.readerAvatar!.url}"
-                                  : item.reader.avatarCloudUrl,
+                              item.reader.avatar != null &&
+                                      item.reader.avatar!.url.isNotEmpty
+                                  ? "$baseUrlNoUrl${item.reader.avatar!.url}"
+                                  : item.reader.avatarUrl,
                               errorBuilder:
                                   (context, error, stackTrace) =>
                                       Icon(Icons.person),
@@ -68,7 +68,7 @@ class LeaveComment extends GetWidget {
                               Row(
                                 children: [
                                   Text(
-                                    item.reader.readerName,
+                                    item.reader.fullname,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodySmall?.copyWith(

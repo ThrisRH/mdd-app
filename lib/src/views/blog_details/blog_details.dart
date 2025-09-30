@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/services/comment_controller.dart';
 import 'package:mddblog/src/models/blog_details_model.dart';
 import 'package:mddblog/src/models/blog_model.dart';
 import 'package:mddblog/src/models/comment_model.dart';
 import 'package:mddblog/src/services/blog_service.dart';
+import 'package:mddblog/src/services/comment_service.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';

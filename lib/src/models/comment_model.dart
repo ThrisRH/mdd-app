@@ -1,4 +1,5 @@
 import 'package:mddblog/src/models/about_model.dart';
+import 'package:mddblog/src/models/auth_model.dart';
 
 class CommentResponse {
   final List<CommentContent> comments;
@@ -18,7 +19,7 @@ class CommentContent {
   final String documentId;
   final String content;
   final String createdAt;
-  final Reader reader;
+  final UserDetailInfo reader;
 
   CommentContent({
     required this.documentId,
@@ -31,28 +32,28 @@ class CommentContent {
     documentId: json['documentId'],
     content: json['content'],
     createdAt: json['createdAt'],
-    reader: Reader.fromJson(json['reader']),
+    reader: UserDetailInfo.fromJson(json['reader']),
   );
 }
 
-class Reader {
-  final String readerName;
-  final String avatarCloudUrl;
-  final String createdAt;
-  final AuthorAvatar? readerAvatar;
+// class Reader {
+//   final String readerName;
+//   final String avatarCloudUrl;
+//   final String createdAt;
+//   final AuthorAvatar? readerAvatar;
 
-  Reader({
-    this.readerAvatar,
-    required this.createdAt,
-    required this.readerName,
-    required this.avatarCloudUrl,
-  });
+//   Reader({
+//     this.readerAvatar,
+//     required this.createdAt,
+//     required this.readerName,
+//     required this.avatarCloudUrl,
+//   });
 
-  factory Reader.fromJson(Map<String, dynamic> json) => Reader(
-    readerAvatar:
-        json['avatar'] != null ? AuthorAvatar.fromJson(json['avatar']) : null,
-    createdAt: json['createdAt'],
-    readerName: json['Fullname'],
-    avatarCloudUrl: json['avatarCloudUrl'],
-  );
-}
+//   factory Reader.fromJson(Map<String, dynamic> json) => Reader(
+//     readerAvatar:
+//         json['avatar'] != null ? AuthorAvatar.fromJson(json['avatar']) : null,
+//     createdAt: json['createdAt'],
+//     readerName: json['Fullname'],
+//     avatarCloudUrl: json['avatarCloudUrl'],
+//   );
+// }
