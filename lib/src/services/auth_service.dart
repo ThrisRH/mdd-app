@@ -1,10 +1,17 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:mddblog/src/models/auth_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+final cloudinary = Cloudinary.full(
+  apiKey: dotenv.env['CLOUDINARY_API_KEY']!,
+  apiSecret: dotenv.env['CLOUDINARY_API_SECRET']!,
+  cloudName: dotenv.env['CLOUDINARY_NAME']!,
+);
 Future<void> saveJwt(String jwt) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('jwtToken', jwt);
@@ -29,6 +36,7 @@ class AuthenticationService {
     return token != null;
   }
 
+  // Đăng nhập
   Future<bool> signIn(String identifier, String password) async {
     final url = Uri.parse("$baseUrl/auth/local");
     final response = await http.post(
@@ -52,24 +60,82 @@ class AuthenticationService {
     }
   }
 
-  Future<bool> signUp(String username, String email, String password) async {
-    final url = Uri.parse("$baseUrl/auth/local/register");
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'username': username,
-        'email': email,
-        'password': password,
-      }),
+  // Đăng ký
+  Future<Map<String, dynamic>> signUp({
+    required String username,
+    required String email,
+    required String password,
+    required String fullname,
+    required String avatarUrl,
+  }) async {
+    try {
+      // B1: Tạo User
+      final registerUrl = Uri.parse("$baseUrl/auth/local/register");
+      final registerResponse = await http.post(
+        registerUrl,
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode({
+          'username': username,
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      final registerData = jsonDecode(registerResponse.body);
+
+      if (registerResponse.statusCode < 200 ||
+          registerResponse.statusCode >= 300) {
+        return {
+          "success": false,
+          "error": registerData["error"]?["message"] ?? "Đăng ký thất bại",
+        };
+      }
+
+      final userId = registerData['user']['id'];
+
+      // B2: Tạo Reader và liên kết với User vừa tạo
+      final readerUrl = Uri.parse("$baseUrl/readers");
+      final readerResponse = await http.post(
+        readerUrl,
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode({
+          "data": {
+            "Fullname": fullname,
+            "avatarCloudUrl": avatarUrl,
+            "users_permissions_user": userId,
+          },
+        }),
+      );
+
+      final readerData = jsonDecode(readerResponse.body);
+
+      if (readerResponse.statusCode >= 200 && readerResponse.statusCode < 300) {
+        return {"success": true, "data": readerData};
+      } else {
+        return {
+          "success": false,
+          "error": readerData["error"]?["message"] ?? "Tạo Reader thất bại",
+        };
+      }
+    } catch (e) {
+      return {"success": false, "error": e.toString()};
+    }
+  }
+
+  Future<String?> uploadToCloudinary(File imageFile) async {
+    final response = await cloudinary.uploadResource(
+      CloudinaryUploadResource(
+        filePath: imageFile.path,
+        fileBytes: await imageFile.readAsBytes(),
+        resourceType: CloudinaryResourceType.image,
+        fileName: 'avatar',
+      ),
     );
 
-    if (response.statusCode == 200) {
-      return true;
+    if (response.isSuccessful) {
+      return response.secureUrl;
     } else {
-      return false;
+      return null;
     }
   }
 

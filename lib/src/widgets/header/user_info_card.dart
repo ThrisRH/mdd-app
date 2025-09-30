@@ -21,7 +21,12 @@ class UserInfoCard extends GetWidget {
             height: 64,
             child: ClipOval(
               child: Image.network(
-                "$baseUrlNoUrl${data.userDetailInfo.avatar.url}",
+                data.userDetailInfo.avatar != null &&
+                        data.userDetailInfo.avatar!.url.isNotEmpty
+                    ? "$baseUrlNoUrl${data.userDetailInfo.avatar!.url}"
+                    : data.userDetailInfo.avatarUrl,
+                errorBuilder:
+                    (context, error, stackTrace) => Icon(Icons.person),
                 fit: BoxFit.cover,
               ),
             ),

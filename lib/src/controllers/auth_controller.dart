@@ -16,7 +16,6 @@ class AuthController extends GetxController {
   // Giá trị ô input
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final usernameController = TextEditingController();
 
   final AuthenticationService _authenticationService = AuthenticationService();
   final storage = const FlutterSecureStorage();
@@ -68,35 +67,7 @@ class AuthController extends GetxController {
     }
   }
 
-  // Hàm đăng ký
-  Future<void> signUp() async {
-    var username = usernameController.text.trim();
-    var email = emailController.text.trim();
-    var password = passwordController.text.trim();
-
-    if (username == "" || email == "" || password == "") {
-      errorMessage.value = "Không được để trống!";
-      return;
-    }
-    final response = await _authenticationService.signUp(
-      username,
-      email,
-      password,
-    );
-    if (!response) {
-      errorMessage.value = "Tên đăng nhập hoặc email không phù hợp";
-      return;
-    }
-    final token = await loadJwt();
-    isLoggedIn.value = token != null;
-    Get.snackbar(
-      "Success",
-      "Đăng ký thành công thành công",
-      backgroundColor: AppColors.primary,
-    );
-    Get.offNamed("/login");
-  }
-
+  // Đăng xuất
   Future<void> logout() async {
     await removeJwt();
     await storage.delete(key: "accessToken");
@@ -106,10 +77,10 @@ class AuthController extends GetxController {
     Get.offNamed("/home");
   }
 
+  // Clear input
   void clearInput() {
     emailController.clear();
     passwordController.clear();
-    usernameController.clear();
     errorMessage.value = "";
   }
 

@@ -22,17 +22,21 @@ class UserInfoResponse {
 class UserDetailInfo {
   final String documentId;
   final String fullname;
-  final AuthorAvatar avatar;
+  final AuthorAvatar? avatar; // avatar từ Strapi
+  final String avatarUrl; // avatar từ Cloudinary
 
   UserDetailInfo({
     required this.documentId,
     required this.fullname,
-    required this.avatar,
+    this.avatar,
+    required this.avatarUrl,
   });
 
   factory UserDetailInfo.fromJson(Map<String, dynamic> json) => UserDetailInfo(
     documentId: json['documentId'],
     fullname: json['Fullname'],
-    avatar: AuthorAvatar.fromJson(json['avatar']),
+    avatarUrl: json['avatarCloudUrl'] ?? "",
+    avatar:
+        json['avatar'] != null ? AuthorAvatar.fromJson(json['avatar']) : null,
   );
 }

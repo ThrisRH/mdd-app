@@ -37,18 +37,22 @@ class CommentContent {
 
 class Reader {
   final String readerName;
+  final String avatarCloudUrl;
   final String createdAt;
-  final AuthorAvatar readerAvatar;
+  final AuthorAvatar? readerAvatar;
 
   Reader({
-    required this.readerAvatar,
+    this.readerAvatar,
     required this.createdAt,
     required this.readerName,
+    required this.avatarCloudUrl,
   });
 
   factory Reader.fromJson(Map<String, dynamic> json) => Reader(
-    readerAvatar: AuthorAvatar.fromJson(json['avatar']),
+    readerAvatar:
+        json['avatar'] != null ? AuthorAvatar.fromJson(json['avatar']) : null,
     createdAt: json['createdAt'],
     readerName: json['Fullname'],
+    avatarCloudUrl: json['avatarCloudUrl'],
   );
 }
