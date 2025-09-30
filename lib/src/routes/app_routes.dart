@@ -1,0 +1,13 @@
+part of 'app_pages.dart';
+
+abstract class Routes {
+  static const home = "/home";
+  static const blogDetails = "/home/:slug";
+  static const blogSearch = "/home/search/:query";
+  static const category = "/topic/:id";
+  static const author = "/author";
+  static const login = "/login";
+  static const register = "/register";
+  static const about = "/about";
+  static const faq = "/faq";
+}

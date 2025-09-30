@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:mddblog/src/models/auth_model.dart';
 import 'package:mddblog/src/services/auth_service.dart';
 import 'package:mddblog/theme/element/app_colors.dart';
 
@@ -8,6 +9,9 @@ class AuthController extends GetxController {
   var isLoggedIn = false.obs;
   var isLoading = false.obs;
   var errorMessage = "".obs;
+
+  // User detail
+  final userDetail = Rxn<UserInfoResponse>();
 
   // Giá trị ô input
   final emailController = TextEditingController();
@@ -25,6 +29,9 @@ class AuthController extends GetxController {
   void _loadToken() async {
     final token = await loadJwt();
     isLoggedIn.value = token != null;
+    if (token != null) {
+      fetchUserDetail();
+    }
   }
 
   // Hàm đăng nhập
@@ -94,6 +101,8 @@ class AuthController extends GetxController {
     await removeJwt();
     await storage.delete(key: "accessToken");
     isLoggedIn.value = false;
+    userDetail.value = null;
+
     Get.offNamed("/home");
   }
 
@@ -102,6 +111,22 @@ class AuthController extends GetxController {
     passwordController.clear();
     usernameController.clear();
     errorMessage.value = "";
+  }
+
+  // Hàm fetch user detail
+  Future<void> fetchUserDetail() async {
+    isLoading.value = true;
+    try {
+      if (isLoggedIn.value) {
+        final jwtToken = await loadJwt();
+        if (jwtToken != null) {
+          final response = await _authenticationService.getMe(jwtToken);
+          userDetail.value = response;
+        }
+      }
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   // Routing

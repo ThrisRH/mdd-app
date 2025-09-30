@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:mddblog/src/models/auth_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> saveJwt(String jwt) async {
@@ -69,6 +70,27 @@ class AuthenticationService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  // Hàm Get Me
+  Future<UserInfoResponse> getMe(String jwtToken) async {
+    final url = Uri.parse(
+      "$baseUrl/users/me?populate[reader][populate]=avatar",
+    );
+    final response = await http.get(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $jwtToken',
+      },
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final Map<String, dynamic> jsonData = json.decode(response.body);
+      return UserInfoResponse.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load User Data');
     }
   }
 }

@@ -5,7 +5,9 @@ import 'package:get/get.dart';
 import 'package:mddblog/src/controllers/auth_controller.dart';
 import 'package:mddblog/src/controllers/author_controller.dart';
 import 'package:mddblog/src/controllers/blog_by_cate_controller.dart';
-import 'package:mddblog/src/controllers/theme_controller.dart';
+import 'package:mddblog/src/widgets/decoration/dot.dart';
+import 'package:mddblog/src/widgets/post/header_line.dart';
+import 'package:mddblog/theme/controller/theme_controller.dart';
 import 'package:mddblog/src/models/category_model.dart';
 import 'package:mddblog/src/services/category_service.dart';
 import 'package:mddblog/src/widgets/header/topic_nav.dart';
@@ -82,7 +84,7 @@ class OverlayToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentRoute = ModalRoute.of(context)?.settings.name ?? "";
     return Obx(() {
-      if (authorController.isLoading.value) {
+      if (authController.isLoading.value) {
         return SizedBox.shrink();
       }
       return Scaffold(
@@ -120,9 +122,9 @@ class OverlayToggle extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: Obx(() {
-                      final data = authorController.authorInfo.value;
+                      final data = authController.userDetail.value;
                       if (data == null) {
-                        return Text('Author not found');
+                        return UserInfoCardUnAuth();
                       }
                       return GestureDetector(
                         onTap: () => authorController.toAuthorPage(),
@@ -194,9 +196,18 @@ class OverlayToggle extends StatelessWidget {
                               ),
                             );
                           }
-                          return RainbowButton(
-                            label: "Đăng nhập ngay!",
-                            onTap: () => {Get.toNamed("/login")},
+                          return HeaderLine(
+                            child: Row(
+                              spacing: 6,
+                              children: [
+                                Dot(),
+                                Text(
+                                  'Settings',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                Dot(),
+                              ],
+                            ),
                           );
                         }),
 

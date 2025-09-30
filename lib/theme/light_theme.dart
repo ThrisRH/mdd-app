@@ -8,12 +8,7 @@ ThemeData LightThemeData() {
     scaffoldBackgroundColor: Colors.white,
     textTheme: CustomTextTheme.textThemeLight,
 
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      centerTitle: true,
-    ),
-
+    useMaterial3: false,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all<Color>(Colors.black),

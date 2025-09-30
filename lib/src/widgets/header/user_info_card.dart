@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/state_manager.dart';
 import 'package:mddblog/src/config/constants.dart';
-import 'package:mddblog/src/models/author_model.dart';
+import 'package:mddblog/src/controllers/auth_controller.dart';
+import 'package:mddblog/src/models/auth_model.dart';
+import 'package:mddblog/src/widgets/decoration/dot.dart';
 
-class UserInfoCard extends StatelessWidget {
-  final AuthorInfo data;
+class UserInfoCard extends GetWidget {
+  final UserInfoResponse data;
   const UserInfoCard({super.key, required this.data});
 
   @override
@@ -14,11 +18,11 @@ class UserInfoCard extends StatelessWidget {
         spacing: 16,
         children: [
           SizedBox(
-            width: 80,
-            height: 80,
+            width: 64,
+            height: 64,
             child: ClipOval(
               child: Image.network(
-                "$baseUrlNoUrl${data.authorAvatar.url}",
+                "$baseUrlNoUrl${data.userDetailInfo.avatar.url}",
                 fit: BoxFit.cover,
               ),
             ),
@@ -30,18 +34,37 @@ class UserInfoCard extends StatelessWidget {
               spacing: 4,
               children: [
                 Text(
-                  "my ${data.fullname} diary",
+                  data.userDetailInfo.fullname,
                   style: Theme.of(
                     context,
-                  ).textTheme.headlineMedium?.copyWith(fontSize: 22),
+                  ).textTheme.headlineMedium?.copyWith(fontSize: 20),
                 ),
+
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 6,
                   children: [
                     Text(
-                      data.authorHobbies
-                          .map((item) => item.interest)
-                          .join(", "),
-                      style: Theme.of(context).textTheme.bodySmall,
+                      '@${data.username}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 12,
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.grey.shade500
+                                : Colors.grey.shade600,
+                      ),
+                    ),
+                    Dot(),
+                    Text(
+                      data.email,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 12,
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.grey.shade500
+                                : Colors.grey.shade600,
+                      ),
                     ),
                   ],
                 ),
@@ -49,6 +72,70 @@ class UserInfoCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class UserInfoCardUnAuth extends GetWidget {
+  UserInfoCardUnAuth({super.key});
+
+  final AuthController controller = Get.put(AuthController());
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: controller.toSignIn,
+      child: SizedBox(
+        width: double.infinity,
+        child: Row(
+          spacing: 16,
+          children: [
+            SizedBox(
+              width: 64,
+              height: 64,
+              child: ClipOval(
+                child: Image.asset(
+                  "assets/icons/unauth.png",
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 4,
+                children: [
+                  Text(
+                    'Join with us!',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.headlineMedium?.copyWith(fontSize: 20),
+                  ),
+
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    spacing: 6,
+                    children: [
+                      Text(
+                        'Đăng nhập vào MDD Blog',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 12,
+                          color:
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.grey.shade500
+                                  : Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
