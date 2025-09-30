@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mddblog/src/config/constants.dart';
+import 'package:mddblog/src/controllers/auth_controller.dart';
 import 'package:mddblog/src/models/comment_model.dart';
 import 'package:mddblog/src/views/blog_details/blog_details.dart';
 import 'package:mddblog/src/widgets/post/section_wrapper.dart';
@@ -12,7 +13,10 @@ class LeaveComment extends GetWidget {
   final String blogId;
   LeaveComment(this.comments, {super.key, required this.blogId});
 
-  final BlogDetailsController c = Get.put(BlogDetailsController());
+  final BlogDetailsController blogDetailsController = Get.put(
+    BlogDetailsController(),
+  );
+  final AuthController authController = Get.put(AuthController());
   final TextEditingController _commentInputController = TextEditingController();
 
   @override
@@ -131,13 +135,19 @@ class LeaveComment extends GetWidget {
                   ),
                   child: GestureDetector(
                     onTap: () async {
-                      final response = await c.sendComment(
+                      final response = await blogDetailsController.sendComment(
                         blogId,
-                        "rlz4v0au4gae47o4uocybx0s",
+                        authController
+                            .userDetail
+                            .value!
+                            .userDetailInfo
+                            .documentId,
                         _commentInputController.text,
                       );
                       if (response) {
-                        await c.fetchComment(blogId); // fetch lại danh sách
+                        await blogDetailsController.fetchComment(
+                          blogId,
+                        ); // fetch lại danh sách
                         _commentInputController.clear();
                       }
                     },

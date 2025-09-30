@@ -20,12 +20,18 @@ class UserInfoResponse {
 }
 
 class UserDetailInfo {
+  final String documentId;
   final String fullname;
   final AuthorAvatar avatar;
 
-  UserDetailInfo({required this.fullname, required this.avatar});
+  UserDetailInfo({
+    required this.documentId,
+    required this.fullname,
+    required this.avatar,
+  });
 
   factory UserDetailInfo.fromJson(Map<String, dynamic> json) => UserDetailInfo(
+    documentId: json['documentId'],
     fullname: json['Fullname'],
     avatar: AuthorAvatar.fromJson(json['avatar']),
   );
