@@ -7,6 +7,7 @@ abstract class Routes {
   static const category = "/topic/:id";
   static const author = "/author";
   static const login = "/login";
+  static const oauthGoogle = "/oauthGoogle";
   static const register = "/register";
   static const about = "/about";
   static const faq = "/faq";

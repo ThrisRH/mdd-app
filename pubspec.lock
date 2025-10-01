@@ -122,7 +122,7 @@ packages:
     source: hosted
     version: "0.3.4+2"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
@@ -222,6 +222,46 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_custom_tabs:
+    dependency: "direct main"
+    description:
+      name: flutter_custom_tabs
+      sha256: ac3543d7b4e0ac6ecdf3744360039ebb573656c0ce759149d228e1934d4f7535
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
+  flutter_custom_tabs_android:
+    dependency: transitive
+    description:
+      name: flutter_custom_tabs_android
+      sha256: "925fc5e7d27372ee523962dcfcd4b77c0443549482c284dd7897b77815547621"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.1"
+  flutter_custom_tabs_ios:
+    dependency: transitive
+    description:
+      name: flutter_custom_tabs_ios
+      sha256: c61a58d30b29ccb09ea4da0daa335bbf8714bcf8798d0d9f4f58a0b83c6c421b
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
+  flutter_custom_tabs_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_custom_tabs_platform_interface
+      sha256: "54a6ff5cc7571cb266a47ade9f6f89d1980b9ed2dba18162a6d5300afc408449"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  flutter_custom_tabs_web:
+    dependency: transitive
+    description:
+      name: flutter_custom_tabs_web
+      sha256: "236e035c73b6d3ef0a2f85cd8b6b815954e7559c9f9d50a15ed2e53a297b58b0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   flutter_dotenv:
     dependency: "direct main"
     description:
@@ -1021,6 +1061,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  webview_flutter:
+    dependency: "direct main"
+    description:
+      name: webview_flutter
+      sha256: c3e4fe614b1c814950ad07186007eff2f2e5dd2935eba7b9a9a1af8e5885f1ba
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.13.0"
+  webview_flutter_android:
+    dependency: transitive
+    description:
+      name: webview_flutter_android
+      sha256: "9a25f6b4313978ba1c2cda03a242eea17848174912cfb4d2d8ee84a556f248e3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.10.1"
+  webview_flutter_platform_interface:
+    dependency: transitive
+    description:
+      name: webview_flutter_platform_interface
+      sha256: "63d26ee3aca7256a83ccb576a50272edd7cfc80573a4305caa98985feb493ee0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.14.0"
+  webview_flutter_wkwebview:
+    dependency: transitive
+    description:
+      name: webview_flutter_wkwebview
+      sha256: fb46db8216131a3e55bcf44040ca808423539bc6732e7ed34fb6d8044e3d512f
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.23.0"
   win32:
     dependency: transitive
     description:

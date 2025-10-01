@@ -5,34 +5,35 @@ import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:mddblog/src/models/auth_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mddblog/src/services/secure_storage.dart';
 
 final cloudinary = Cloudinary.full(
   apiKey: dotenv.env['CLOUDINARY_API_KEY']!,
   apiSecret: dotenv.env['CLOUDINARY_API_SECRET']!,
   cloudName: dotenv.env['CLOUDINARY_NAME']!,
 );
-Future<void> saveJwt(String jwt) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('jwtToken', jwt);
-}
+// Future<void> saveJwt(String jwt) async {
+//   final prefs = await SharedPreferences.getInstance();
+//   await prefs.setString('jwtToken', jwt);
+// }
 
-Future<String?> loadJwt() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('jwtToken');
-}
+// Future<String?> loadJwt() async {
+//   final prefs = await SharedPreferences.getInstance();
+//   return prefs.getString('jwtToken');
+// }
 
-Future<void> removeJwt() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.remove('jwtToken');
-}
+// Future<void> removeJwt() async {
+//   final prefs = await SharedPreferences.getInstance();
+//   await prefs.remove('jwtToken');
+// }
 
 class AuthenticationService {
   final String baseUrl = dotenv.env['BASE_URL'] ?? "";
 
   static Future<bool> isLoggedIn() async {
     // Lấy token từ SharedPreferences
-    final token = await loadJwt();
+    final token = await SecureStorage.getTokens();
+    // ignore: unnecessary_null_comparison
     return token != null;
   }
 
@@ -53,7 +54,7 @@ class AuthenticationService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final jwt = data['jwt'];
-      await saveJwt(jwt);
+      await SecureStorage.saveStrapiToken(jwt);
       return true;
     } else {
       return false;

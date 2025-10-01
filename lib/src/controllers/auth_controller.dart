@@ -1,8 +1,11 @@
+// ignore_for_file: unnecessary_null_comparison, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/src/models/auth_model.dart';
 import 'package:mddblog/src/services/auth_service.dart';
+import 'package:mddblog/src/services/secure_storage.dart';
 import 'package:mddblog/theme/element/app_colors.dart';
 
 class AuthController extends GetxController {
@@ -26,10 +29,18 @@ class AuthController extends GetxController {
   }
 
   void _loadToken() async {
-    final token = await loadJwt();
-    isLoggedIn.value = token != null;
-    if (token != null) {
-      fetchUserDetail();
+    if (await SecureStorage.hasToken()) {
+      isLoggedIn.value = true;
+      print("SignedIn oAuth");
+      final jwtToken = await SecureStorage.getTokens();
+      final accessToken = jwtToken['access_token'];
+
+      isLoggedIn.value = accessToken != null;
+      if (accessToken != null) {
+        fetchUserDetail();
+      }
+    } else {
+      print("UnSignedIn");
     }
   }
 
@@ -52,7 +63,7 @@ class AuthController extends GetxController {
         errorMessage.value = "Tên đăng nhập hoặc mật khẩu không đúng!";
         return;
       }
-      final token = await loadJwt();
+      final token = await SecureStorage.getTokens();
       isLoggedIn.value = token != null;
 
       Get.snackbar(
@@ -69,8 +80,7 @@ class AuthController extends GetxController {
 
   // Đăng xuất
   Future<void> logout() async {
-    await removeJwt();
-    await storage.delete(key: "accessToken");
+    await SecureStorage.clearTokens();
     isLoggedIn.value = false;
     userDetail.value = null;
 
@@ -89,10 +99,34 @@ class AuthController extends GetxController {
     isLoading.value = true;
     try {
       if (isLoggedIn.value) {
-        final jwtToken = await loadJwt();
-        if (jwtToken != null) {
-          final response = await _authenticationService.getMe(jwtToken);
-          userDetail.value = response;
+        final jwtToken = await SecureStorage.getTokens();
+        final accessToken = jwtToken['access_token'];
+        final accountType = jwtToken['account_type'];
+        print("accessToken: $accessToken");
+
+        if (accessToken != null && accessToken.isNotEmpty) {
+          if (accountType == "Strapi") {
+            final response = await _authenticationService.getMe(accessToken);
+            userDetail.value = response;
+            print(userDetail.value);
+          } else {
+            final name = jwtToken['user_name'];
+            final email = jwtToken['user_email'];
+            final imageUrl = jwtToken['image_url'];
+
+            userDetail.value ??= UserInfoResponse(
+              username: '',
+              email: email.toString(),
+              userDetailInfo: UserDetailInfo(
+                documentId: "",
+                fullname: name.toString(),
+                avatarUrl: imageUrl.toString(),
+              ),
+            );
+          }
+        } else {
+          userDetail.value = null; // chưa login
+          print(userDetail.value);
         }
       }
     } finally {

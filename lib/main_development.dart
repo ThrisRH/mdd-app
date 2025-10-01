@@ -9,6 +9,7 @@ import 'package:mddblog/src/widgets/header/navbar.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
+
   Get.put(NavbarController());
   Get.put(AuthController());
   Get.put(ThemeController());

@@ -33,12 +33,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <!-- Scheme cho deep link custom -->
-                <data android:scheme="myapp" android:host="auth" />
-
-                <!-- Nếu muốn hỗ trợ universal link (http/https) -->
-                <!-- <data android:scheme="https" android:host="yourdomain.com" android:pathPrefix="/auth" /> -->
+                <data android:scheme="myapp" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

@@ -146,31 +146,10 @@ class LoginPage extends GetWidget {
                         ),
 
                         // Hiển thị login / logout Google dựa vào token
-                        // GoogleButton(
-                        //   onTap: () async {
-                        //     try {
-                        //       final result = await FlutterWebAuth2.authenticate(
-                        //         url:
-                        //             "https://oversilently-calcinable-wilfredo.ngrok-free.dev",
-                        //         callbackUrlScheme: "myapp",
-                        //       );
-
-                        //       final token =
-                        //           Uri.parse(result).queryParameters['token'];
-                        //       if (token != null) {
-                        //         await storage.write(
-                        //           key: "accessToken",
-                        //           value: token,
-                        //         );
-                        //         googleToken.value = token;
-                        //         print("Got token: $token");
-                        //       }
-                        //     } catch (e) {
-                        //       print("Login error: $e");
-                        //     }
-                        //   },
-                        //   label: "Đăng nhập với Google",
-                        // ),
+                        GoogleButton(
+                          label: 'Login với Google',
+                          onTap: () => {Get.toNamed("/oauthGoogle")},
+                        ),
                       ],
                     ),
                   ),

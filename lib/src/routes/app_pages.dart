@@ -5,9 +5,10 @@ import 'package:mddblog/src/controllers/blog_by_cate_controller.dart';
 import 'package:mddblog/src/controllers/blog_controller.dart';
 import 'package:mddblog/src/middleware/auth_middleware.dart';
 import 'package:mddblog/src/views/about/about.dart';
+import 'package:mddblog/src/views/auth/google_oauth_view.dart';
+import 'package:mddblog/src/views/auth/sign_in_view.dart';
 import 'package:mddblog/src/views/author_info/author_info.dart';
 import 'package:mddblog/src/views/auth/register_view.dart';
-import 'package:mddblog/src/views/auth/sign_in_view.dart';
 import 'package:mddblog/src/views/blog_details/blog_details.dart';
 import 'package:mddblog/src/views/category/category.dart';
 import 'package:mddblog/src/views/faq/faq.dart';
@@ -87,6 +88,9 @@ class AppPages {
 
     // Login
     GetPage(name: Routes.login, page: () => LoginPage()),
+
+    // Login with google
+    GetPage(name: Routes.oauthGoogle, page: () => GoogleOauthView()),
 
     // Registers
     GetPage(name: Routes.register, page: () => RegisterPage()),
