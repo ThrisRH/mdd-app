@@ -30,6 +30,7 @@ class BlogByCateController extends GetxController {
         cateId,
         page: currentPage.value,
       );
+
       totalPages.value = response.meta.pagination.pageCount;
       blogs.assignAll(response.data);
     } catch (error) {
