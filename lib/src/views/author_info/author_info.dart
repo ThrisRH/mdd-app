@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/controllers/author_controller.dart';
+import 'package:mddblog/controllers/author_controller.dart';
 import 'package:mddblog/src/widgets/author_info/favorite_content.dart';
 import 'package:mddblog/src/widgets/author_info/info_card.dart';
 import 'package:mddblog/src/widgets/author_info/more_topic_section.dart';
@@ -43,7 +43,9 @@ class AuthorInfoPage extends GetWidget<AuthorController> {
                       return Center(child: Loading());
                     }
                     if (data == null) {
-                      return ErrorNotification();
+                      return ErrorNotificationWithMessage(
+                        errorMessage: controller.errorMessage.value,
+                      );
                     }
 
                     return Padding(

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mddblog/src/config/constants.dart';
-import 'package:mddblog/src/models/blog_model.dart';
+import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/models/blog_model.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
 import 'package:mddblog/src/widgets/post/header_line.dart';
 import 'package:intl/intl.dart';
 import 'package:mddblog/theme/element/app_colors.dart';
+import 'package:mddblog/utils/env.dart';
 
 class PostCard extends StatelessWidget {
   final BlogData blogData;
@@ -60,7 +61,9 @@ class PostCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  '$baseUrlNoUrl${blogData.cover.url}',
+                  Env.isDev
+                      ? '$baseUrlNoUrl${blogData.cover.url}'
+                      : blogData.cover.url,
                   height: 180,
                   width: double.infinity,
                   fit: BoxFit.cover,

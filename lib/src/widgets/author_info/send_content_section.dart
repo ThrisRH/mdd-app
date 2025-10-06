@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/services/author_service.dart';
+import 'package:mddblog/services/author_service.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
 import 'package:mddblog/theme/element/app_colors.dart';
 

@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:mddblog/src/controllers/auth_controller.dart';
-import 'package:mddblog/src/controllers/author_controller.dart';
-import 'package:mddblog/src/controllers/blog_by_cate_controller.dart';
-import 'package:mddblog/src/controllers/blog_controller.dart';
-import 'package:mddblog/src/middleware/auth_middleware.dart';
+import 'package:mddblog/controllers/auth_controller.dart';
+import 'package:mddblog/controllers/author_controller.dart';
+import 'package:mddblog/controllers/blog_by_cate_controller.dart';
+import 'package:mddblog/controllers/blog_controller.dart';
+import 'package:mddblog/middleware/auth_middleware.dart';
 import 'package:mddblog/src/views/about/about.dart';
 import 'package:mddblog/src/views/auth/google_oauth_view.dart';
 import 'package:mddblog/src/views/auth/sign_in_view.dart';

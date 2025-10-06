@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:mddblog/src/models/author_model.dart';
+import 'package:mddblog/models/author_model.dart';
 
 class AuthorService {
   final String baseUrl = dotenv.env['BASE_URL'] ?? "";

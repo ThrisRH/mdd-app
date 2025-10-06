@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mddblog/src/config/constants.dart';
-import 'package:mddblog/src/models/author_model.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/models/author_model.dart';
+import 'package:mddblog/utils/env.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InfoCard extends StatelessWidget {
@@ -95,7 +96,9 @@ class InfoCard extends StatelessWidget {
             height: 220,
             child: ClipOval(
               child: Image.network(
-                "$baseUrlNoUrl${data.authorAvatar.url}",
+                Env.isDev
+                    ? "$baseUrlNoUrl${data.authorAvatar.url}"
+                    : data.authorAvatar.url,
                 fit: BoxFit.cover,
               ),
             ),

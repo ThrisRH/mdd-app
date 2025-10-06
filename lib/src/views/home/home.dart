@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/controllers/blog_controller.dart';
+import 'package:mddblog/controllers/blog_controller.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
@@ -42,7 +42,9 @@ class Home extends GetWidget<BlogController> {
                       return Center(child: Loading());
                     }
                     if (controller.blogs.isEmpty) {
-                      return ErrorNotification();
+                      return ErrorNotificationWithMessage(
+                        errorMessage: controller.errorMessage.value,
+                      );
                     }
                     return Column(
                       children: [

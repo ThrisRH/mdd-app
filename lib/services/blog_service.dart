@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:mddblog/src/models/blog_details_model.dart';
-import 'package:mddblog/src/models/blog_model.dart';
+import 'package:mddblog/models/blog_details_model.dart';
+import 'package:mddblog/models/blog_model.dart';
 
 class BlogService {
   final String baseUrl = dotenv.env['BASE_URL'] ?? "";
@@ -16,10 +16,9 @@ class BlogService {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body);
-
       return BlogResponse.fromJson(jsonData);
     } else {
-      throw Exception("Failed to load About");
+      throw Exception("Failed to load blogs");
     }
   }
 

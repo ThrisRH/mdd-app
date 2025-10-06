@@ -58,7 +58,8 @@ flutter:
     - assets/banner/
     - assets/icons/
     - assets/svg/
-    - .env
+    - .env.development
+    - .env.production
     
 
 flutter_icons:

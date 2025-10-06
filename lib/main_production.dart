@@ -8,7 +8,7 @@ import 'package:mddblog/services/deep_link_service.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 
 Future<void> main() async {
-  const env = String.fromEnvironment('FLAVOR', defaultValue: 'development');
+  const env = String.fromEnvironment('FLAVOR', defaultValue: 'production');
 
   await dotenv.load(fileName: ".env.$env");
 

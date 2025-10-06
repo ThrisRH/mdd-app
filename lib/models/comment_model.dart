@@ -1,4 +1,4 @@
-import 'package:mddblog/src/models/auth_model.dart';
+import 'package:mddblog/models/auth_model.dart';
 
 class CommentResponse {
   final List<CommentContent> comments;

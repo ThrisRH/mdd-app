@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/controllers/blog_controller.dart';
+import 'package:mddblog/controllers/blog_controller.dart';
 
 class FavoriteContent extends GetWidget<BlogController> {
   const FavoriteContent({super.key});

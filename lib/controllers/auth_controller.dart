@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/models/auth_model.dart';
-import 'package:mddblog/src/services/auth_service.dart';
-import 'package:mddblog/src/services/secure_storage.dart';
+import 'package:mddblog/models/auth_model.dart';
+import 'package:mddblog/services/auth_service.dart';
+import 'package:mddblog/services/secure_storage.dart';
 import 'package:mddblog/theme/element/app_colors.dart';
 
 class AuthController extends GetxController {

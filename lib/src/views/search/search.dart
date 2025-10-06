@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/models/blog_model.dart';
-import 'package:mddblog/src/services/blog_service.dart';
+import 'package:mddblog/models/blog_model.dart';
+import 'package:mddblog/services/blog_service.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';

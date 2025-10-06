@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:mddblog/src/models/blog_model.dart';
-import 'package:mddblog/src/services/blog_service.dart';
+import 'package:mddblog/models/blog_model.dart';
+import 'package:mddblog/services/blog_service.dart';
 
 class BlogByCateController extends GetxController {
   final BlogService _blogService = BlogService();
@@ -9,6 +9,7 @@ class BlogByCateController extends GetxController {
   var isLoading = true.obs;
   var currentPage = RxInt(1);
   var totalPages = 1.obs;
+  var errorMessage = "".obs;
   late String cateId, cateName;
 
   @override
@@ -34,7 +35,8 @@ class BlogByCateController extends GetxController {
       totalPages.value = response.meta.pagination.pageCount;
       blogs.assignAll(response.data);
     } catch (error) {
-      Get.snackbar("Error", error.toString());
+      errorMessage.value = "Lỗi kết nối, vui lòng kiểm tra lại đường truyền!";
+      throw Exception(error.toString());
     } finally {
       isLoading.value = false;
     }

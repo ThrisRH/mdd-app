@@ -1,5 +1,5 @@
-import 'package:mddblog/src/models/blog_model.dart';
-import 'package:mddblog/src/models/category_model.dart';
+import 'package:mddblog/models/blog_model.dart';
+import 'package:mddblog/models/category_model.dart';
 
 class BlogDetailsResponse {
   final BlogDetails data;

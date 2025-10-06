@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mddblog/src/services/auth_service.dart';
+import 'package:mddblog/services/auth_service.dart';
 import 'package:mddblog/theme/element/app_colors.dart';
 
 class RegisterController extends GetxController {

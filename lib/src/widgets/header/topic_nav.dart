@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/models/category_model.dart';
+import 'package:mddblog/models/category_model.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/theme/element/app_colors.dart';
 

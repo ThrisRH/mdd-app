@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:mddblog/src/config/constants.dart';
-import 'package:mddblog/src/controllers/blog_controller.dart';
-import 'package:mddblog/src/models/blog_model.dart';
+import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/controllers/blog_controller.dart';
+import 'package:mddblog/models/blog_model.dart';
 import 'package:mddblog/src/widgets/post/section_wrapper.dart';
+import 'package:mddblog/utils/env.dart';
 
 class RelativePost extends StatelessWidget {
   final List<BlogData> relativeBlogs;
@@ -38,7 +39,9 @@ class RelativePost extends StatelessWidget {
                         width: double.infinity,
                         height: 200,
                         child: Image.network(
-                          "$baseUrlNoUrl${item.cover.url}",
+                          Env.isDev
+                              ? '$baseUrlNoUrl${item.cover.url}'
+                              : item.cover.url,
                           fit: BoxFit.cover,
                         ),
                       ),

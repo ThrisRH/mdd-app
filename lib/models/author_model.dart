@@ -1,4 +1,4 @@
-import 'package:mddblog/src/models/about_model.dart';
+import 'package:mddblog/models/about_model.dart';
 
 class AuthorResponse {
   final List<AuthorInfo> data;

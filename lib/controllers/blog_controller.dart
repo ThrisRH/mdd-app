@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:mddblog/src/models/blog_model.dart';
-import 'package:mddblog/src/services/blog_service.dart';
+import 'package:mddblog/models/blog_model.dart';
+import 'package:mddblog/services/blog_service.dart';
 import 'package:mddblog/src/views/blog_details/blog_details.dart';
 
 class BlogController extends GetxController {
@@ -8,6 +8,7 @@ class BlogController extends GetxController {
 
   var blogs = <BlogData>[].obs;
   var favoriteBlogs = <BlogData>[].obs; // Cho bảng favorite trong trang cá nhân
+  var errorMessage = "".obs;
 
   var isLoading = true.obs;
   var currentPage = RxInt(1);
@@ -30,10 +31,12 @@ class BlogController extends GetxController {
       currentPage.value = page;
 
       final response = await _blogService.getBlogs(page: currentPage.value);
+
       totalPages.value = response.meta.pagination.pageCount;
       blogs.assignAll(response.data);
+      errorMessage.value = "";
     } catch (error) {
-      Get.snackbar("Error", error.toString());
+      errorMessage.value = "Lỗi kết nối, vui lòng kiểm tra lại đường truyền!";
     } finally {
       isLoading.value = false;
     }

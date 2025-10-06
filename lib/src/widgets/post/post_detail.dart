@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
-import 'package:mddblog/src/config/constants.dart';
-import 'package:mddblog/src/models/blog_details_model.dart';
+import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/models/blog_details_model.dart';
 import 'package:mddblog/src/widgets/post/header_line.dart';
+import 'package:mddblog/utils/env.dart';
 
 class BlogDetailsContainer extends StatelessWidget {
   final BlogDetails detail;
@@ -55,7 +56,7 @@ class BlogDetailsContainer extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Image.network(
-            '$baseUrlNoUrl${detail.cover.url}',
+            Env.isDev ? '$baseUrlNoUrl${detail.cover.url}' : detail.cover.url,
             height: 180,
             width: double.infinity,
             fit: BoxFit.cover,
@@ -69,7 +70,9 @@ class BlogDetailsContainer extends StatelessWidget {
               (image) => ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  '$baseUrlNoUrl${detail.cover.url}',
+                  Env.isDev
+                      ? '$baseUrlNoUrl${detail.cover.url}'
+                      : detail.cover.url,
                   height: 180,
                   width: double.infinity,
                   fit: BoxFit.cover,

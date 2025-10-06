@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/models/category_model.dart';
+import 'package:mddblog/models/category_model.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
 
 class MoreTopicSection extends GetWidget<CategoryController> {

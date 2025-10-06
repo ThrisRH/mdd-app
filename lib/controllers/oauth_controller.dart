@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'package:get/get.dart';
-import 'package:mddblog/src/controllers/auth_controller.dart';
-import 'package:mddblog/src/services/secure_storage.dart';
+import 'package:mddblog/controllers/auth_controller.dart';
+import 'package:mddblog/services/secure_storage.dart';
 
 class OauthController extends GetxController {
   var isLoading = false.obs;
@@ -21,8 +21,8 @@ class OauthController extends GetxController {
 
       signInUrl.value =
           "https://oversilently-calcinable-wilfredo.ngrok-free.dev";
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to start auth: $e');
+    } catch (error) {
+      throw Exception(error.toString());
     } finally {
       isLoading(false);
     }
@@ -58,11 +58,11 @@ class OauthController extends GetxController {
           Get.delete<OauthController>();
           Get.delete<AuthController>();
           Get.offNamed('/home');
-        } catch (e) {
-          Get.snackbar('Error', 'Failed to save token: $e');
+        } catch (error) {
+          throw Exception('Failed to save token: $error');
         }
       } else {
-        Get.snackbar('Error', 'Missing token in callback');
+        throw Exception('Missing token in callback');
       }
     }
   }

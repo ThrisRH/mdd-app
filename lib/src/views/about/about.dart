@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/config/constants.dart';
-import 'package:mddblog/src/models/about_model.dart';
-import 'package:mddblog/src/services/about_service.dart';
+import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/models/about_model.dart';
+import 'package:mddblog/services/about_service.dart';
 import 'package:mddblog/src/widgets/about/about_avatar_container.dart';
 import 'package:mddblog/src/widgets/about/about_contact_info_section.dart';
 import 'package:mddblog/src/widgets/about/about_content_section.dart';

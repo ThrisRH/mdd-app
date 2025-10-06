@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:mddblog/src/config/constants.dart';
-import 'package:mddblog/src/controllers/auth_controller.dart';
-import 'package:mddblog/src/models/comment_model.dart';
+import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/controllers/auth_controller.dart';
+import 'package:mddblog/models/comment_model.dart';
 import 'package:mddblog/src/views/blog_details/blog_details.dart';
 import 'package:mddblog/src/widgets/post/section_wrapper.dart';
+import 'package:mddblog/utils/env.dart';
 
 class LeaveComment extends GetWidget {
   final List<CommentContent> comments;
@@ -51,7 +52,9 @@ class LeaveComment extends GetWidget {
                             child: Image.network(
                               item.reader.avatar != null &&
                                       item.reader.avatar!.url.isNotEmpty
-                                  ? "$baseUrlNoUrl${item.reader.avatar!.url}"
+                                  ? (Env.isDev
+                                      ? "$baseUrlNoUrl${item.reader.avatar!.url}"
+                                      : item.reader.avatar!.url)
                                   : item.reader.avatarUrl,
                               errorBuilder:
                                   (context, error, stackTrace) =>

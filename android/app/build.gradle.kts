@@ -44,14 +44,17 @@ android {
             dimension = "app"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
+            resValue("string", "app_name", "MDD Blog Dev")
         }
         create("staging") {
             dimension = "app"
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
+            resValue("string", "app_name", "MDD Blog Staging")
         }
         create("production") {
             dimension = "app"
+            resValue("string", "app_name", "MDD Blog")
             // không cần suffix cho production
         }
     }

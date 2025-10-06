@@ -1,7 +1,7 @@
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/controllers/oauth_controller.dart';
+import 'package:mddblog/controllers/oauth_controller.dart';
 import 'package:mddblog/theme/controller/theme_controller.dart';
 import 'package:mddblog/src/routes/app_pages.dart';
 import 'package:mddblog/theme/theme.dart';

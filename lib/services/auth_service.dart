@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:mddblog/src/models/auth_model.dart';
-import 'package:mddblog/src/services/secure_storage.dart';
+import 'package:mddblog/models/auth_model.dart';
+import 'package:mddblog/services/secure_storage.dart';
 
 final cloudinary = Cloudinary.full(
   apiKey: dotenv.env['CLOUDINARY_API_KEY']!,

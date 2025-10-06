@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mddblog/src/models/about_model.dart';
+import 'package:mddblog/models/about_model.dart';
 
 class AboutContentSection extends StatelessWidget {
   final List<AboutContent> contents;

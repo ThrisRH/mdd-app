@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
-import 'package:mddblog/src/controllers/oauth_controller.dart';
+import 'package:mddblog/controllers/oauth_controller.dart';
 
 class GoogleOauthView extends StatelessWidget {
   GoogleOauthView({super.key});
@@ -24,8 +24,8 @@ class GoogleOauthView extends StatelessWidget {
             ),
           ),
         );
-      } catch (e) {
-        Get.snackbar('Error', 'Failed to launch sign-in URL: $e');
+      } catch (error) {
+        throw Exception('Failed to launch sign-in URL: $error');
       }
     }
 

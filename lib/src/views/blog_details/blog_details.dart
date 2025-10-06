@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/models/blog_details_model.dart';
-import 'package:mddblog/src/models/blog_model.dart';
-import 'package:mddblog/src/models/comment_model.dart';
-import 'package:mddblog/src/services/blog_service.dart';
-import 'package:mddblog/src/services/comment_service.dart';
+import 'package:mddblog/models/blog_details_model.dart';
+import 'package:mddblog/models/blog_model.dart';
+import 'package:mddblog/models/comment_model.dart';
+import 'package:mddblog/services/blog_service.dart';
+import 'package:mddblog/services/comment_service.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
@@ -57,7 +57,7 @@ class BlogDetailsController extends GetxController {
         fetchRelativeBlogs(blogDetail.value!.categoryData.documentId);
       }
     } catch (error) {
-      Get.snackbar("Error", error.toString());
+      throw Exception(error.toString());
     } finally {
       isDetailLoading.value = false;
     }
@@ -69,7 +69,7 @@ class BlogDetailsController extends GetxController {
       final response = await _blogService.getBlogsByCate(cateId);
       relativeBlogs.assignAll(response.data);
     } catch (error) {
-      Get.snackbar("Error", error.toString());
+      throw Exception(error.toString());
     } finally {
       isRelativeLoading.value = false;
     }

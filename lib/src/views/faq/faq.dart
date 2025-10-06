@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/models/faq_model.dart';
-import 'package:mddblog/src/services/faq_service.dart';
+import 'package:mddblog/models/faq_model.dart';
+import 'package:mddblog/services/faq_service.dart';
 import 'package:mddblog/src/widgets/faq/faq_card.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
@@ -18,6 +18,7 @@ class FaqController extends GetxController {
   var faqs = <QuestionAnswer>[].obs;
   var isLoading = true.obs;
   var selectedIndex = RxnInt();
+  var errorMessage = "".obs;
 
   @override
   void onInit() {
@@ -33,7 +34,7 @@ class FaqController extends GetxController {
       final response = await _faqService.getFaqs();
       faqs.assignAll(response.data.questionAnswers);
     } catch (error) {
-      Get.snackbar("Error", error.toString());
+      errorMessage.value = "Lỗi kết nối, vui lòng kiểm tra lại đường truyền!";
     } finally {
       isLoading.value = false;
     }
@@ -121,7 +122,11 @@ class FAQ extends GetWidget<FaqController> {
                               return Center(child: Loading());
                             }
                             if (controller.faqs.isEmpty) {
-                              return Center(child: ErrorNotification());
+                              return Center(
+                                child: ErrorNotificationWithMessage(
+                                  errorMessage: controller.errorMessage.value,
+                                ),
+                              );
                             }
                             return ListView.builder(
                               shrinkWrap: true,

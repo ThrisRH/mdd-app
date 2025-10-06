@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/controllers/register_controller.dart';
+import 'package:mddblog/controllers/register_controller.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
 import 'package:mddblog/src/widgets/main/input.dart';

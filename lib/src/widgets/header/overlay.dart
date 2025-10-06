@@ -2,17 +2,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/controllers/auth_controller.dart';
-import 'package:mddblog/src/controllers/author_controller.dart';
-import 'package:mddblog/src/controllers/blog_by_cate_controller.dart';
+import 'package:mddblog/controllers/auth_controller.dart';
+import 'package:mddblog/controllers/author_controller.dart';
+import 'package:mddblog/controllers/blog_by_cate_controller.dart';
+import 'package:mddblog/models/category_model.dart';
+import 'package:mddblog/services/category_service.dart';
 import 'package:mddblog/src/widgets/decoration/dot.dart';
-import 'package:mddblog/src/widgets/post/header_line.dart';
-import 'package:mddblog/theme/controller/theme_controller.dart';
-import 'package:mddblog/src/models/category_model.dart';
-import 'package:mddblog/src/services/category_service.dart';
 import 'package:mddblog/src/widgets/header/topic_nav.dart';
 import 'package:mddblog/src/widgets/header/user_info_card.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
+import 'package:mddblog/src/widgets/post/header_line.dart';
+import 'package:mddblog/theme/controller/theme_controller.dart';
 import 'package:mddblog/theme/element/app_colors.dart';
 
 class CategoryController extends GetxController {
@@ -39,7 +39,7 @@ class CategoryController extends GetxController {
         selectedCate.value = cates.first;
       }
     } catch (error) {
-      Get.snackbar("Error", error.toString());
+      throw Exception(error.toString());
     } finally {
       isLoading.value = false;
     }

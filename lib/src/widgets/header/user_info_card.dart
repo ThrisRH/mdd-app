@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/config/constants.dart';
-import 'package:mddblog/src/controllers/auth_controller.dart';
-import 'package:mddblog/src/models/auth_model.dart';
+import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/controllers/auth_controller.dart';
+import 'package:mddblog/models/auth_model.dart';
 import 'package:mddblog/src/widgets/decoration/dot.dart';
+import 'package:mddblog/utils/env.dart';
 
 class UserInfoCard extends GetWidget {
   final UserInfoResponse data;
@@ -23,7 +24,9 @@ class UserInfoCard extends GetWidget {
               child: Image.network(
                 data.userDetailInfo.avatar != null &&
                         data.userDetailInfo.avatar!.url.isNotEmpty
-                    ? "$baseUrlNoUrl${data.userDetailInfo.avatar!.url}"
+                    ? (Env.isDev
+                        ? "$baseUrlNoUrl${data.userDetailInfo.avatar!.url}"
+                        : data.userDetailInfo.avatar!.url)
                     : data.userDetailInfo.avatarUrl,
                 errorBuilder:
                     (context, error, stackTrace) => Icon(Icons.person),
