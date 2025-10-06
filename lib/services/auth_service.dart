@@ -12,20 +12,6 @@ final cloudinary = Cloudinary.full(
   apiSecret: dotenv.env['CLOUDINARY_API_SECRET']!,
   cloudName: dotenv.env['CLOUDINARY_NAME']!,
 );
-// Future<void> saveJwt(String jwt) async {
-//   final prefs = await SharedPreferences.getInstance();
-//   await prefs.setString('jwtToken', jwt);
-// }
-
-// Future<String?> loadJwt() async {
-//   final prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('jwtToken');
-// }
-
-// Future<void> removeJwt() async {
-//   final prefs = await SharedPreferences.getInstance();
-//   await prefs.remove('jwtToken');
-// }
 
 class AuthenticationService {
   final String baseUrl = dotenv.env['BASE_URL'] ?? "";
@@ -45,18 +31,48 @@ class AuthenticationService {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode({
         'identifier': identifier,
         'password': password,
+        "requestRefresh": true,
       }),
     );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final jwt = data['jwt'];
-      await SecureStorage.saveStrapiToken(jwt);
+      final refreshToken = data['refreshToken'];
+      await SecureStorage.saveStrapiToken(jwt, refreshToken);
       return true;
     } else {
+      return false;
+    }
+  }
+
+  Future<bool> reSignIn(String email, String password) async {
+    final info = await SecureStorage.getTokens();
+    final jwt = info['access_token'];
+    if (jwt != null) {
+      UserInfoResponse accountInfo = await getMe(jwt);
+      if (accountInfo.email != email) {
+        return false;
+      }
+    }
+    try {
+      final url = Uri.parse("$baseUrl/auth/local");
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'identifier': email,
+          'password': password,
+          "requestRefresh": true,
+        }),
+      );
+      return response.statusCode == 200;
+    } catch (error) {
       return false;
     }
   }

@@ -9,6 +9,7 @@ pipelines:
     develop:
       - step:
           name: Install Dependencies & Analyze
+          deployment: staging
           caches:
             - flutter
           script:
@@ -29,6 +30,7 @@ pipelines:
     master:
       - step:
           name: Install Dependencies & Analyze
+          deployment: production
           caches:
             - flutter
           script:

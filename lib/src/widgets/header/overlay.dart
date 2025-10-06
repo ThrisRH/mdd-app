@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/controllers/auth_controller.dart';
 import 'package:mddblog/controllers/author_controller.dart';
+import 'package:mddblog/controllers/biometric_controller.dart';
 import 'package:mddblog/controllers/blog_by_cate_controller.dart';
 import 'package:mddblog/models/category_model.dart';
+import 'package:mddblog/services/biometric_auth_service.dart';
 import 'package:mddblog/services/category_service.dart';
 import 'package:mddblog/src/widgets/decoration/dot.dart';
 import 'package:mddblog/src/widgets/header/topic_nav.dart';
@@ -17,9 +19,13 @@ import 'package:mddblog/theme/element/app_colors.dart';
 
 class CategoryController extends GetxController {
   final CategoryService _categoryService = CategoryService();
+  final BiometricAuthService biometricService = BiometricAuthService();
+
   var cates = <CategoryData>[].obs;
   var isLoading = true.obs;
   var isOpenCate = false.obs;
+
+  var biometricEnabled = false.obs;
 
   var selectedCate = Rxn<CategoryData>();
 
@@ -71,6 +77,9 @@ class OverlayToggle extends StatelessWidget {
   final CategoryController c = Get.put(CategoryController());
   final AuthorController authorController = Get.put(AuthorController());
   final AuthController authController = Get.put(AuthController());
+  final BiometricController biometricController = Get.put(
+    BiometricController(),
+  );
 
   final double spacing = 32;
 
@@ -80,6 +89,7 @@ class OverlayToggle extends StatelessWidget {
     {"title": "CHỦ ĐỀ", "route": "/topics"},
     {"title": "HỎI ĐÁP", "route": "/faq"},
   ];
+
   @override
   Widget build(BuildContext context) {
     final currentRoute = ModalRoute.of(context)?.settings.name ?? "";
@@ -93,167 +103,242 @@ class OverlayToggle extends StatelessWidget {
                 ? Colors.black
                 : Colors.white,
         body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: GestureDetector(
-                  onTap: closeOverlay,
-                  child: Icon(
-                    Icons.close,
-                    color: Theme.of(context).colorScheme.onSurface,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 16.0,
                   ),
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 12,
-                children: [
-                  // Thông tin của Blogger
-                  Divider(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withOpacity(0.2),
-                    thickness: 1,
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Obx(() {
-                      final data = authController.userDetail.value;
-                      if (data == null) {
-                        return UserInfoCardUnAuth();
-                      }
-                      return GestureDetector(
-                        onTap: () => authorController.toAuthorPage(),
-                        child: UserInfoCard(data: data),
-                      );
-                    }),
-                  ),
-                  Divider(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withOpacity(0.2),
-                    thickness: 1,
-                  ),
-
-                  // Thanh điều hướng
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ...menuItems.map((item) {
-                          final isActive = item["route"] == currentRoute;
-
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: spacing),
-                            child: GestureDetector(
-                              onTap: () {
-                                if (item['route'] != "/topics") {
-                                  closeOverlay();
-                                  Get.toNamed(item['route']!);
-                                } else {
-                                  c.openCate();
-                                }
-                              },
-                              child:
-                                  item["route"] == "/topics"
-                                      ? Obx(
-                                        () => TopicNav(
-                                          isSelected: isActive,
-                                          isOpenCate: c.isOpenCate.value,
-                                          cates: c.cates,
-                                          navLabel: item["title"]!,
-                                        ),
-                                      )
-                                      : Text(
-                                        item["title"]!,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.headlineMedium?.copyWith(
-                                          fontSize: 20,
-                                          color:
-                                              isActive
-                                                  ? AppColors.secondary
-                                                  : Theme.of(
-                                                    context,
-                                                  ).colorScheme.onSurface,
-                                        ),
-                                      ),
-                            ),
-                          );
-                        }),
-                        Obx(() {
-                          if (authController.isLoggedIn.value) {
-                            return GestureDetector(
-                              child: MDDButton(
-                                bgColor: AppColors.primary,
-                                label: "Đăng xuất",
-                                onTap: () => authController.logout(),
-                              ),
-                            );
-                          }
-                          return HeaderLine(
-                            child: Row(
-                              spacing: 6,
-                              children: [
-                                Dot(),
-                                Text(
-                                  'Settings',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                Dot(),
-                              ],
-                            ),
-                          );
-                        }),
-
-                        Container(
-                          margin: EdgeInsets.only(top: 12),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Dark mode",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(fontSize: 20),
-                              ),
-                              Spacer(),
-                              Theme.of(context).brightness == Brightness.light
-                                  ? SizedBox(
-                                    child: IconButton(
-                                      style: ButtonStyle(
-                                        iconSize: WidgetStatePropertyAll(32),
-                                      ),
-                                      onPressed: () {
-                                        Get.find<ThemeController>()
-                                            .toggleTheme();
-                                      },
-                                      icon: Icon(Icons.toggle_off),
-                                    ),
-                                  )
-                                  : IconButton(
-                                    style: ButtonStyle(
-                                      iconSize: WidgetStatePropertyAll(32),
-                                    ),
-                                    onPressed: () {
-                                      Get.find<ThemeController>().toggleTheme();
-                                    },
-                                    icon: Icon(Icons.toggle_on),
-                                  ),
-                            ],
-                          ),
-                        ),
-                      ],
+                  child: GestureDetector(
+                    onTap: closeOverlay,
+                    child: Icon(
+                      Icons.close,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 12,
+                  children: [
+                    // Thông tin của Blogger
+                    Divider(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.2),
+                      thickness: 1,
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Obx(() {
+                        final data = authController.userDetail.value;
+                        if (data == null) {
+                          return UserInfoCardUnAuth();
+                        }
+                        return GestureDetector(
+                          onTap: () => authorController.toAuthorPage(),
+                          child: UserInfoCard(data: data),
+                        );
+                      }),
+                    ),
+                    Divider(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.2),
+                      thickness: 1,
+                    ),
+
+                    // Thanh điều hướng
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ...menuItems.map((item) {
+                            final isActive = item["route"] == currentRoute;
+
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: spacing),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (item['route'] != "/topics") {
+                                    closeOverlay();
+                                    Get.toNamed(item['route']!);
+                                  } else {
+                                    c.openCate();
+                                  }
+                                },
+                                child:
+                                    item["route"] == "/topics"
+                                        ? Obx(
+                                          () => TopicNav(
+                                            isSelected: isActive,
+                                            isOpenCate: c.isOpenCate.value,
+                                            cates: c.cates,
+                                            navLabel: item["title"]!,
+                                          ),
+                                        )
+                                        : Text(
+                                          item["title"]!,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.headlineMedium?.copyWith(
+                                            fontSize: 20,
+                                            color:
+                                                isActive
+                                                    ? AppColors.secondary
+                                                    : Theme.of(
+                                                      context,
+                                                    ).colorScheme.onSurface,
+                                          ),
+                                        ),
+                              ),
+                            );
+                          }),
+                          Obx(() {
+                            if (authController.isLoggedIn.value) {
+                              return GestureDetector(
+                                child: MDDButton(
+                                  bgColor: AppColors.primary,
+                                  label: "Đăng xuất",
+                                  onTap: () => authController.logout(),
+                                ),
+                              );
+                            }
+                            return HeaderLine(
+                              child: Row(
+                                spacing: 6,
+                                children: [
+                                  Dot(),
+                                  Text(
+                                    'Settings',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  Dot(),
+                                ],
+                              ),
+                            );
+                          }),
+
+                          Container(
+                            margin: EdgeInsets.only(top: 12),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Chế độ tối",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium
+                                      ?.copyWith(fontSize: 20),
+                                ),
+                                Spacer(),
+                                Switch(
+                                  value:
+                                      Theme.of(context).brightness ==
+                                      Brightness.dark,
+                                  activeColor: AppColors.primary,
+                                  onChanged: (bool value) async {
+                                    Get.find<ThemeController>().toggleTheme();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Fingersprint
+                          Container(
+                            margin: EdgeInsets.only(top: 12),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Kích hoạt vân tay",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium
+                                      ?.copyWith(fontSize: 20),
+                                ),
+                                Spacer(),
+                                Switch(
+                                  value:
+                                      biometricController
+                                          .biometricEnabled
+                                          .value,
+                                  activeColor: AppColors.primary,
+                                  onChanged: (val) async {
+                                    if (!authController.isLoggedIn.value) {
+                                      // Nhảy đến trang đăng nhập / UI đăng nhập riêng
+                                      Get.snackbar(
+                                        "Thông báo",
+                                        "Vui lòng đăng nhập trước khi bật vân tay",
+                                      );
+                                      return;
+                                    }
+                                    await biometricController.toggleBiometric(
+                                      val,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Face recognize
+                          Container(
+                            margin: EdgeInsets.only(top: 12),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Kích hoạt gương mặt",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium
+                                      ?.copyWith(fontSize: 20),
+                                ),
+                                Spacer(),
+                                Switch(
+                                  value:
+                                      biometricController
+                                          .biometricEnabled
+                                          .value,
+                                  activeColor: AppColors.primary,
+                                  onChanged: (val) async {
+                                    if (!authController.isLoggedIn.value) {
+                                      // Nhảy đến trang đăng nhập / UI đăng nhập riêng
+                                      Get.snackbar(
+                                        "Thông báo",
+                                        "Vui lòng đăng nhập trước khi bật xác thực gương mặt",
+                                      );
+                                      return;
+                                    }
+                                    await biometricController.toggleBiometric(
+                                      val,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          GestureDetector(
+                            onTap:
+                                () => {
+                                  c.biometricService.getAvailableBiometric(),
+                                },
+                            child: Text("TesstZ"),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );

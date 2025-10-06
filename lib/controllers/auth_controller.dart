@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/models/auth_model.dart';
 import 'package:mddblog/services/auth_service.dart';
+import 'package:mddblog/services/biometric_auth_service.dart';
 import 'package:mddblog/services/secure_storage.dart';
 import 'package:mddblog/theme/element/app_colors.dart';
 
@@ -12,7 +13,8 @@ class AuthController extends GetxController {
   var isLoggedIn = false.obs;
   var isLoading = false.obs;
   var errorMessage = "".obs;
-
+  var biometricEnabled = false.obs;
+  final BiometricAuthService biometricService = BiometricAuthService();
   // User detail
   final userDetail = Rxn<UserInfoResponse>();
 
@@ -25,10 +27,38 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadToken();
+    _initAuth();
   }
 
-  void _loadToken() async {
+  Future<void> _initAuth() async {
+    await _loadToken();
+    if (!isLoggedIn.value) {
+      await checkBiometricLogin();
+    }
+  }
+
+  Future<void> checkBiometricLogin() async {
+    if (!isLoggedIn.value) {
+      final hasRefresh = await SecureStorage.getRefreshToken() != null;
+      if (!hasRefresh) return;
+
+      final isAuth = await biometricService.authenticate();
+      if (!isAuth) return;
+
+      isLoading.value = true;
+      final success = await biometricService.loginWithRefreshToken();
+      isLoading.value = false;
+
+      if (success) {
+        Get.delete<AuthController>();
+        Get.offAllNamed("/home");
+      } else {
+        print("❌ Biometric login thất bại, yêu cầu login lại");
+      }
+    }
+  }
+
+  Future<void> _loadToken() async {
     if (await SecureStorage.hasToken()) {
       isLoggedIn.value = true;
       print("SignedIn oAuth");

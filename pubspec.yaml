@@ -37,6 +37,8 @@ dependencies:
   crypto: ^3.0.6
   webview_flutter: ^4.13.0
   flutter_custom_tabs: ^2.0.0
+  local_auth: ^2.3.0
+  local_auth_android: ^1.0.52
 
 dev_dependencies:
   flutter_test:
