@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/theme/element/app_colors.dart';
+import 'package:mddblog/theme/element/app-colors.dart';
 
 class InputController extends GetxController {
   final RxBool obscure = true.obs;

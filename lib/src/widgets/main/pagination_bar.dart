@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mddblog/theme/element/app_colors.dart';
+import 'package:mddblog/theme/element/app-colors.dart';
 
 class PaginationBar extends StatelessWidget {
   final int currentPage;

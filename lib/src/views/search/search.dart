@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/models/blog_model.dart';
-import 'package:mddblog/services/blog_service.dart';
+import 'package:mddblog/controllers/overlay-controller.dart';
+import 'package:mddblog/models/blog-model.dart';
+import 'package:mddblog/services/blog-service.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/main/error.dart';
 import 'package:mddblog/src/widgets/main/loading.dart';
 import 'package:mddblog/src/widgets/main/pagination_bar.dart';
-import 'package:mddblog/src/widgets/post/post_card.dart';
+import 'package:mddblog/src/widgets/post/post-card.dart';
 
 class BlogBySearchQueryController extends GetxController {
   final BlogService _blogService = BlogService();
@@ -52,12 +53,7 @@ class BlogBySearchQueryController extends GetxController {
 class BlogBySearchQueryPage extends GetWidget<BlogBySearchQueryController> {
   BlogBySearchQueryPage({super.key});
 
-  final RxBool showOverlay = false.obs;
-
-  void toggleOverlay() {
-    showOverlay.value = !showOverlay.value;
-  }
-
+  final overlayController = Get.find<OverlayController>();
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -75,7 +71,7 @@ class BlogBySearchQueryPage extends GetWidget<BlogBySearchQueryController> {
               child: Column(
                 children: [
                   // Header Bar
-                  MDDNavbar(onMenuTap: toggleOverlay),
+                  MDDNavbar(onMenuTap: overlayController.toggleOverlay),
 
                   // Body
                   Obx(() {
@@ -147,8 +143,8 @@ class BlogBySearchQueryPage extends GetWidget<BlogBySearchQueryController> {
         // Show ra Overlay nav điều hướng khi showOverlay === true
         Obx(
           () =>
-              showOverlay.value
-                  ? OverlayToggle(closeOverlay: toggleOverlay)
+              overlayController.showOverlay.value
+                  ? OverlayToggle(closeOverlay: overlayController.closeOverlay)
                   : SizedBox.shrink(),
         ),
       ],

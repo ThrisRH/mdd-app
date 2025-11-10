@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/controllers/blog_by_cate_controller.dart';
+import 'package:mddblog/controllers/blog-by-cate-controller.dart';
+import 'package:mddblog/controllers/overlay-controller.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/main/loading.dart';
 import 'package:mddblog/src/widgets/main/pagination_bar.dart';
-import 'package:mddblog/src/widgets/post/post_card.dart';
+import 'package:mddblog/src/widgets/post/post-card.dart';
 
 class Category extends GetWidget<BlogByCateController> {
   Category({super.key});
 
-  final RxBool showOverlay = false.obs;
-
-  void toggleOverlay() {
-    showOverlay.value = !showOverlay.value;
-  }
+  final overlayController = Get.find<OverlayController>();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +32,7 @@ class Category extends GetWidget<BlogByCateController> {
                 spacing: 32,
                 children: [
                   // Header Bar
-                  MDDNavbar(onMenuTap: toggleOverlay),
+                  MDDNavbar(onMenuTap: overlayController.toggleOverlay),
 
                   // Body
                   Padding(
@@ -99,8 +96,8 @@ class Category extends GetWidget<BlogByCateController> {
         // Show ra Overlay nav điều hướng khi showOverlay === true
         Obx(
           () =>
-              showOverlay.value
-                  ? OverlayToggle(closeOverlay: toggleOverlay)
+              overlayController.showOverlay.value
+                  ? OverlayToggle(closeOverlay: overlayController.closeOverlay)
                   : SizedBox.shrink(),
         ),
       ],

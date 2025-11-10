@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/src/views/search/search.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
-import 'package:mddblog/theme/element/app_colors.dart';
+import 'package:mddblog/theme/element/app-colors.dart';
 
 class NavbarController extends GetxController {
   var isSearching = false.obs;

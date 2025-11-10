@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
 
-class Dot extends GetWidget {
+class Dot extends StatelessWidget {
   const Dot({super.key});
 
   @override

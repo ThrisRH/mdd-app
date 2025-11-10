@@ -2,20 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/controllers/auth_controller.dart';
-import 'package:mddblog/controllers/author_controller.dart';
-import 'package:mddblog/controllers/biometric_controller.dart';
-import 'package:mddblog/controllers/blog_by_cate_controller.dart';
-import 'package:mddblog/models/category_model.dart';
-import 'package:mddblog/services/biometric_auth_service.dart';
-import 'package:mddblog/services/category_service.dart';
+import 'package:mddblog/controllers/auth-controller.dart';
+import 'package:mddblog/controllers/author-controller.dart';
+import 'package:mddblog/controllers/biometric-controller.dart';
+import 'package:mddblog/controllers/blog-by-cate-controller.dart';
+import 'package:mddblog/models/category-model.dart';
+import 'package:mddblog/services/biometric-auth-service.dart';
+import 'package:mddblog/services/category-service.dart';
 import 'package:mddblog/src/widgets/decoration/dot.dart';
-import 'package:mddblog/src/widgets/header/topic_nav.dart';
-import 'package:mddblog/src/widgets/header/user_info_card.dart';
+import 'package:mddblog/src/widgets/header/topic-nav.dart';
+import 'package:mddblog/src/widgets/header/user-info-card.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
-import 'package:mddblog/src/widgets/post/header_line.dart';
-import 'package:mddblog/theme/controller/theme_controller.dart';
-import 'package:mddblog/theme/element/app_colors.dart';
+import 'package:mddblog/src/widgets/post/header-line.dart';
+import 'package:mddblog/theme/controller/theme-controller.dart';
+import 'package:mddblog/theme/element/app-colors.dart';
 
 class CategoryController extends GetxController {
   final CategoryService _categoryService = CategoryService();
@@ -257,7 +257,7 @@ class OverlayToggle extends StatelessWidget {
                             child: Row(
                               children: [
                                 Text(
-                                  "Kích hoạt vân tay",
+                                  "Kích hoạt sinh trắc học",
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineMedium
@@ -288,49 +288,12 @@ class OverlayToggle extends StatelessWidget {
                             ),
                           ),
 
-                          // Face recognize
-                          Container(
-                            margin: EdgeInsets.only(top: 12),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "Kích hoạt gương mặt",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium
-                                      ?.copyWith(fontSize: 20),
-                                ),
-                                Spacer(),
-                                Switch(
-                                  value:
-                                      biometricController
-                                          .biometricEnabled
-                                          .value,
-                                  activeColor: AppColors.primary,
-                                  onChanged: (val) async {
-                                    if (!authController.isLoggedIn.value) {
-                                      // Nhảy đến trang đăng nhập / UI đăng nhập riêng
-                                      Get.snackbar(
-                                        "Thông báo",
-                                        "Vui lòng đăng nhập trước khi bật xác thực gương mặt",
-                                      );
-                                      return;
-                                    }
-                                    await biometricController.toggleBiometric(
-                                      val,
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-
                           GestureDetector(
                             onTap:
                                 () => {
                                   c.biometricService.getAvailableBiometric(),
                                 },
-                            child: Text("TesstZ"),
+                            child: Text("Test"),
                           ),
                         ],
                       ),
