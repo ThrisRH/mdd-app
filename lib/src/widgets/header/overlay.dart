@@ -51,8 +51,12 @@ class CategoryController extends GetxController {
     }
   }
 
-  void openCate() {
+  void toggleCate() {
     isOpenCate.value = !isOpenCate.value;
+  }
+
+  void closeCate() {
+    isOpenCate.value = false;
   }
 
   void changeCategory(CategoryData? cate) {
@@ -74,7 +78,7 @@ class OverlayToggle extends StatelessWidget {
   final VoidCallback closeOverlay;
   OverlayToggle({super.key, required this.closeOverlay});
 
-  final CategoryController c = Get.put(CategoryController());
+  final CategoryController cateController = Get.put(CategoryController());
   final AuthorController authorController = Get.put(AuthorController());
   final AuthController authController = Get.put(AuthController());
   final BiometricController biometricController = Get.put(
@@ -138,10 +142,21 @@ class OverlayToggle extends StatelessWidget {
                       child: Obx(() {
                         final data = authController.userDetail.value;
                         if (data == null) {
-                          return UserInfoCardUnAuth();
+                          return GestureDetector(
+                            onTap:
+                                () => {
+                                  closeOverlay(),
+                                  authController.toSignIn(),
+                                },
+                            child: UserInfoCardUnAuth(),
+                          );
                         }
                         return GestureDetector(
-                          onTap: () => authorController.toAuthorPage(),
+                          onTap:
+                              () => {
+                                closeOverlay(),
+                                authorController.toAuthorPage(),
+                              },
                           child: UserInfoCard(data: data),
                         );
                       }),
@@ -170,7 +185,7 @@ class OverlayToggle extends StatelessWidget {
                                     closeOverlay();
                                     Get.toNamed(item['route']!);
                                   } else {
-                                    c.openCate();
+                                    cateController.toggleCate();
                                   }
                                 },
                                 child:
@@ -178,8 +193,11 @@ class OverlayToggle extends StatelessWidget {
                                         ? Obx(
                                           () => TopicNav(
                                             isSelected: isActive,
-                                            isOpenCate: c.isOpenCate.value,
-                                            cates: c.cates,
+                                            isOpenCate:
+                                                cateController.isOpenCate.value,
+                                            closeOverlay: closeOverlay,
+                                            closeCate: cateController.closeCate,
+                                            cates: cateController.cates,
                                             navLabel: item["title"]!,
                                           ),
                                         )
@@ -286,14 +304,6 @@ class OverlayToggle extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),
-
-                          GestureDetector(
-                            onTap:
-                                () => {
-                                  c.biometricService.getAvailableBiometric(),
-                                },
-                            child: Text("Test"),
                           ),
                         ],
                       ),

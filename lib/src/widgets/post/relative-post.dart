@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -38,10 +39,11 @@ class RelativePost extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         height: 200,
-                        child: Image.network(
-                          Env.isDev
-                              ? '$baseUrlNoUrl${item.cover.url}'
-                              : item.cover.url,
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              Env.isDev
+                                  ? '$baseUrlNoUrl${item.cover.url}'
+                                  : item.cover.url,
                           fit: BoxFit.cover,
                         ),
                       ),

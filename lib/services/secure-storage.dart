@@ -50,6 +50,7 @@ class SecureStorage {
   static Future<void> clearTokens() async {
     await _storage.delete(key: 'access_token');
     await _storage.delete(key: 'id_token');
+    await _storage.delete(key: 'refresh_token');
   }
 
   static Future<void> setBiometricEnabled(bool enabled) async {

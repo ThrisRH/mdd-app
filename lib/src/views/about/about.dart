@@ -5,6 +5,7 @@ import 'package:mddblog/config/constants.dart';
 import 'package:mddblog/controllers/overlay-controller.dart';
 import 'package:mddblog/models/about-model.dart';
 import 'package:mddblog/services/about-service.dart';
+import 'package:mddblog/src/views/home/widgets/banner.dart';
 import 'package:mddblog/src/widgets/about/about-avatar-container.dart';
 import 'package:mddblog/src/widgets/about/about-contact-info-section.dart';
 import 'package:mddblog/src/widgets/about/about-content-section.dart';
@@ -55,24 +56,26 @@ class About extends GetWidget<AboutController> {
     return Stack(
       children: [
         Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              spacing: 32,
-              children: [
-                // Header Bar
-                MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+          appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
 
-                //  Body
-                Obx(() {
-                  switch (controller.status.value) {
-                    case Status.loading:
-                      return Center(child: Loading());
-                    case Status.error:
-                      return Center(child: ErrorNotification());
-                    case Status.success:
-                      final aboutData = controller.about.value!.data;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          body: CustomScrollView(
+            slivers: <Widget>[
+              SliverToBoxAdapter(child: BannerSection()),
+              //  Body
+              Obx(() {
+                switch (controller.status.value) {
+                  case Status.loading:
+                    return SliverFillRemaining(child: Center(child: Loading()));
+                  case Status.error:
+                    return SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(child: ErrorNotification()),
+                    );
+                  case Status.success:
+                    final aboutData = controller.about.value!.data;
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -80,8 +83,8 @@ class About extends GetWidget<AboutController> {
                               margin: EdgeInsets.only(top: 172 / 2),
                               width: double.infinity,
                               padding: EdgeInsets.only(
-                                left: 12,
-                                right: 12,
+                                left: 16,
+                                right: 16,
                                 bottom: 40,
                               ),
                               decoration: BoxDecoration(
@@ -149,17 +152,16 @@ class About extends GetWidget<AboutController> {
                                 ],
                               ),
                             ),
-                            // Footer
-                            Footer(),
                           ],
                         ),
-                      );
-                    default:
-                      return SizedBox.shrink();
-                  }
-                }),
-              ],
-            ),
+                      ),
+                    );
+                  default:
+                    return SizedBox.shrink();
+                }
+              }),
+              SliverToBoxAdapter(child: Footer()),
+            ],
           ),
         ),
 

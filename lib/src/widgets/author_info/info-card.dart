@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mddblog/config/constants.dart';
@@ -122,10 +123,11 @@ class InfoCard extends StatelessWidget {
             width: 220,
             height: 220,
             child: ClipOval(
-              child: Image.network(
-                Env.isDev
-                    ? "$baseUrlNoUrl${data.authorAvatar.url}"
-                    : data.authorAvatar.url,
+              child: CachedNetworkImage(
+                imageUrl:
+                    Env.isDev
+                        ? "$baseUrlNoUrl${data.authorAvatar.url}"
+                        : data.authorAvatar.url,
                 fit: BoxFit.cover,
               ),
             ),

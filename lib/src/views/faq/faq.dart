@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mddblog/controllers/overlay-controller.dart';
 import 'package:mddblog/models/faq-model.dart';
 import 'package:mddblog/services/faq-service.dart';
+import 'package:mddblog/src/views/home/widgets/banner.dart';
 import 'package:mddblog/src/widgets/faq/faq-card.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
@@ -24,9 +25,7 @@ class FaqController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Future.delayed(Duration(seconds: 1), () {
-      fetchFAQs();
-    });
+    fetchFAQs();
   }
 
   void fetchFAQs() async {
@@ -60,6 +59,7 @@ class FAQ extends GetWidget<FaqController> {
     return Stack(
       children: [
         Scaffold(
+          appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
           body: RefreshIndicator(
             onRefresh: () async {
               controller.fetchFAQs();
@@ -70,7 +70,7 @@ class FAQ extends GetWidget<FaqController> {
                 spacing: 32,
                 children: [
                   // Header Bar
-                  MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+                  BannerSection(),
 
                   //  Body
                   Padding(
@@ -105,11 +105,7 @@ class FAQ extends GetWidget<FaqController> {
                         // Nội dung FAQ
                         Container(
                           width: double.infinity,
-                          padding: EdgeInsets.only(
-                            left: 40,
-                            right: 40,
-                            bottom: 40,
-                          ),
+                          padding: EdgeInsets.all(24),
                           decoration: BoxDecoration(
                             color: AppColors.primary.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(40),

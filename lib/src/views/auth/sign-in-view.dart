@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/controllers/auth-controller.dart';
 import 'package:mddblog/controllers/overlay-controller.dart';
+import 'package:mddblog/src/views/home/widgets/banner.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
@@ -39,6 +40,8 @@ class LoginPage extends GetWidget {
     return Stack(
       children: [
         Scaffold(
+          appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+
           body: RefreshIndicator(
             onRefresh: () async {
               authController.clearInput();
@@ -48,7 +51,7 @@ class LoginPage extends GetWidget {
               child: Column(
                 spacing: 32,
                 children: [
-                  MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+                  BannerSection(),
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),

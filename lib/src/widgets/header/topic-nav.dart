@@ -6,6 +6,8 @@ import 'package:mddblog/theme/element/app-colors.dart';
 
 class TopicNav extends StatelessWidget {
   final List<CategoryData> cates;
+  final VoidCallback? closeOverlay;
+  final VoidCallback? closeCate;
   final String navLabel;
   final bool isOpenCate;
   final bool isSelected;
@@ -15,6 +17,8 @@ class TopicNav extends StatelessWidget {
     required this.navLabel,
     required this.isOpenCate,
     required this.isSelected,
+    this.closeOverlay,
+    this.closeCate,
   });
 
   final CategoryController c = Get.put(CategoryController());
@@ -59,6 +63,8 @@ class TopicNav extends StatelessWidget {
                       padding: EdgeInsets.only(left: 16),
                       child: GestureDetector(
                         onTap: () {
+                          closeCate!();
+                          closeOverlay!();
                           c.toCategoryView(cate.documentId, cate.tile);
                         },
                         child: Column(

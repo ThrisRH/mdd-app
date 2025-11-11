@@ -17,9 +17,7 @@ class BlogByCateController extends GetxController {
     super.onInit();
     cateId = Get.arguments['id'] as String;
     cateName = Get.arguments['name'] as String;
-    Future.delayed(Duration(seconds: 1), () {
-      fetchBlogByCate(cateId, currentPage.value);
-    });
+    fetchBlogByCate(cateId, currentPage.value);
   }
 
   // Fetch blog theo CateId

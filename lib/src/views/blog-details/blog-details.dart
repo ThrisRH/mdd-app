@@ -6,6 +6,7 @@ import 'package:mddblog/models/blog-model.dart';
 import 'package:mddblog/models/comment-model.dart';
 import 'package:mddblog/services/blog-service.dart';
 import 'package:mddblog/services/comment-service.dart';
+import 'package:mddblog/src/views/home/widgets/banner.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
@@ -34,9 +35,7 @@ class BlogDetailsController extends GetxController {
     super.onInit();
     blogSlug = Get.arguments['slug'] as String;
 
-    Future.delayed(Duration(seconds: 1), () {
-      fetchBlogDetails(blogSlug);
-    });
+    fetchBlogDetails(blogSlug);
 
     ever(blogDetail, (detail) {
       if (detail?.categoryData != null) {
@@ -141,6 +140,8 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
     return Stack(
       children: [
         Scaffold(
+          appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+
           body: RefreshIndicator(
             onRefresh: () async {
               controller.fetchBlogDetails(controller.blogSlug);
@@ -153,8 +154,7 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
               physics: AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
-                  // Header Bar
-                  MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+                  BannerSection(),
 
                   // // Body
                   Obx(() {

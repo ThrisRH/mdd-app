@@ -18,10 +18,8 @@ class BlogController extends GetxController {
   void onInit() {
     super.onInit();
 
-    Future.delayed(Duration(seconds: 1), () {
-      fetchPage(currentPage.value);
-      fetchFavorites();
-    });
+    fetchPage(currentPage.value);
+    fetchFavorites();
   }
 
   // Fetch toàn bộ blogs ( 3 blogs/trang )

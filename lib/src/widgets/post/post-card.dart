@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mddblog/config/constants.dart';
 import 'package:mddblog/models/blog-model.dart';
@@ -60,10 +61,11 @@ class PostCard extends StatelessWidget {
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  Env.isDev
-                      ? '$baseUrlNoUrl${blogData.cover.url}'
-                      : blogData.cover.url,
+                child: CachedNetworkImage(
+                  imageUrl:
+                      Env.isDev
+                          ? '$baseUrlNoUrl${blogData.cover.url}'
+                          : blogData.cover.url,
                   height: 180,
                   width: double.infinity,
                   fit: BoxFit.cover,

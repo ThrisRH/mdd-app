@@ -29,6 +29,7 @@ class AppPages {
         Get.put(BlogController());
         Get.put(AuthController());
       }),
+      transitionDuration: Duration.zero,
     ),
 
     // Blog details
@@ -39,6 +40,7 @@ class AppPages {
         Get.put(BlogDetailsController());
       }),
       middlewares: [AuthMiddleware()],
+      transitionDuration: Duration.zero,
     ),
 
     // Search blog
@@ -48,6 +50,7 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.put(BlogBySearchQueryController());
       }),
+      transitionDuration: Duration.zero,
     ),
 
     // Author
@@ -57,6 +60,7 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.put(AuthorController());
       }),
+      transitionDuration: Duration.zero,
     ),
 
     // About
@@ -66,6 +70,7 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.put(AboutController());
       }),
+      transitionDuration: Duration.zero,
     ),
 
     // FAQ
@@ -75,6 +80,7 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.put(FaqController());
       }),
+      transitionDuration: Duration.zero,
     ),
 
     // Category
@@ -84,15 +90,28 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.put(BlogByCateController());
       }),
+      transitionDuration: Duration.zero,
     ),
 
     // Login
-    GetPage(name: Routes.login, page: () => LoginPage()),
+    GetPage(
+      name: Routes.login,
+      page: () => LoginPage(),
+      transitionDuration: Duration.zero,
+    ),
 
     // Login with google
-    GetPage(name: Routes.oauthGoogle, page: () => GoogleOauthView()),
+    GetPage(
+      name: Routes.oauthGoogle,
+      page: () => GoogleOauthView(),
+      transitionDuration: Duration.zero,
+    ),
 
     // Registers
-    GetPage(name: Routes.register, page: () => RegisterPage()),
+    GetPage(
+      name: Routes.register,
+      page: () => RegisterPage(),
+      transitionDuration: Duration.zero,
+    ),
   ];
 }

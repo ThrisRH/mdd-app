@@ -11,9 +11,7 @@ class AuthorController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Future.delayed(Duration(seconds: 1), () {
-      fetchAuthorData();
-    });
+    fetchAuthorData();
   }
 
   void fetchAuthorData() async {

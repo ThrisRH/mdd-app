@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
@@ -55,8 +56,11 @@ class BlogDetailsContainer extends StatelessWidget {
         ),
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.network(
-            Env.isDev ? '$baseUrlNoUrl${detail.cover.url}' : detail.cover.url,
+          child: CachedNetworkImage(
+            imageUrl:
+                Env.isDev
+                    ? '$baseUrlNoUrl${detail.cover.url}'
+                    : detail.cover.url,
             height: 180,
             width: double.infinity,
             fit: BoxFit.cover,
@@ -68,10 +72,11 @@ class BlogDetailsContainer extends StatelessWidget {
             (item) => item.images.map(
               (image) => ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  Env.isDev
-                      ? '$baseUrlNoUrl${detail.cover.url}'
-                      : detail.cover.url,
+                child: CachedNetworkImage(
+                  imageUrl:
+                      Env.isDev
+                          ? '$baseUrlNoUrl${detail.cover.url}'
+                          : detail.cover.url,
                   height: 180,
                   width: double.infinity,
                   fit: BoxFit.cover,

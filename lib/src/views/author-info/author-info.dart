@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/controllers/author-controller.dart';
 import 'package:mddblog/controllers/overlay-controller.dart';
+import 'package:mddblog/src/views/home/widgets/banner.dart';
 import 'package:mddblog/src/widgets/author_info/favorite-content.dart';
 import 'package:mddblog/src/widgets/author_info/info-card.dart';
 import 'package:mddblog/src/widgets/author_info/more-topic-section.dart';
@@ -21,6 +22,8 @@ class AuthorInfoPage extends GetWidget<AuthorController> {
     return Stack(
       children: [
         Scaffold(
+          appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+
           body: RefreshIndicator(
             onRefresh: () async {
               controller.fetchAuthorData();
@@ -30,8 +33,7 @@ class AuthorInfoPage extends GetWidget<AuthorController> {
               child: Column(
                 spacing: 32,
                 children: [
-                  // Header Bar
-                  MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+                  BannerSection(),
 
                   // Body
                   Obx(() {

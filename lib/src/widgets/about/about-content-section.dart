@@ -11,7 +11,12 @@ class AboutContentSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 16),
-        Html(data: content, style: {'h1': Style(color: Colors.amber)}),
+        Html(
+          data: content,
+          style: {
+            'h2': Style.fromTextStyle(Theme.of(context).textTheme.bodyMedium!),
+          },
+        ),
       ],
     );
   }

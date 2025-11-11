@@ -8,14 +8,13 @@ import 'secure-storage.dart';
 class BiometricAuthService {
   final LocalAuthentication auth = LocalAuthentication();
 
-  /// Kiểm tra thiết bị có hỗ trợ vân tay hay không
+  // Kiểm tra thiết bị có hỗ trợ vân tay hay không
   Future<bool> isAvailable() async {
     try {
       final canCheck = await auth.canCheckBiometrics;
       final isSupported = await auth.isDeviceSupported();
       return canCheck && isSupported;
     } catch (e) {
-      print("❌ Lỗi khi kiểm tra sinh trắc học: $e");
       return false;
     }
   }
@@ -25,7 +24,6 @@ class BiometricAuthService {
     try {
       final isAvailableDevice = await isAvailable();
       if (!isAvailableDevice) {
-        print("⚠️ Thiết bị không hỗ trợ hoặc chưa cài đặt vân tay");
         return false;
       }
 
@@ -43,10 +41,8 @@ class BiometricAuthService {
           sensitiveTransaction: false,
         ),
       );
-      print("🟢 Xác thực thành công: $didAuthenticate");
       return didAuthenticate;
     } catch (error) {
-      print("❌ Lỗi khi xác thực: $error");
       return false;
     }
   }
@@ -70,18 +66,10 @@ class BiometricAuthService {
         await SecureStorage.saveStrapiToken(data['jwt'], data['refreshToken']);
         return true;
       } else {
-        print("❌ Refresh thất bại: ${response.statusCode}");
+        return false;
       }
     } catch (e) {
-      print("❌ Lỗi khi gọi API refresh: $e");
+      return false;
     }
-    return false;
-  }
-
-  void getAvailableBiometric() async {
-    List<BiometricType> availableBiometric =
-        await auth.getAvailableBiometrics();
-
-    print(availableBiometric);
   }
 }

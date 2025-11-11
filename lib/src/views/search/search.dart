@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mddblog/controllers/overlay-controller.dart';
 import 'package:mddblog/models/blog-model.dart';
 import 'package:mddblog/services/blog-service.dart';
+import 'package:mddblog/src/views/home/widgets/banner.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
@@ -59,6 +60,8 @@ class BlogBySearchQueryPage extends GetWidget<BlogBySearchQueryController> {
     return Stack(
       children: [
         Scaffold(
+          appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+
           body: RefreshIndicator(
             onRefresh: () async {
               controller.fetchBlogByQuery(
@@ -70,8 +73,7 @@ class BlogBySearchQueryPage extends GetWidget<BlogBySearchQueryController> {
               physics: AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
-                  // Header Bar
-                  MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+                  BannerSection(),
 
                   // Body
                   Obx(() {
@@ -82,18 +84,16 @@ class BlogBySearchQueryPage extends GetWidget<BlogBySearchQueryController> {
                       return ErrorNotification();
                     }
                     return Padding(
-                      padding: const EdgeInsets.only(
-                        right: 16.0,
-                        left: 16.0,
-                        top: 32.0,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Column(
                         children: [
+                          SizedBox(height: 40),
                           Text(
-                            "Kết quả tìm kiếm cho: ${controller.query}",
+                            "Search Results for: ${controller.query}",
                             style: Theme.of(context).textTheme.headlineLarge,
                             textAlign: TextAlign.center,
                           ),
+                          SizedBox(height: 40),
                           ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),

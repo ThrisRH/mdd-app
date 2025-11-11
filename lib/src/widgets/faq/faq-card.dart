@@ -29,31 +29,31 @@ class FAQCard extends StatelessWidget {
       child: Column(
         spacing: 12,
         children: [
-          Row(
-            spacing: 12,
-            children: [
-              Expanded(
-                child: Text(
-                  question, // luôn là vị trí đầu tiên
-                  style:
-                      isSelected
-                          ? Theme.of(
-                            context,
-                          ).textTheme.headlineMedium?.copyWith(
-                            color: AppColors.secondary,
-                            fontSize: 18,
-                          )
-                          : Theme.of(
-                            context,
-                          ).textTheme.headlineMedium?.copyWith(fontSize: 18),
-                  softWrap: true, // named parameter
+          GestureDetector(
+            onTap: toggleAnswer,
+            child: Row(
+              spacing: 12,
+              children: [
+                Expanded(
+                  child: Text(
+                    question, // luôn là vị trí đầu tiên
+                    style:
+                        isSelected
+                            ? Theme.of(
+                              context,
+                            ).textTheme.headlineMedium?.copyWith(
+                              color: AppColors.secondary,
+                              fontSize: 18,
+                            )
+                            : Theme.of(
+                              context,
+                            ).textTheme.headlineMedium?.copyWith(fontSize: 18),
+                    softWrap: true, // named parameter
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onTap: toggleAnswer,
-                child: Icon(isSelected ? Icons.remove : Icons.add),
-              ),
-            ],
+                Icon(isSelected ? Icons.remove : Icons.add),
+              ],
+            ),
           ),
 
           if (isSelected)
@@ -61,7 +61,7 @@ class FAQCard extends StatelessWidget {
               width: double.infinity,
               child: Text(
                 answer,
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
         ],
