@@ -26,64 +26,55 @@ class BlogDetailsController extends GetxController {
   var blogDetail = Rxn<BlogDetails>();
   var relativeBlogs = <BlogData>[].obs;
   var comments = <CommentContent>[].obs;
-  var isDetailLoading = true.obs;
-  var isRelativeLoading = true.obs;
-  var isCommentLoading = true.obs;
+  final isLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     blogSlug = Get.arguments['slug'] as String;
 
-    fetchBlogDetails(blogSlug);
-
-    ever(blogDetail, (detail) {
-      if (detail?.categoryData != null) {
-        fetchRelativeBlogs(detail!.categoryData.documentId);
-      }
-      if (detail?.documentId != null) {
-        fetchComment(detail!.documentId);
-      }
-    });
+    fetchBlogPage(blogSlug);
   }
 
-  Future<void> fetchBlogDetails(String slug) async {
+  Future<void> fetchBlogPage(String slug) async {
+    isLoading.value = true;
     try {
-      isDetailLoading.value = true;
-      final response = await _blogService.getBlogsBySlug(slug);
-      blogDetail.value = response.data;
+      final detailRes = await _blogService.getBlogsBySlug(slug);
+      blogDetail.value = detailRes.data;
 
-      if (blogDetail.value?.categoryData != null) {
-        fetchRelativeBlogs(blogDetail.value!.categoryData.documentId);
+      final detail = blogDetail.value;
+      if (detail != null) {
+        await Future.wait([
+          if (detail.categoryData != null)
+            fetchRelativeBlogs(detail.categoryData!.documentId),
+          if (detail.documentId != null) fetchComments(detail.documentId!),
+        ]);
       }
-    } catch (error) {
-      throw Exception(error.toString());
     } finally {
-      isDetailLoading.value = false;
+      isLoading.value = false;
     }
   }
 
   Future<void> fetchRelativeBlogs(String cateId) async {
     try {
-      isRelativeLoading.value = true;
-      final response = await _blogService.getBlogsByCate(cateId);
-      relativeBlogs.assignAll(response.data);
-    } catch (error) {
-      throw Exception(error.toString());
-    } finally {
-      isRelativeLoading.value = false;
+      final res = await _blogService.getBlogsByCate(cateId);
+      relativeBlogs.assignAll(res.data);
+    } catch (e) {
+      SnackbarNotification.showError(
+        "Không thể tải bài viết liên quan.",
+        title: "Lỗi",
+      );
     }
   }
 
   // Comment
 
-  Future<void> fetchComment(String blogId) async {
+  Future<void> fetchComments(String blogId) async {
     try {
-      isCommentLoading.value = true;
-      final response = await _commentService.getComment(blogId);
-      comments.assignAll(response.comments);
-    } finally {
-      isCommentLoading.value = false;
+      final res = await _commentService.getComment(blogId);
+      comments.assignAll(res.comments);
+    } catch (e) {
+      SnackbarNotification.showError("Không thể tải bình luận.", title: "Lỗi");
     }
   }
 
@@ -134,11 +125,7 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
     return PhoneBody(
       body: RefreshIndicator(
         onRefresh: () async {
-          controller.fetchBlogDetails(controller.blogSlug);
-          controller.fetchComment(controller.blogDetail.value!.documentId);
-          controller.fetchRelativeBlogs(
-            controller.blogDetail.value!.categoryData.documentId,
-          );
+          controller.fetchBlogPage(controller.blogSlug);
         },
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
@@ -152,11 +139,17 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
                 final relativePosts = controller.relativeBlogs;
                 final comments = controller.comments;
 
-                if (controller.isDetailLoading.value) {
+                if (controller.isLoading.value) {
                   return Center(child: Loading());
                 }
                 if (detail == null) {
-                  return ErrorNotification();
+                  return Center(
+                    child: SingleChildScrollView(
+                      child: ErrorNotificationWithMessage(
+                        errorMessage: 'No results found',
+                      ),
+                    ),
+                  );
                 }
 
                 return Container(

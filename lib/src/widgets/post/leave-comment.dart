@@ -154,7 +154,7 @@ class LeaveComment extends GetWidget {
                         _commentInputController.text,
                       );
                       if (response) {
-                        await blogDetailsController.fetchComment(
+                        await blogDetailsController.fetchBlogPage(
                           blogId,
                         ); // fetch lại danh sách
                         _commentInputController.clear();

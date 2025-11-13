@@ -47,6 +47,7 @@ class FaqController extends GetxController {
     } else {
       selectedIndex.value = index;
     }
+    update(["faq_$index"]);
   }
 }
 

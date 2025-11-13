@@ -35,23 +35,29 @@ class ErrorNotificationWithMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24.0),
-      child: ListView(
-        children: [
-          SvgPicture.asset("assets/svg/NotFound.svg"),
-          SizedBox(height: 16),
-          Text(
-            errorMessage,
-            style: Theme.of(context).textTheme.headlineMedium,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 16),
-          Text(
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley ",
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.justify,
-          ),
-        ],
+      width: double.infinity,
+      padding: const EdgeInsets.all(24.0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset("assets/svg/NotFound.svg", height: 200),
+            const SizedBox(height: 16),
+            Text(
+              errorMessage,
+              style: Theme.of(context).textTheme.headlineMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+              "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.justify,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -10,8 +10,6 @@ import 'package:mddblog/src/widgets/about/about-avatar-container.dart';
 import 'package:mddblog/src/widgets/about/about-contact-info-section.dart';
 import 'package:mddblog/src/widgets/about/about-content-section.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
-import 'package:mddblog/src/widgets/header/navbar.dart';
-import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/layout/phone-body.dart';
 import 'package:mddblog/src/widgets/main/error.dart';
 import 'package:mddblog/src/widgets/main/loading.dart';
