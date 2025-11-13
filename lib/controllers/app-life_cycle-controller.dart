@@ -28,7 +28,6 @@ class AppLifeCycleController extends GetxController
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // debugPrint('lifecycle: $state');
     if (state == AppLifecycleState.paused) {
       // App vào background — bắt đầu đếm ngược
       onPaused();

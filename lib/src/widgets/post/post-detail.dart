@@ -49,6 +49,7 @@ class BlogDetailsContainer extends StatelessWidget {
         Center(
           child: Text(
             detail.title,
+            textAlign: TextAlign.center,
             style: Theme.of(
               context,
             ).textTheme.headlineMedium?.copyWith(fontSize: 20),

@@ -37,6 +37,10 @@ class MDDNavbar extends GetWidget<NavbarController>
 
   @override
   Widget build(BuildContext context) {
+    // Danh sách các route có thể sử dụng sidebar
+    final List<String> availableRoutes = ['/home', '/about', '/topics', '/faq'];
+    final List<String> excludedRoutes = ['/home/detail'];
+
     return Obx(() {
       if (controller.isSearching.value) {
         return AppBar(
@@ -121,10 +125,23 @@ class MDDNavbar extends GetWidget<NavbarController>
         return AppBar(
           backgroundColor: Colors.black,
           elevation: 0,
-          leading: IconButton(
-            onPressed: onMenuTap,
-            icon: Icon(Icons.menu, color: Colors.white),
-          ),
+          leading:
+              !availableRoutes.any(
+                    (r) =>
+                        Get.currentRoute.startsWith(r) &&
+                        !excludedRoutes.any(
+                          (ex) => Get.currentRoute.startsWith(ex),
+                        ),
+                  )
+                  ? IconButton(
+                    onPressed: Get.back,
+                    icon: Icon(Icons.arrow_back_sharp, color: Colors.white),
+                  )
+                  : IconButton(
+                    onPressed: onMenuTap,
+                    icon: Icon(Icons.menu, color: Colors.white),
+                  ),
+
           actions: [
             IconButton(
               onPressed: () => controller.activeSearchMode(),

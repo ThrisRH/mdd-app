@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:mddblog/src/widgets/main/auth-popup.dart';
+import 'package:mddblog/utils/toast.dart';
 import '../services/biometric-auth-service.dart';
 import '../services/secure-storage.dart';
 
@@ -23,21 +24,33 @@ class BiometricController extends GetxController {
       // Đăng nhập lại trước khi bật
       final reloginOk = await showReloginDialog();
       if (!reloginOk) {
-        Get.snackbar("Thất bại", "Xác thực tài khoản không thành công");
+        SnackbarNotification.showError(
+          title: "Thất bại",
+          "Xác thực tài khoản không thành công",
+        );
         return;
       }
       final ok = await biometricService.authenticate();
       if (ok) {
         biometricEnabled.value = true;
         await SecureStorage.setBiometricEnabled(true);
-        Get.snackbar("Thành công", "Đã bật đăng nhập bằng vân tay");
+        SnackbarNotification.showSuccess(
+          title: "Đã bật",
+          "Đã bật đăng nhập bằng vân tay",
+        );
       } else {
-        Get.snackbar("Thất bại", "Xác thực vân tay không thành công");
+        SnackbarNotification.showError(
+          title: "Thất bại",
+          "Thiết bị không hỗ trợ đăng nhập vân tay",
+        );
       }
     } else {
       biometricEnabled.value = false;
       await SecureStorage.setBiometricEnabled(false);
-      Get.snackbar("Đã tắt", "Đã tắt đăng nhập bằng vân tay");
+      SnackbarNotification.showSuccess(
+        title: "Đã tắt",
+        "Đã tắt đăng nhập bằng vân tay",
+      );
     }
   }
 

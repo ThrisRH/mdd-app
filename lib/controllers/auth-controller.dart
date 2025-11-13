@@ -7,6 +7,7 @@ import 'package:mddblog/models/auth-model.dart';
 import 'package:mddblog/services/auth-service.dart';
 import 'package:mddblog/services/biometric-auth-service.dart';
 import 'package:mddblog/services/secure-storage.dart';
+import 'package:mddblog/utils/toast.dart';
 
 class AuthController extends GetxController {
   var isLoggedIn = false.obs;
@@ -52,7 +53,10 @@ class AuthController extends GetxController {
         Get.delete<AuthController>();
         Get.offAllNamed("/home");
       } else {
-        print("❌ Biometric login thất bại, yêu cầu login lại");
+        SnackbarNotification.showError(
+          title: "Thất bại",
+          "Biometric login thất bại, yêu cầu login lại",
+        );
       }
     }
   }
@@ -60,7 +64,6 @@ class AuthController extends GetxController {
   Future<void> _loadToken() async {
     if (await SecureStorage.hasToken()) {
       isLoggedIn.value = true;
-      print("SignedIn oAuth");
       final jwtToken = await SecureStorage.getTokens();
       final accessToken = jwtToken['access_token'];
 
@@ -68,8 +71,6 @@ class AuthController extends GetxController {
       if (accessToken != null) {
         fetchUserDetail();
       }
-    } else {
-      print("UnSignedIn");
     }
   }
 
@@ -95,7 +96,7 @@ class AuthController extends GetxController {
       final token = await SecureStorage.getTokens();
       isLoggedIn.value = token != null;
 
-      Get.snackbar("Success", "Login thành công");
+      SnackbarNotification.showSuccess("Login thành công");
       Get.delete<AuthController>();
       Get.offAllNamed("/home");
     } finally {
@@ -127,13 +128,11 @@ class AuthController extends GetxController {
         final jwtToken = await SecureStorage.getTokens();
         final accessToken = jwtToken['access_token'];
         final accountType = jwtToken['account_type'];
-        print("accessToken: $accessToken");
 
         if (accessToken != null && accessToken.isNotEmpty) {
           if (accountType == "Strapi") {
             final response = await _authenticationService.getMe(accessToken);
             userDetail.value = response;
-            print(userDetail.value);
           } else {
             final name = jwtToken['user_name'];
             final email = jwtToken['user_email'];
@@ -151,7 +150,6 @@ class AuthController extends GetxController {
           }
         } else {
           userDetail.value = null; // chưa login
-          print(userDetail.value);
         }
       }
     } finally {

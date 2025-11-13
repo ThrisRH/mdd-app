@@ -2,7 +2,7 @@ part of 'app-pages.dart';
 
 abstract class Routes {
   static const home = "/home";
-  static const blogDetails = "/home/:slug";
+  static const blogDetails = "/home/detail/:slug";
   static const blogSearch = "/home/search/:query";
   static const category = "/topics/:id";
   static const author = "/author";

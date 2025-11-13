@@ -53,6 +53,6 @@ class BlogController extends GetxController {
 
   void openBlogsDetail(String slug) {
     Get.delete<BlogDetailsController>();
-    Get.toNamed('/home/$slug', arguments: {'slug': slug});
+    Get.toNamed('/home/detail/$slug', arguments: {'slug': slug});
   }
 }

@@ -16,73 +16,76 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 40),
-      child: Column(
-        children: [
-          Column(
-            spacing: 24,
-            children: [
-              HeaderLine(
-                child: Row(
-                  spacing: 6,
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 40),
+        child: Column(
+          children: [
+            Column(
+              spacing: 24,
+              children: [
+                HeaderLine(
+                  child: Row(
+                    spacing: 6,
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                    Text(
-                      DateFormat(
-                        'dd.MM.yyyy',
-                      ).format(DateTime.parse(blogData.publishedAt)),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        shape: BoxShape.circle,
+                      Text(
+                        DateFormat(
+                          'dd.MM.yyyy',
+                        ).format(DateTime.parse(blogData.publishedAt)),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
-                    ),
-                  ],
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Text(
-                blogData.title,
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineMedium?.copyWith(fontSize: 20),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: CachedNetworkImage(
-                  imageUrl:
-                      Env.isDev
-                          ? '$baseUrlNoUrl${blogData.cover.url}'
-                          : blogData.cover.url,
-                  height: 180,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+                Text(
+                  blogData.title,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineMedium?.copyWith(fontSize: 20),
                 ),
-              ),
-              Text(
-                blogData.mainContent,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              MDDButton(
-                bgColor: AppColors.primary,
-                label: "Xem thêm",
-                onTap: onTap,
-              ),
-            ],
-          ),
-        ],
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        Env.isDev
+                            ? '$baseUrlNoUrl${blogData.cover.url}'
+                            : blogData.cover.url,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Text(
+                  blogData.mainContent,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                MDDButton(
+                  bgColor: AppColors.primary,
+                  label: "Xem thêm",
+                  onTap: onTap,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

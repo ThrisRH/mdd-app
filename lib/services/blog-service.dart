@@ -9,6 +9,7 @@ class BlogService {
   final String baseUrl = dotenv.env['BASE_URL'] ?? "";
 
   Future<BlogResponse> getBlogs({int page = 1, int pageSize = 3}) async {
+    await Future.delayed(Duration(milliseconds: 100));
     final url = Uri.parse(
       '$baseUrl/blogs?pagination[page]=$page&pagination[pageSize]=$pageSize&populate=*&sort=createdAt:desc',
     );

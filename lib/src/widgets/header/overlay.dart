@@ -16,6 +16,7 @@ import 'package:mddblog/src/widgets/main/button.dart';
 import 'package:mddblog/src/widgets/post/header-line.dart';
 import 'package:mddblog/theme/controller/theme-controller.dart';
 import 'package:mddblog/theme/element/app-colors.dart';
+import 'package:mddblog/utils/toast.dart';
 
 class CategoryController extends GetxController {
   final CategoryService _categoryService = CategoryService();
@@ -291,9 +292,9 @@ class OverlayToggle extends StatelessWidget {
                                   onChanged: (val) async {
                                     if (!authController.isLoggedIn.value) {
                                       // Nhảy đến trang đăng nhập / UI đăng nhập riêng
-                                      Get.snackbar(
-                                        "Thông báo",
-                                        "Vui lòng đăng nhập trước khi bật vân tay",
+                                      SnackbarNotification.showInfo(
+                                        title: "Thông báo",
+                                        "Vui lòng đăng nhập trước khi bật vân tay!",
                                       );
                                       return;
                                     }

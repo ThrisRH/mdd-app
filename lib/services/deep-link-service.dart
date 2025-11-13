@@ -20,11 +20,8 @@ class DeepLinkHandler {
   }
 
   void _handleUri(Uri uri) {
-    debugPrint("Got URI: $uri");
     if (uri.scheme == "myapp" && uri.host == "auth") {
       final token = uri.queryParameters["token"];
-      debugPrint("Token: $token");
-      // TODO: Lưu token vào secure storage / GetX / Provider...
     }
   }
 }

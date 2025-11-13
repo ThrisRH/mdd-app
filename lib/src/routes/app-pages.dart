@@ -29,7 +29,7 @@ class AppPages {
         Get.put(BlogController());
         Get.put(AuthController());
       }),
-      transitionDuration: Duration.zero,
+      // transitionDuration: Duration.zero,
     ),
 
     // Blog details
@@ -40,7 +40,7 @@ class AppPages {
         Get.put(BlogDetailsController());
       }),
       middlewares: [AuthMiddleware()],
-      transitionDuration: Duration.zero,
+      // transitionDuration: Duration.zero,
     ),
 
     // Search blog
@@ -60,7 +60,7 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.put(AuthorController());
       }),
-      transitionDuration: Duration.zero,
+      // transitionDuration: Duration.zero,
     ),
 
     // About

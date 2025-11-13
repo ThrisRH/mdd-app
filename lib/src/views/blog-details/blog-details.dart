@@ -8,14 +8,14 @@ import 'package:mddblog/services/blog-service.dart';
 import 'package:mddblog/services/comment-service.dart';
 import 'package:mddblog/src/views/home/widgets/banner.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
-import 'package:mddblog/src/widgets/header/navbar.dart';
-import 'package:mddblog/src/widgets/header/overlay.dart';
+import 'package:mddblog/src/widgets/layout/phone-body.dart';
 import 'package:mddblog/src/widgets/main/error.dart';
 import 'package:mddblog/src/widgets/main/loading.dart';
 import 'package:mddblog/src/widgets/post/leave-comment.dart';
 import 'package:mddblog/src/widgets/post/post-detail.dart';
 import 'package:mddblog/src/widgets/post/relative-post.dart';
 import 'package:mddblog/src/widgets/post/share-with.dart';
+import 'package:mddblog/utils/toast.dart';
 
 // Controller
 class BlogDetailsController extends GetxController {
@@ -93,21 +93,17 @@ class BlogDetailsController extends GetxController {
     String comment,
   ) async {
     if (blogId == "" || readerId == "" || comment == "") {
-      Get.snackbar(
-        "Error Comment!",
-        "Không được để trống!!",
-        colorText: Colors.white,
-        backgroundColor: Colors.red.withValues(alpha: 0.4),
+      SnackbarNotification.showError(
+        title: "Comment thất bại!",
+        "Không được để trống!",
       );
       return false;
     }
 
     if (comment.length < 8) {
-      Get.snackbar(
-        "Error Comment!",
-        "Comment quá ngắn!",
-        colorText: Colors.white,
-        backgroundColor: Colors.red.withValues(alpha: 0.4),
+      SnackbarNotification.showError(
+        title: "Comment thất bại!",
+        "Comment quá ngắn!!",
       );
       return false;
     }
@@ -118,11 +114,9 @@ class BlogDetailsController extends GetxController {
       blogId,
     );
     if (!response) {
-      Get.snackbar(
-        "Error Comment!",
-        "Gửi comment thất bại!!",
-        colorText: Colors.white,
-        backgroundColor: Colors.red.withValues(alpha: 0.4),
+      SnackbarNotification.showError(
+        title: "Comment thất bại!",
+        "Gửi comment không thành công!",
       );
       return false;
     }
@@ -137,69 +131,55 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+    return PhoneBody(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          controller.fetchBlogDetails(controller.blogSlug);
+          controller.fetchComment(controller.blogDetail.value!.documentId);
+          controller.fetchRelativeBlogs(
+            controller.blogDetail.value!.categoryData.documentId,
+          );
+        },
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              BannerSection(),
 
-          body: RefreshIndicator(
-            onRefresh: () async {
-              controller.fetchBlogDetails(controller.blogSlug);
-              controller.fetchComment(controller.blogDetail.value!.documentId);
-              controller.fetchRelativeBlogs(
-                controller.blogDetail.value!.categoryData.documentId,
-              );
-            },
-            child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  BannerSection(),
+              // // Body
+              Obx(() {
+                final detail = controller.blogDetail.value;
+                final relativePosts = controller.relativeBlogs;
+                final comments = controller.comments;
 
-                  // // Body
-                  Obx(() {
-                    final detail = controller.blogDetail.value;
-                    final relativePosts = controller.relativeBlogs;
-                    final comments = controller.comments;
+                if (controller.isDetailLoading.value) {
+                  return Center(child: Loading());
+                }
+                if (detail == null) {
+                  return ErrorNotification();
+                }
 
-                    if (controller.isDetailLoading.value) {
-                      return Center(child: Loading());
-                    }
-                    if (detail == null) {
-                      return ErrorNotification();
-                    }
-
-                    return Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      margin: EdgeInsets.only(top: 40),
-                      child: Column(
-                        spacing: 16,
-                        children: [
-                          BlogDetailsContainer(detail: detail),
-                          ShareWith(),
-                          RelativePost(relativePosts),
-                          LeaveComment(comments, blogId: detail.documentId),
-                        ],
-                      ),
-                    );
-                  }),
-                  // Footer
-                  Footer(),
-                ],
-              ),
-            ),
+                return Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  margin: EdgeInsets.only(top: 40),
+                  child: Column(
+                    spacing: 16,
+                    children: [
+                      BlogDetailsContainer(detail: detail),
+                      ShareWith(),
+                      RelativePost(relativePosts),
+                      LeaveComment(comments, blogId: detail.documentId),
+                    ],
+                  ),
+                );
+              }),
+              // Footer
+              Footer(),
+            ],
           ),
         ),
-
-        // Show ra Overlay nav điều hướng khi showOverlay === true
-        Obx(
-          () =>
-              overlayController.showOverlay.value
-                  ? OverlayToggle(closeOverlay: overlayController.closeOverlay)
-                  : SizedBox.shrink(),
-        ),
-      ],
+      ),
     );
   }
 }

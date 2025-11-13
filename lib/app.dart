@@ -21,6 +21,7 @@ class App extends StatelessWidget {
               : ThemeMode.light,
       initialRoute: '/home',
       getPages: AppPages.pages,
+
       initialBinding: BindingsBuilder(() {
         // Khởi tạo các controller
         Get.put(ThemeController());

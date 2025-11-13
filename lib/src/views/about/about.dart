@@ -12,6 +12,7 @@ import 'package:mddblog/src/widgets/about/about-content-section.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/header/navbar.dart';
 import 'package:mddblog/src/widgets/header/overlay.dart';
+import 'package:mddblog/src/widgets/layout/phone-body.dart';
 import 'package:mddblog/src/widgets/main/error.dart';
 import 'package:mddblog/src/widgets/main/loading.dart';
 import 'package:mddblog/theme/element/app-colors.dart';
@@ -53,126 +54,111 @@ class About extends GetWidget<AboutController> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
+    return PhoneBody(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverToBoxAdapter(child: BannerSection()),
+          //  Body
+          Obx(() {
+            switch (controller.status.value) {
+              case Status.loading:
+                return SliverFillRemaining(child: Center(child: Loading()));
+              case Status.error:
+                return SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: ErrorNotification()),
+                );
+              case Status.success:
+                final aboutData = controller.about.value!.data;
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 172 / 2),
+                          width: double.infinity,
+                          padding: EdgeInsets.only(
+                            left: 16,
+                            right: 16,
+                            bottom: 40,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Positioned(
+                                top: -(172 / 2),
+                                left: 0,
+                                right: 0,
+                                child: Center(
+                                  child: AboutAvatarContainer(
+                                    imageUrl:
+                                        "$baseUrlNoUrl${aboutData.authorAvt.url}",
+                                  ),
+                                ),
+                              ),
 
-          body: CustomScrollView(
-            slivers: <Widget>[
-              SliverToBoxAdapter(child: BannerSection()),
-              //  Body
-              Obx(() {
-                switch (controller.status.value) {
-                  case Status.loading:
-                    return SliverFillRemaining(child: Center(child: Loading()));
-                  case Status.error:
-                    return SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(child: ErrorNotification()),
-                    );
-                  case Status.success:
-                    final aboutData = controller.about.value!.data;
-                    return SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(top: 172 / 2),
-                              width: double.infinity,
-                              padding: EdgeInsets.only(
-                                left: 16,
-                                right: 16,
-                                bottom: 40,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.3),
-                                borderRadius: BorderRadius.circular(40),
-                              ),
-                              child: Stack(
-                                clipBehavior: Clip.none,
-                                children: [
-                                  Positioned(
-                                    top: -(172 / 2),
-                                    left: 0,
-                                    right: 0,
-                                    child: Center(
-                                      child: AboutAvatarContainer(
-                                        imageUrl:
-                                            "$baseUrlNoUrl${aboutData.authorAvt.url}",
+                              Container(
+                                margin: EdgeInsets.only(top: 100),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: SvgPicture.asset(
+                                        "assets/svg/AboutMDD.svg",
                                       ),
                                     ),
-                                  ),
 
-                                  Container(
-                                    margin: EdgeInsets.only(top: 100),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: SvgPicture.asset(
-                                            "assets/svg/AboutMDD.svg",
-                                          ),
-                                        ),
-
-                                        // Vùng chứa nội dụng About
-                                        AboutContentSection(
-                                          content: aboutData.aboutContent,
-                                        ),
-
-                                        // Vùng chứa nội dung Contact Info
-                                        AboutContactInfoSection(
-                                          contacts: aboutData.contact,
-                                        ),
-
-                                        // Lời chúc
-                                        SizedBox(height: 16),
-                                        Text(
-                                          'Have a nice day! ',
-                                          style:
-                                              Theme.of(
-                                                context,
-                                              ).textTheme.headlineSmall,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'my MDD diary',
-                                          style:
-                                              Theme.of(
-                                                context,
-                                              ).textTheme.bodyMedium,
-                                        ),
-                                      ],
+                                    // Vùng chứa nội dụng About
+                                    AboutContentSection(
+                                      content: aboutData.aboutContent,
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  default:
-                    return SizedBox.shrink();
-                }
-              }),
-              SliverToBoxAdapter(child: Footer()),
-            ],
-          ),
-        ),
 
-        // Show ra Overlay nav điều hướng khi showOverlay === true
-        Obx(
-          () =>
-              overlayController.showOverlay.value
-                  ? OverlayToggle(closeOverlay: overlayController.closeOverlay)
-                  : SizedBox.shrink(),
-        ),
-      ],
+                                    // Vùng chứa nội dung Contact Info
+                                    AboutContactInfoSection(
+                                      contacts: aboutData.contact,
+                                    ),
+
+                                    // Lời chúc
+                                    SizedBox(height: 16),
+                                    Text(
+                                      'Have a nice day! ',
+                                      style:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.headlineSmall,
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'my MDD diary',
+                                      style:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              default:
+                return SizedBox.shrink();
+            }
+          }),
+          SliverToBoxAdapter(child: Footer()),
+        ],
+      ),
     );
   }
 }

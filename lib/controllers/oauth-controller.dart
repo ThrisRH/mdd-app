@@ -36,11 +36,6 @@ class OauthController extends GetxController {
       final userEmail = uri.queryParameters['email'];
       final imageUrl = uri.queryParameters['image'];
 
-      print('token: $token');
-      print('userName: $userName');
-      print('userEmail: $userEmail');
-      print('imageUrl: $imageUrl');
-
       if (token != null &&
           userName != null &&
           userEmail != null &&

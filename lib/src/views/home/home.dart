@@ -6,8 +6,7 @@ import 'package:mddblog/controllers/blog-controller.dart';
 import 'package:mddblog/controllers/overlay-controller.dart';
 import 'package:mddblog/src/views/home/widgets/banner.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
-import 'package:mddblog/src/widgets/header/navbar.dart';
-import 'package:mddblog/src/widgets/header/overlay.dart';
+import 'package:mddblog/src/widgets/layout/phone-body.dart';
 import 'package:mddblog/src/widgets/main/error.dart';
 import 'package:mddblog/src/widgets/main/loading.dart';
 import 'package:mddblog/src/widgets/main/pagination_bar.dart';
@@ -17,92 +16,94 @@ class Home extends GetWidget<BlogController> {
   Home({super.key});
 
   final overlayController = Get.find<OverlayController>();
+  final ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
-          body: RefreshIndicator(
-            onRefresh: () async {
-              controller.fetchPage(controller.currentPage.value);
-            },
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverToBoxAdapter(child: BannerSection()),
+    return PhoneBody(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          controller.fetchPage(controller.currentPage.value);
+        },
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: <Widget>[
+            SliverToBoxAdapter(child: BannerSection()),
 
-                Obx(() {
-                  // Body
-                  if (controller.isLoading.value) {
-                    return SliverFillRemaining(child: Center(child: Loading()));
-                  }
-                  if (controller.blogs.isEmpty) {
-                    return SliverFillRemaining(
-                      child: ErrorNotificationWithMessage(
-                        errorMessage: controller.errorMessage.value,
-                      ),
-                    );
-                  }
-                  return SliverList(
-                    delegate: SliverChildListDelegate([
-                      // Tiêu đề
-                      Padding(
-                        padding: const EdgeInsets.only(top: 40),
-                        child: Center(
-                          child: Text(
-                            "Blogs",
-                            style: Theme.of(context).textTheme.headlineLarge,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-
-                      // Danh sách blog
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Column(
-                          children:
-                              controller.blogs.map((blog) {
-                                return PostCard(
-                                  blogData: blog,
-                                  onTap:
-                                      () =>
-                                          controller.openBlogsDetail(blog.slug),
-                                );
-                              }).toList(),
-                        ),
-                      ),
-
-                      // Thanh phân trang
-                      PaginationBar(
-                        totalPages: controller.totalPages.value,
-                        onPageSelected: (page) {
-                          if (page != controller.currentPage.value) {
-                            controller.fetchPage(page);
-                          }
-                        },
-                        currentPage: controller.currentPage.value,
-                      ),
-
-                      // Footer
-                      Footer(),
-                    ]),
-                  );
-                }),
-              ],
+            // Blog title
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40),
+                child: Center(
+                  child: Text(
+                    "Blogs",
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
 
-        // Show ra Overlay nav điều hướng khi showOverlay === true
-        Obx(
-          () =>
-              overlayController.showOverlay.value
-                  ? OverlayToggle(closeOverlay: overlayController.closeOverlay)
-                  : SizedBox.shrink(),
+            SliverToBoxAdapter(child: const SizedBox(height: 40)),
+
+            // Blogs list
+            Obx(() {
+              if (controller.isLoading.value) {
+                return const SliverFillRemaining(
+                  child: Center(child: Loading()),
+                );
+              }
+              if (controller.blogs.isEmpty) {
+                return SliverFillRemaining(
+                  child: ErrorNotificationWithMessage(
+                    errorMessage: controller.errorMessage.value,
+                  ),
+                );
+              }
+
+              return SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final blog = controller.blogs[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8,
+                    ),
+                    child: PostCard(
+                      blogData: blog,
+                      onTap: () => controller.openBlogsDetail(blog.slug),
+                    ),
+                  );
+                }, childCount: controller.blogs.length),
+              );
+            }),
+
+            SliverToBoxAdapter(
+              child: Obx(() {
+                if (controller.blogs.isEmpty) {
+                  return SizedBox.shrink();
+                }
+                return PaginationBar(
+                  totalPages: controller.totalPages.value,
+                  onPageSelected: (page) {
+                    if (page != controller.currentPage.value) {
+                      controller.fetchPage(page);
+                      // 👇 Cuộn về đầu (Banner)
+                      scrollController.animateTo(
+                        0,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeOut,
+                      );
+                    }
+                  },
+                  currentPage: controller.currentPage.value,
+                );
+              }),
+            ),
+
+            SliverToBoxAdapter(child: Footer()),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

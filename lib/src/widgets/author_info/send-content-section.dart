@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mddblog/services/author-service.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
 import 'package:mddblog/theme/element/app-colors.dart';
+import 'package:mddblog/utils/toast.dart';
 
 class SendContentController extends GetxController {
   var email = "".obs;
@@ -17,39 +18,24 @@ class SendContentController extends GetxController {
     try {
       isLoading.value = true;
       if (email.value.trim().isEmpty) {
-        Get.snackbar(
-          "Gửi không thành công!",
-          "Không được để trống",
-          snackPosition: SnackPosition.BOTTOM,
-          margin: const EdgeInsets.all(10),
-          backgroundColor: Colors.red.shade100,
-          colorText: Colors.black,
+        SnackbarNotification.showError(
+          title: "Thất bại!",
+          "Không được để trống!!",
         );
         return;
       } else if (!RegExp(
         r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
       ).hasMatch(email.value.trim())) {
-        Get.snackbar(
-          "Gửi không thành công!",
-          "Email không hợp lệ",
-          snackPosition: SnackPosition.BOTTOM,
-          margin: const EdgeInsets.all(10),
-          backgroundColor: Colors.red.shade100,
-          colorText: Colors.black,
+        SnackbarNotification.showError(
+          title: "Thất bại!",
+          "Email không hợp lệ!",
         );
         return;
       }
 
       final response = await authorService.sendContent(email.value);
       if (!response) {
-        Get.snackbar(
-          "Gửi không thành công!",
-          "Email đã tồn tại",
-          snackPosition: SnackPosition.BOTTOM,
-          margin: const EdgeInsets.all(10),
-          backgroundColor: Colors.red.shade400,
-          colorText: Colors.black,
-        );
+        SnackbarNotification.showError(title: "Thất bại!", "Email đã tồn tại!");
         return;
       }
 
@@ -57,13 +43,9 @@ class SendContentController extends GetxController {
       email.value = "";
       emailController.clear();
 
-      Get.snackbar(
-        "Gửi thành công!",
+      SnackbarNotification.showError(
+        title: "Gửi thành công!",
         "Gửi contact cho MDD thành công!",
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(10),
-        backgroundColor: Colors.green.shade400,
-        colorText: Colors.black,
       );
     } finally {
       isLoading.value = false;

@@ -41,6 +41,6 @@ class BlogByCateController extends GetxController {
   }
 
   void openBlogsDetail(String slug) {
-    Get.toNamed('/home/$slug', arguments: {'slug': slug});
+    Get.toNamed('/home/detail/$slug', arguments: {'slug': slug});
   }
 }
