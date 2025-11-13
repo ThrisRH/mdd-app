@@ -87,7 +87,6 @@ class Home extends GetWidget<BlogController> {
                   onPageSelected: (page) {
                     if (page != controller.currentPage.value) {
                       controller.fetchPage(page);
-                      // 👇 Cuộn về đầu (Banner)
                       scrollController.animateTo(
                         0,
                         duration: const Duration(milliseconds: 400),
