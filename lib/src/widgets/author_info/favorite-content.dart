@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:mddblog/controllers/author-controller.dart';
 import 'package:mddblog/controllers/blog-controller.dart';
 
-class FavoriteContent extends GetWidget<BlogController> {
-  const FavoriteContent({super.key});
+class FavoriteContent extends GetWidget<AuthorController> {
+  FavoriteContent({super.key});
+  final blogController = Get.put(BlogController());
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 363 / 423, // tỉ lệ của SVG gốc
+      aspectRatio: 363 / 423,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -37,7 +39,7 @@ class FavoriteContent extends GetWidget<BlogController> {
                 }
                 if (controller.favoriteBlogs.isEmpty) {
                   controller.fetchFavorites();
-                  return const Text("Không có blog nào");
+                  return Center(child: const Text("Không có blog nào"));
                 }
 
                 return ListView.builder(
@@ -48,7 +50,7 @@ class FavoriteContent extends GetWidget<BlogController> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(bottom: 16),
                       child: GestureDetector(
-                        onTap: () => controller.openBlogsDetail(blog.slug),
+                        onTap: () => blogController.openBlogsDetail(blog.slug),
                         child: Text(
                           "${index + 1}.   ${blog.title}",
                           style: Theme.of(

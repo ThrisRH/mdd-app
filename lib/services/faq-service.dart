@@ -1,22 +1,28 @@
-import 'dart:convert';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/models/faq-model.dart';
+import 'package:mddblog/utils/dio-error-handler.dart';
+import 'package:mddblog/utils/toast.dart';
 
 class FaqService {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? "";
+  final dio = Dio();
 
   Future<FaqResponse> getFaqs() async {
-    final url = Uri.parse('$baseUrl/faq?populate=*');
-    final response = await http.get(url);
+    final url = '$baseUrl/faq?populate=*';
 
-    if (response.statusCode == 200) {
-      final body = jsonDecode(response.body);
-
+    try {
+      final response = await dio.get(url);
+      final body = response.data;
       return FaqResponse.fromJson(body);
-    } else {
-      throw Exception("Failed to load FAQ");
+    } on DioException catch (e) {
+      handleDioError(e);
+      rethrow;
+    } catch (e) {
+      SnackbarNotification.showError(
+        title: "Đã xảy ra lỗi",
+        (e as dynamic).message,
+      );
+      rethrow;
     }
   }
 }

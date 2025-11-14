@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/controllers/auth-controller.dart';
 import 'package:mddblog/models/auth-model.dart';
 import 'package:mddblog/src/widgets/decoration/dot.dart';

@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/models/blog-model.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
 import 'package:mddblog/src/widgets/post/header-line.dart';
 import 'package:intl/intl.dart';
+import 'package:mddblog/src/widgets/post/image-skeleton.dart';
 import 'package:mddblog/theme/element/app-colors.dart';
 import 'package:mddblog/utils/env.dart';
 
@@ -68,6 +69,8 @@ class PostCard extends StatelessWidget {
                         Env.isDev
                             ? '$baseUrlNoUrl${blogData.cover.url}'
                             : blogData.cover.url,
+                    placeholder: (context, url) => ImageSkeleton(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                     height: 180,
                     width: double.infinity,
                     fit: BoxFit.cover,

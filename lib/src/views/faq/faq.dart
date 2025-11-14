@@ -3,16 +3,13 @@ import 'package:get/get.dart';
 import 'package:mddblog/controllers/overlay-controller.dart';
 import 'package:mddblog/models/faq-model.dart';
 import 'package:mddblog/services/faq-service.dart';
+import 'package:mddblog/src/views/faq/widget/faq-items.dart';
 import 'package:mddblog/src/views/home/widgets/banner.dart';
-import 'package:mddblog/src/widgets/faq/faq-card.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
-import 'package:mddblog/src/widgets/header/navbar.dart';
-import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/layout/phone-body.dart';
 import 'package:mddblog/src/widgets/main/error.dart';
 import 'package:mddblog/src/widgets/main/loading.dart';
 import 'package:mddblog/src/widgets/post/header-line.dart';
-import 'package:mddblog/theme/element/app-colors.dart';
 
 // Controller
 class FaqController extends GetxController {
@@ -42,12 +39,18 @@ class FaqController extends GetxController {
   }
 
   void toggleAnswer(int index) {
-    if (selectedIndex.value == index) {
+    final prev = selectedIndex.value;
+    if (prev == index) {
       selectedIndex.value = null;
+      update(['faq-$index']);
     } else {
       selectedIndex.value = index;
+      if (prev != null) {
+        update(['faq-$index', 'faq-$prev']);
+      } else {
+        update(['faq-$index']);
+      }
     }
-    update(["faq_$index"]);
   }
 }
 
@@ -63,89 +66,81 @@ class FAQ extends GetWidget<FaqController> {
         onRefresh: () async {
           controller.fetchFAQs();
         },
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Column(
-            spacing: 32,
-            children: [
-              // Header Bar
-              BannerSection(),
+        child: Column(
+          spacing: 16,
+          children: [
+            // Header Bar
+            BannerSection(),
 
-              //  Body
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  spacing: 32,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40.0),
+                    child: Text(
                       "Câu hỏi thường gặp",
                       style: Theme.of(context).textTheme.headlineLarge,
                     ),
-
-                    // Thanh ngang
-                    HeaderLine(
-                      child: Row(
-                        children: List.generate(8, (index) {
-                          return Container(
-                            margin: EdgeInsets.only(left: 4, right: 4),
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              shape: BoxShape.circle,
-                            ),
-                          );
-                        }),
-                      ),
-                    ),
-
-                    // Nội dung FAQ
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: Obx(() {
-                        if (controller.isLoading.value) {
-                          return Center(child: Loading());
-                        }
-                        if (controller.faqs.isEmpty) {
-                          return Center(
-                            child: ErrorNotificationWithMessage(
-                              errorMessage: controller.errorMessage.value,
-                            ),
-                          );
-                        }
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: controller.faqs.length,
-                          itemBuilder: (context, index) {
-                            final faq = controller.faqs[index];
-                            return Obx(
-                              () => FAQCard(
-                                question: faq.question,
-                                answer: faq.answer,
-                                toggleAnswer:
-                                    () => controller.toggleAnswer(index),
-                                isSelected:
-                                    controller.selectedIndex.value == index,
-                              ),
-                            );
-                          },
+                  ),
+                  HeaderLine(
+                    child: Row(
+                      children: List.generate(8, (index) {
+                        return Container(
+                          margin: EdgeInsets.only(left: 4, right: 4),
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            shape: BoxShape.circle,
+                          ),
                         );
                       }),
                     ),
+                  ),
+                ],
+              ),
+            ),
+
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(24.0),
+                margin: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24.0),
+                  color: Color(0xFFFBF4ED),
+                ),
+                child: CustomScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    Obx(() {
+                      if (controller.isLoading.value) {
+                        return SliverFillRemaining(
+                          child: Center(child: Loading()),
+                        );
+                      }
+                      if (controller.faqs.isEmpty) {
+                        return SliverFillRemaining(
+                          child: ErrorNotificationWithMessage(
+                            errorMessage: controller.errorMessage.value,
+                          ),
+                        );
+                      }
+                      return SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final faq = controller.faqs[index];
+                          return FAQItems(faq: faq, index: index);
+                        }, childCount: controller.faqs.length),
+                      );
+                    }),
                   ],
                 ),
               ),
-              // Footer
-              Footer(),
-            ],
-          ),
+            ),
+
+            // Footer
+            Footer(),
+          ],
         ),
       ),
     );

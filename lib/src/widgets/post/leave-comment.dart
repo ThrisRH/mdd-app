@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/controllers/auth-controller.dart';
 import 'package:mddblog/models/comment-model.dart';
 import 'package:mddblog/src/views/blog-details/blog-details.dart';
@@ -10,9 +10,13 @@ import 'package:mddblog/utils/env.dart';
 
 class LeaveComment extends GetWidget {
   final List<CommentContent> comments;
-
-  final String blogId;
-  LeaveComment(this.comments, {super.key, required this.blogId});
+  final String blogId, blogSlug;
+  LeaveComment(
+    this.comments, {
+    super.key,
+    required this.blogId,
+    required this.blogSlug,
+  });
 
   final BlogDetailsController blogDetailsController = Get.put(
     BlogDetailsController(),
@@ -155,7 +159,7 @@ class LeaveComment extends GetWidget {
                       );
                       if (response) {
                         await blogDetailsController.fetchBlogPage(
-                          blogId,
+                          blogSlug,
                         ); // fetch lại danh sách
                         _commentInputController.clear();
                       }

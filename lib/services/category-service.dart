@@ -1,21 +1,26 @@
-import 'dart:convert';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/models/category-model.dart';
+import 'package:mddblog/utils/dio-error-handler.dart';
+import 'package:mddblog/utils/toast.dart';
 
 class CategoryService {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? "";
-
+  final dio = Dio();
   Future<CategoryResponse> getCategories() async {
-    final url = Uri.parse('$baseUrl/cates?populate=*');
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final body = jsonDecode(response.body);
+    final url = '$baseUrl/cates?populate=*';
+    try {
+      final response = await dio.get(url);
+      final body = response.data;
       return CategoryResponse.fromJson(body);
-    } else {
-      throw Exception("Failed to load Category");
+    } on DioException catch (e) {
+      handleDioError(e);
+      rethrow;
+    } catch (e) {
+      SnackbarNotification.showError(
+        title: "Đã xảy ra lỗi",
+        "Vui lòng thử lại sau.",
+      );
+      rethrow;
     }
   }
 }

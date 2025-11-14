@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/models/author-model.dart';
+import 'package:mddblog/src/widgets/post/image-skeleton.dart';
 import 'package:mddblog/utils/env.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -128,6 +129,8 @@ class InfoCard extends StatelessWidget {
                     Env.isDev
                         ? "$baseUrlNoUrl${data.authorAvatar.url}"
                         : data.authorAvatar.url,
+                placeholder: (context, url) => ImageSkeleton(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
                 fit: BoxFit.cover,
               ),
             ),

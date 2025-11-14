@@ -1,43 +1,54 @@
 import 'dart:convert';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/models/author-model.dart';
+import 'package:mddblog/utils/dio-error-handler.dart';
+import 'package:mddblog/utils/toast.dart';
 
 class AuthorService {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? "";
+  final dio = Dio();
 
   Future<AuthorResponse> getAuthorInfo() async {
-    final url = Uri.parse("$baseUrl/authors?populate=*");
-    final response = await http.get(url);
+    final url = "$baseUrl/authors?populate=*";
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(response.body);
-
+    try {
+      final response = await dio.get(url);
+      final Map<String, dynamic> jsonData = response.data;
       return AuthorResponse.fromJson(jsonData);
-    } else {
-      throw Exception("Fail to load Author");
+    } on DioException catch (e) {
+      handleDioError(e);
+      rethrow;
+    } catch (e) {
+      SnackbarNotification.showError(
+        title: "Đã xảy ra lỗi",
+        "Vui lòng thử lại sau.",
+      );
+      rethrow;
     }
   }
 
   Future<bool> sendContent(String contactEmail) async {
     try {
-      final url = Uri.parse("$baseUrl/contacts");
-      final response = await http.post(
+      final url = "$baseUrl/contacts";
+      await dio.post(
         url,
-        headers: <String, String>{"Content-Type": "application/json"},
-        body: jsonEncode({
+        options: Options(
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        ),
+        data: jsonEncode({
           "data": {"contactEmail": contactEmail},
         }),
       );
-
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      throw Exception("Failed to send contact");
+      return true;
+    } on DioException catch (e) {
+      handleDioError(e);
+      return false;
+    } catch (e) {
+      SnackbarNotification.showError(
+        title: "Đã xảy ra lỗi",
+        (e as dynamic).message,
+      );
+      return false;
     }
   }
 }

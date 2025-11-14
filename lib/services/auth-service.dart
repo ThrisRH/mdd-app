@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/models/auth-model.dart';
 import 'package:mddblog/services/secure-storage.dart';
 
@@ -14,8 +15,6 @@ final cloudinary = Cloudinary.full(
 );
 
 class AuthenticationService {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? "";
-
   static Future<bool> isLoggedIn() async {
     // Lấy token từ SharedPreferences
     final token = await SecureStorage.getTokens();

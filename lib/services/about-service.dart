@@ -1,22 +1,29 @@
-import 'dart:convert';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/models/about-model.dart';
+import 'package:mddblog/utils/dio-error-handler.dart';
+import 'package:mddblog/utils/toast.dart';
 
 class AboutService {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? "";
+  final dio = Dio();
 
   Future<AboutResponse> getAbout() async {
-    final url = Uri.parse('$baseUrl/about?populate=*');
-    final response = await http.get(url);
+    final url = '$baseUrl/about?populate=*';
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(response.body);
+    try {
+      final response = await dio.get(url);
 
+      final Map<String, dynamic> jsonData = response.data;
       return AboutResponse.fromJson(jsonData);
-    } else {
-      throw Exception("Failed to load About");
+    } on DioException catch (e) {
+      handleDioError(e);
+      rethrow;
+    } catch (e) {
+      SnackbarNotification.showError(
+        title: "Đã xảy ra lỗi",
+        "Vui lòng thử lại sau.",
+      );
+      rethrow;
     }
   }
 }

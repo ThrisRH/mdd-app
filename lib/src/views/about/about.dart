@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/controllers/overlay-controller.dart';
 import 'package:mddblog/models/about-model.dart';
 import 'package:mddblog/services/about-service.dart';

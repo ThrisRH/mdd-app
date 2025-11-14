@@ -1,24 +1,28 @@
-import 'dart:convert';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/models/comment-model.dart';
+import 'package:mddblog/utils/dio-error-handler.dart';
+import 'package:mddblog/utils/toast.dart';
 
 class CommentService {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? "";
-
+  final dio = Dio();
   Future<CommentResponse> getComment(String blogId) async {
-    final url = Uri.parse(
-      '$baseUrl/comments?filters[blog][documentId][\$eq]=$blogId&populate[reader][populate]=avatar',
-    );
-    final response = await http.get(url);
+    final url =
+        '$baseUrl/comments?filters[blog][documentId][\$eq]=$blogId&populate[reader][populate]=avatar';
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(response.body);
-
+    try {
+      final response = await dio.get(url);
+      final Map<String, dynamic> jsonData = response.data;
       return CommentResponse.fromJson(jsonData);
-    } else {
-      throw Exception("Failed to load comments");
+    } on DioException catch (e) {
+      handleDioError(e);
+      rethrow;
+    } catch (e) {
+      SnackbarNotification.showError(
+        title: "Đã xảy ra lỗi",
+        "Vui lòng thử lại sau.",
+      );
+      rethrow;
     }
   }
 
@@ -27,20 +31,26 @@ class CommentService {
     String comment,
     String blogId,
   ) async {
-    final url = Uri.parse('$baseUrl/comments');
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        'data': {'reader': readerId, 'content': comment, 'blog': blogId},
-      }),
-    );
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
+    final url = '$baseUrl/comments';
+    try {
+      await dio.post(
+        url,
+        options: Options(
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        ),
+        data: {
+          'data': {'reader': readerId, 'content': comment, 'blog': blogId},
+        },
+      );
       return true;
-    } else {
+    } on DioException catch (e) {
+      handleDioError(e);
+      return false;
+    } catch (e) {
+      SnackbarNotification.showError(
+        title: "Đã xảy ra lỗi",
+        (e as dynamic).message,
+      );
       return false;
     }
   }

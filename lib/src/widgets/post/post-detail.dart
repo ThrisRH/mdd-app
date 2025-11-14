@@ -2,9 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
-import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/config/api.dart';
 import 'package:mddblog/models/blog-details-model.dart';
 import 'package:mddblog/src/widgets/post/header-line.dart';
+import 'package:mddblog/src/widgets/post/image-skeleton.dart';
 import 'package:mddblog/utils/env.dart';
 
 class BlogDetailsContainer extends StatelessWidget {
@@ -58,6 +59,8 @@ class BlogDetailsContainer extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: CachedNetworkImage(
+            placeholder: (context, url) => ImageSkeleton(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
             imageUrl:
                 Env.isDev
                     ? '$baseUrlNoUrl${detail.cover.url}'
@@ -74,6 +77,8 @@ class BlogDetailsContainer extends StatelessWidget {
               (image) => ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: CachedNetworkImage(
+                  placeholder: (context, url) => ImageSkeleton(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                   imageUrl:
                       Env.isDev
                           ? '$baseUrlNoUrl${detail.cover.url}'

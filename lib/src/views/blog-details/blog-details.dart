@@ -46,8 +46,8 @@ class BlogDetailsController extends GetxController {
       if (detail != null) {
         await Future.wait([
           if (detail.categoryData != null)
-            fetchRelativeBlogs(detail.categoryData!.documentId),
-          if (detail.documentId != null) fetchComments(detail.documentId!),
+            fetchRelativeBlogs(detail.categoryData.documentId),
+          if (detail.documentId != null) fetchComments(detail.documentId),
         ]);
       }
     } finally {
@@ -162,7 +162,11 @@ class BlogDetailsPage extends GetWidget<BlogDetailsController> {
                       BlogDetailsContainer(detail: detail),
                       ShareWith(),
                       RelativePost(relativePosts),
-                      LeaveComment(comments, blogId: detail.documentId),
+                      LeaveComment(
+                        comments,
+                        blogId: detail.documentId,
+                        blogSlug: detail.slug,
+                      ),
                     ],
                   ),
                 );

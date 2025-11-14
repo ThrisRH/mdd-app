@@ -1,7 +1,7 @@
 import 'package:local_auth/local_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:local_auth_android/local_auth_android.dart';
-import 'package:mddblog/config/constants.dart';
+import 'package:mddblog/config/api.dart';
 import 'dart:convert';
 import 'secure-storage.dart';
 
