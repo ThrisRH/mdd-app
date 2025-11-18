@@ -97,7 +97,6 @@ class AuthController extends GetxController {
       isLoggedIn.value = token != null;
 
       SnackbarNotification.showSuccess("Login thành công");
-      Get.delete<AuthController>();
       Get.offAllNamed("/home");
     } finally {
       isLoading.value = false;

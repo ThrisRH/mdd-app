@@ -101,11 +101,12 @@ class BlogListBody extends StatelessWidget {
                       onPageSelected: onPageSelected,
                       currentPage: currentPage.value,
                     ),
-                    Footer(),
                   ],
                 ),
               );
             }),
+
+            Footer(),
           ],
         ),
       ),

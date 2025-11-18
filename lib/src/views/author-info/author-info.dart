@@ -51,13 +51,13 @@ class AuthorInfoPage extends GetWidget<AuthorController> {
                       MoreTopicSection(),
                       FavoriteContent(),
                       SendContentSection(),
-
-                      // Footer
-                      Footer(),
                     ],
                   ),
                 );
               }),
+
+              // Footer
+              Footer(),
             ],
           ),
         ),

@@ -17,7 +17,7 @@ class FaqController extends GetxController {
 
   var faqs = <QuestionAnswer>[].obs;
   var isLoading = true.obs;
-  var selectedIndex = RxnInt();
+  var selectedIndex = RxnInt(0);
   var errorMessage = "".obs;
 
   @override
@@ -66,81 +66,78 @@ class FAQ extends GetWidget<FaqController> {
         onRefresh: () async {
           controller.fetchFAQs();
         },
-        child: Column(
-          spacing: 16,
-          children: [
-            // Header Bar
-            BannerSection(),
+        child: SingleChildScrollView(
+          child: Column(
+            spacing: 16,
+            children: [
+              // Header Bar
+              BannerSection(),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40.0),
-                    child: Text(
-                      "Câu hỏi thường gặp",
-                      style: Theme.of(context).textTheme.headlineLarge,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40.0),
+                      child: Text(
+                        "Câu hỏi thường gặp",
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      ),
                     ),
-                  ),
-                  HeaderLine(
-                    child: Row(
-                      children: List.generate(8, (index) {
-                        return Container(
-                          margin: EdgeInsets.only(left: 4, right: 4),
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            shape: BoxShape.circle,
-                          ),
-                        );
-                      }),
+                    HeaderLine(
+                      child: Row(
+                        children: List.generate(8, (index) {
+                          return Container(
+                            margin: EdgeInsets.only(left: 4, right: 4),
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              shape: BoxShape.circle,
+                            ),
+                          );
+                        }),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            Expanded(
-              child: Container(
+              Container(
                 padding: EdgeInsets.all(24.0),
                 margin: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24.0),
                   color: Color(0xFFFBF4ED),
                 ),
-                child: CustomScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                    Obx(() {
-                      if (controller.isLoading.value) {
-                        return SliverFillRemaining(
-                          child: Center(child: Loading()),
-                        );
-                      }
-                      if (controller.faqs.isEmpty) {
-                        return SliverFillRemaining(
-                          child: ErrorNotificationWithMessage(
-                            errorMessage: controller.errorMessage.value,
-                          ),
-                        );
-                      }
-                      return SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final faq = controller.faqs[index];
-                          return FAQItems(faq: faq, index: index);
-                        }, childCount: controller.faqs.length),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-            ),
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return Center(child: Loading());
+                  }
 
-            // Footer
-            Footer(),
-          ],
+                  if (controller.faqs.isEmpty) {
+                    return ErrorNotificationWithMessage(
+                      errorMessage: controller.errorMessage.value,
+                    );
+                  }
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...controller.faqs.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final faq = entry.value;
+                        return FAQItems(faq: faq, index: index);
+                      }),
+                    ],
+                  );
+                }),
+              ),
+
+              // Footer
+              Footer(),
+            ],
+          ),
         ),
       ),
     );

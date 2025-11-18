@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -53,16 +54,16 @@ class LeaveComment extends GetWidget {
                           height: 48,
                           width: 48,
                           child: ClipOval(
-                            child: Image.network(
-                              item.reader.avatar != null &&
-                                      item.reader.avatar!.url.isNotEmpty
-                                  ? (Env.isDev
-                                      ? "$baseUrlNoUrl${item.reader.avatar!.url}"
-                                      : item.reader.avatar!.url)
-                                  : item.reader.avatarUrl,
-                              errorBuilder:
-                                  (context, error, stackTrace) =>
-                                      Icon(Icons.person),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  item.reader.avatar != null &&
+                                          item.reader.avatar!.url.isNotEmpty
+                                      ? (Env.isDev
+                                          ? "$baseUrlNoUrl${item.reader.avatar!.url}"
+                                          : item.reader.avatar!.url)
+                                      : item.reader.avatarUrl,
+                              placeholder:
+                                  (context, error) => Icon(Icons.person),
                               fit: BoxFit.cover,
                             ),
                           ),

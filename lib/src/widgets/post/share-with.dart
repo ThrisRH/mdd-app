@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs_lite.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mddblog/src/widgets/post/section-wrapper.dart';
 import 'package:mddblog/utils/toast.dart';

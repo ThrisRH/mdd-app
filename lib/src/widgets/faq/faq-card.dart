@@ -36,7 +36,7 @@ class FAQCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    question, // luôn là vị trí đầu tiên
+                    question,
                     style:
                         isSelected
                             ? Theme.of(
@@ -48,7 +48,7 @@ class FAQCard extends StatelessWidget {
                             : Theme.of(
                               context,
                             ).textTheme.headlineMedium?.copyWith(fontSize: 18),
-                    softWrap: true, // named parameter
+                    softWrap: true,
                   ),
                 ),
                 Icon(isSelected ? Icons.remove : Icons.add),
@@ -60,6 +60,7 @@ class FAQCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: Text(
+                textAlign: TextAlign.start,
                 answer,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),

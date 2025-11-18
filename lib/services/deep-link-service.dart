@@ -19,8 +19,6 @@ class DeepLinkHandler {
   }
 
   void _handleUri(Uri uri) {
-    if (uri.scheme == "myapp" && uri.host == "auth") {
-      final token = uri.queryParameters["token"];
-    }
+    if (uri.scheme == "myapp" && uri.host == "auth") {}
   }
 }
