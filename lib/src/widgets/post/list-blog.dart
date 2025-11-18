@@ -106,7 +106,7 @@ class BlogListBody extends StatelessWidget {
               );
             }),
 
-            Footer(),
+            SliverToBoxAdapter(child: Footer()),
           ],
         ),
       ),
