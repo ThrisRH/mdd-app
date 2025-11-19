@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:mddblog/models/blog-model.dart';
 import 'package:mddblog/services/blog-service.dart';
-import 'package:mddblog/src/views/blog-details/blog-details.dart';
+import 'package:mddblog/src/screens/blog-details/index.dart';
 
 class BlogController extends GetxController {
   final BlogService _blogService = BlogService();

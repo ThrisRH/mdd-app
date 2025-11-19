@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mddblog/src/views/search/search.dart';
+import 'package:mddblog/src/screens/search/index.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
 import 'package:mddblog/theme/element/app-colors.dart';
 

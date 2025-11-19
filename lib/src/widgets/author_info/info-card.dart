@@ -9,7 +9,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 class InfoCard extends StatelessWidget {
   final AuthorInfo data;
-  const InfoCard({super.key, required this.data});
+  InfoCard({super.key, required this.data});
+
+  final Map<String, String> socialIcons = {
+    "Facebook": "assets/svg/Fb.svg",
+    "Instagram": "assets/svg/Ig.svg",
+    "X": "assets/svg/x.svg",
+    "LinkedIn": "assets/svg/linkedin.svg",
+    "Github": "assets/svg/github.svg",
+    "Youtube": "assets/svg/youtube.svg",
+  };
 
   Future<void> _launchUrl(String url) async {
     if (!url.startsWith("http")) {
@@ -17,99 +26,26 @@ class InfoCard extends StatelessWidget {
     }
 
     final Uri uri = Uri.parse(url);
+
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $url');
     }
   }
 
   Widget contactIcon(String platform, String url, BuildContext context) {
-    switch (platform) {
-      case "Facebook":
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () => _launchUrl(url),
-              child: SvgPicture.asset(
-                "assets/svg/Fb.svg",
-                width: 24,
-                height: 24,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-        );
-      case "Instagram":
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () => _launchUrl(url),
-              child: SvgPicture.asset(
-                "assets/svg/Ig.svg",
-                width: 24,
-                height: 24,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-        );
-      case "X":
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () => _launchUrl(url),
-              child: SvgPicture.asset(
-                "assets/svg/x.svg",
-                width: 24,
-                height: 24,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-        );
-      case "LinkedIn":
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () => _launchUrl(url),
-              child: SvgPicture.asset(
-                "assets/svg/linkedin.svg",
-                width: 24,
-                height: 24,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-        );
-      case "Github":
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () => _launchUrl(url),
-              child: SvgPicture.asset(
-                "assets/svg/github.svg",
-                width: 24,
-                height: 24,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-        );
-      case "Youtube":
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () => _launchUrl(url),
-              child: SvgPicture.asset(
-                "assets/svg/youtube.svg",
-                width: 24,
-                height: 24,
-              ),
-            ),
-          ],
-        );
-      default:
-        return Text("");
-    }
+    final iconPath = socialIcons[platform];
+
+    if (iconPath == null) return const SizedBox();
+
+    return GestureDetector(
+      onTap: () => _launchUrl(url),
+      child: SvgPicture.asset(
+        iconPath,
+        width: 24,
+        height: 24,
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
+    );
   }
 
   @override

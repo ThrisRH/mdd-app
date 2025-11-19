@@ -4,16 +4,16 @@ import 'package:mddblog/controllers/author-controller.dart';
 import 'package:mddblog/controllers/blog-by-cate-controller.dart';
 import 'package:mddblog/controllers/blog-controller.dart';
 import 'package:mddblog/middleware/auth-middleware.dart';
-import 'package:mddblog/src/views/about/about.dart';
-import 'package:mddblog/src/views/auth/google-oauth-view.dart';
-import 'package:mddblog/src/views/auth/sign-in-view.dart';
-import 'package:mddblog/src/views/author-info/author-info.dart';
-import 'package:mddblog/src/views/auth/register-view.dart';
-import 'package:mddblog/src/views/blog-details/blog-details.dart';
-import 'package:mddblog/src/views/category/category.dart';
-import 'package:mddblog/src/views/faq/faq.dart';
-import 'package:mddblog/src/views/home/home.dart';
-import 'package:mddblog/src/views/search/search.dart';
+import 'package:mddblog/src/screens/about/index.dart';
+import 'package:mddblog/src/screens/auth/google-oauth-view.dart';
+import 'package:mddblog/src/screens/auth/register-view.dart';
+import 'package:mddblog/src/screens/auth/sign-in-view.dart';
+import 'package:mddblog/src/screens/author-info/index.dart';
+import 'package:mddblog/src/screens/blog-details/index.dart';
+import 'package:mddblog/src/screens/category/index.dart';
+import 'package:mddblog/src/screens/faq/index.dart';
+import 'package:mddblog/src/screens/home/index.dart';
+import 'package:mddblog/src/screens/search/index.dart';
 
 part 'app-routes.dart';
 
