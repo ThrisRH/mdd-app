@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "882159583012",
+    "project_id": "mdd-notification-ab9a8",
+    "storage_bucket": "mdd-notification-ab9a8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882159583012:android:c88d3b949e86d36b58bdb1",
+        "android_client_info": {
+          "package_name": "com.example.mddblog"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEBv-3WC_a12xhtxu0ZBfIk6O8053ZO2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882159583012:android:4973d83ed6422d2658bdb1",
+        "android_client_info": {
+          "package_name": "com.example.mddblog.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEBv-3WC_a12xhtxu0ZBfIk6O8053ZO2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

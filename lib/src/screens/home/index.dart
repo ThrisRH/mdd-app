@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mddblog/controllers/blog-controller.dart';
 import 'package:mddblog/controllers/overlay-controller.dart';
+import 'package:mddblog/services/notification-service.dart';
 import 'package:mddblog/src/screens/home/sections/banner.dart';
 import 'package:mddblog/src/widgets/footer/footer.dart';
 import 'package:mddblog/src/widgets/layout/phone-body.dart';
@@ -44,6 +45,15 @@ class Home extends GetWidget<BlogController> {
             ),
 
             SliverToBoxAdapter(child: const SizedBox(height: 40)),
+            SliverToBoxAdapter(child: ElevatedButton(
+  onPressed: () {
+    NotificationService.showLocalNotification(
+      title: "Test Notification",
+      body: "This shows even on iOS free",
+    );
+  },
+  child: Text("Show Notification"),
+)),
 
             // Blogs list
             Obx(() {

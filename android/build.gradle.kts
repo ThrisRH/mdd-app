@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.7.0")
+        classpath("com.google.gms:google-services:4.4.4")
+        classpath(kotlin("gradle-plugin", version = "2.1.0"))
+    }
+}
+
 allprojects {
     repositories {
         google()

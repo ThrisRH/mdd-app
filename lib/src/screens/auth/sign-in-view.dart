@@ -10,38 +10,21 @@ import 'package:mddblog/src/widgets/header/overlay.dart';
 import 'package:mddblog/src/widgets/main/button.dart';
 import 'package:mddblog/src/widgets/main/input.dart';
 import 'package:mddblog/theme/element/app-colors.dart';
+import 'package:mddblog/utils/toast.dart';
 
-class LoginPage extends GetWidget {
+class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   final overlayController = Get.find<OverlayController>();
-  final storage = const FlutterSecureStorage();
-
   final AuthController authController = Get.put(AuthController());
   final InputController inputController = Get.put(InputController());
 
-  // Trạng thái đăng nhập Google
-  final RxString googleToken = "".obs;
-
-  Future<void> checkToken() async {
-    final token = await storage.read(key: "accessToken");
-    if (token != null && token.isNotEmpty) {
-      googleToken.value = token;
-    } else {
-      googleToken.value = "";
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Khi vào page thì kiểm tra token
-    checkToken();
-
     return Stack(
       children: [
         Scaffold(
           appBar: MDDNavbar(onMenuTap: overlayController.toggleOverlay),
-
           body: RefreshIndicator(
             onRefresh: () async {
               authController.clearInput();
@@ -52,7 +35,6 @@ class LoginPage extends GetWidget {
                 spacing: 32,
                 children: [
                   BannerSection(),
-
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
@@ -67,58 +49,56 @@ class LoginPage extends GetWidget {
                         ),
                         const SizedBox(height: 12),
 
-                        // Email + Password login ...
                         MDDTextInputField(
                           textController: authController.emailController,
                           label: "Email",
                           hint: "john.smith@example.com",
-                          onChange:
-                              (value) => {
-                                authController.errorMessage.value = "",
-                              },
+                          onChange: (value) => authController.errorMessage.value = "",
                         ),
 
                         MDDPasswordInputField(
                           textController: authController.passwordController,
                           label: "Password",
                           hint: "Enter your password",
-                          onChange:
-                              (value) => {
-                                authController.errorMessage.value = "",
-                              },
+                          onChange: (value) => authController.errorMessage.value = "",
                         ),
 
+                        // Hiển thị lỗi trong page
                         Obx(() {
-                          if (authController.errorMessage.value == "") {
+                          if (authController.errorMessage.value.isEmpty) {
                             return SizedBox.shrink();
                           }
-                          return Text(
-                            authController.errorMessage.value,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall?.copyWith(color: Colors.red),
-                          );
+                          // Show toast khi errorMessage thay đổi
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            SnackbarNotification.showError(authController.errorMessage.value);
+                            authController.errorMessage.value = "";
+                          });
+                          return SizedBox.shrink();
                         }),
 
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           spacing: 24,
                           children: [
-                            Obx(
-                              () => MDDButton(
-                                color: Colors.white,
-                                bgColor:
-                                    authController.isLoading.value
-                                        ? Colors.grey.shade300
-                                        : AppColors.secondary,
-                                label: "Sign In",
-                                fontSize: 16,
-                                isDisabled: authController.isLoading.value,
-                                onTap: () async {
-                                  authController.signIn();
-                                },
-                              ),
-                            ),
+                            Obx(() => MDDButton(
+                                  color: Colors.white,
+                                  bgColor: authController.isLoading.value
+                                      ? Colors.grey.shade300
+                                      : AppColors.secondary,
+                                  label: "Sign In",
+                                  fontSize: 16,
+                                  isDisabled: authController.isLoading.value,
+                                  onTap: () async {
+                                    await authController.signIn();
+
+                                    // Show success toast nếu login thành công
+                                    if (authController.isLoggedIn.value) {
+                                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                                        SnackbarNotification.showSuccess("Login thành công");
+                                      });
+                                    }
+                                  },
+                                )),
 
                             RichText(
                               text: TextSpan(
@@ -127,17 +107,12 @@ class LoginPage extends GetWidget {
                                 children: [
                                   TextSpan(
                                     text: "Sign Up!",
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall?.copyWith(
-                                      color: AppColors.secondary,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: AppColors.secondary,
-                                    ),
-                                    recognizer:
-                                        TapGestureRecognizer()
-                                          ..onTap =
-                                              () => authController.toRegister(),
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: AppColors.secondary,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => authController.toRegister(),
                                   ),
                                 ],
                               ),
@@ -145,10 +120,9 @@ class LoginPage extends GetWidget {
                           ],
                         ),
 
-                        // Hiển thị login / logout Google dựa vào token
                         GoogleButton(
                           label: 'Login với Google',
-                          onTap: () => {Get.toNamed("/oauthGoogle")},
+                          onTap: () => Get.toNamed("/oauthGoogle"),
                         ),
                       ],
                     ),
@@ -159,12 +133,9 @@ class LoginPage extends GetWidget {
           ),
         ),
 
-        Obx(
-          () =>
-              overlayController.showOverlay.value
-                  ? OverlayToggle(closeOverlay: overlayController.closeOverlay)
-                  : SizedBox.shrink(),
-        ),
+        Obx(() => overlayController.showOverlay.value
+            ? OverlayToggle(closeOverlay: overlayController.closeOverlay)
+            : SizedBox.shrink()),
       ],
     );
   }
